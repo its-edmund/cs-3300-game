@@ -3,3 +3,6 @@ lib/*
 
 # exclude build
 build/*
+/bin/
+
+.idea/
