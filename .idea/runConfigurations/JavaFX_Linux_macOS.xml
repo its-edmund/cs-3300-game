@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="JavaFX Linux/macOS" type="Application" factoryName="Application">
-    <option name="ALTERNATIVE_JRE_PATH" value="$USER_HOME$/.jdks/corretto-11.0.12" />
+    <option name="ALTERNATIVE_JRE_PATH" value="corretto-11" />
     <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
     <option name="MAIN_CLASS_NAME" value="fxmlexample.FXMLExample" />
     <module name="cs-3300-game" />
