@@ -3,3 +3,4 @@ lib/*
 
 # exclude build
 build/*
+/bin/
