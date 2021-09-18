@@ -21,11 +21,14 @@ public class Game extends Application {
     private Button move1Button;
     private Button move3Button;
 
+    private Player player1 = new Player(0.0f, 0.0f);
+    private Board board = new Board();
 
     @Override
     public void start(Stage primaryStage) throws Exception {
         // Setup
         try {
+
             move1Button = new Button("Move 1");
             move3Button = new Button("Move 3");
             this.stage = primaryStage;
@@ -47,6 +50,7 @@ public class Game extends Application {
             });
             this.buttons.getChildren().addAll(move1Button, move3Button);
             root.setTop(buttons);
+            root.setCenter(board.createBoard());
             this.stage.setScene(gameScene);
 
             primaryStage.show();

@@ -1,3 +1,4 @@
+import javafx.scene.Scene;
 import javafx.scene.shape.Circle;
 
 public class Player {
@@ -8,7 +9,7 @@ public class Player {
     private float x;
     private float y;
 
-    public void Circle(float x, float y) {
+    public Player(float x, float y) {
         this.view = new Circle();
         view.setCenterX(x);
         view.setCenterY(y);
@@ -16,11 +17,15 @@ public class Player {
         this.x = x;
         this.y = y;
     }
+
     public void move(float x, float y) {
         this.x = x;
         this.y = y;
+        view.setCenterX(x);
+        view.setCenterY(y);
     }
-    public void draw() {
+
+    public void draw(Scene scene) {
 
     }
 }
