@@ -11,6 +11,8 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import tile.Tile;
+import tile.TileType;
 
 // Tutorial: https://docs.oracle.com/javafx/2/get_started/fxml_tutorial.htm
 
@@ -28,9 +30,13 @@ public class FXMLExample extends Application {
         for (int i = 0; i < BOARD_SIZE; i++) {
             for (int j = 0; j < BOARD_SIZE; j++) {
                 if (i == 0 || i == BOARD_SIZE - 1 || j == 0 || j == BOARD_SIZE - 1) {
-                    Rectangle tile = new Rectangle(50, 50);
-                    tile.setFill(Color.BURLYWOOD);
-                    tile.setStroke(Color.BLACK);
+                    Tile tile;
+
+                    if (i == 0 && j == 0) {
+                        tile = new Tile(TileType.START, i, j);
+                    } else {
+                        tile = new Tile(TileType.STANDARD, i, j);
+                    }
 
                     Text text = new Text();
                     text.setFont(Font.font(40));
