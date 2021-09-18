@@ -1,0 +1,5 @@
+# exclude JavaFX because it is platform dependent
+lib/*
+
+# exclude build
+build/*
