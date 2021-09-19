@@ -1,31 +1,47 @@
 import javafx.scene.Scene;
 import javafx.scene.shape.Circle;
 
-public class Player {
+import java.util.ArrayList;
+
+public class Player extends Circle {
 
     // For now, player representation is a circle
-    private Circle view;
     private static float radius = 20.0f;
-    private float x;
-    private float y;
+    private int x;
+    private int y;
+    private int currentLocation;
+    private int locationLimit = 15;
 
-    public Player(float x, float y) {
-        this.view = new Circle();
-        view.setCenterX(x);
-        view.setCenterY(y);
-        view.setRadius(this.radius);
+    public Player() {
+        this(0, 0);
+    }
+
+    public Player(int x, int y) {
+        super(x, y, radius);
+        this.currentLocation = 0;
         this.x = x;
         this.y = y;
     }
 
-    public void move(float x, float y) {
+    public void move(int x, int y) {
         this.x = x;
         this.y = y;
-        view.setCenterX(x);
-        view.setCenterY(y);
+        this.setCenterX(x);
+        this.setCenterY(y);
     }
 
-    public void draw(Scene scene) {
+    public int getCurrentLocation() {
+        return this.currentLocation;
+    }
 
+    public void setCurrentLocation(int currentLocation) {
+        if (currentLocation >= locationLimit || currentLocation < 0) {
+            return;
+        }
+        this.currentLocation = currentLocation;
+    }
+
+    public void setLocationLimit(int limit) {
+        this.locationLimit = limit;
     }
 }
