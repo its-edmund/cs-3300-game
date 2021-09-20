@@ -19,8 +19,8 @@ public class Board extends BorderPane {
 
     public ArrayList<ArrayList<Integer>> path;
     public Player player;
-    private Button moveForwardButton;
-    private Button moveBackwardButton;
+    private Button move1ForwardButton;
+    private Button move3ForwardButton;
     private HBox buttons;
     private GridPane board;
 
@@ -30,25 +30,25 @@ public class Board extends BorderPane {
         player = new Player();
         board = new GridPane();
         board.setPrefSize(755, 755);
-        moveForwardButton = new Button("Move Forward");
-        moveBackwardButton = new Button("Move Backward");
-        moveForwardButton.setOnAction(new EventHandler<ActionEvent>() {
+        move1ForwardButton = new Button("Move 1 Forward");
+        move3ForwardButton = new Button("Move 3 Forward");
+        move1ForwardButton.setOnAction(new EventHandler<ActionEvent>() {
 
             @Override
             public void handle(ActionEvent event) {
-                moveForward();
+                move1Forward();
             }
         });
 
-        moveBackwardButton.setOnAction(new EventHandler<ActionEvent>() {
+        move3ForwardButton.setOnAction(new EventHandler<ActionEvent>() {
 
             @Override
             public void handle(ActionEvent event) {
-                moveBackward();
+                move3Forward();
             }
         });
         buttons = new HBox();
-        buttons.getChildren().addAll(moveForwardButton, moveBackwardButton);
+        buttons.getChildren().addAll(move1ForwardButton, move3ForwardButton);
         this.setTop(buttons);
     }
 
@@ -151,15 +151,15 @@ public class Board extends BorderPane {
         this.setCenter(board);
     }
 
-    private void moveForward() {
+    private void move1Forward() {
         board.getChildren().removeAll(this.player);
         this.player.setCurrentLocation(this.player.getCurrentLocation() + 1);
         board.add(this.player, path.get(this.player.getCurrentLocation()).get(0), path.get(this.player.getCurrentLocation()).get(1));
     }
 
-    private void moveBackward() {
+    private void move3Forward() {
         board.getChildren().removeAll(this.player);
-        this.player.setCurrentLocation(this.player.getCurrentLocation() - 1);
+        this.player.setCurrentLocation(this.player.getCurrentLocation() + 3);
         board.add(this.player, path.get(this.player.getCurrentLocation()).get(0), path.get(this.player.getCurrentLocation()).get(1));
     }
 }
