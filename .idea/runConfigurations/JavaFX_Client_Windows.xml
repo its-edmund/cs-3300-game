@@ -1,0 +1,10 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="JavaFX Client Windows" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="chat.client.Client" />
+    <module name="cs-3300-game" />
+    <option name="VM_PARAMETERS" value="--module-path lib\javafx-sdk-17.0.0.1\lib --add-modules javafx.controls,javafx.fxml" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

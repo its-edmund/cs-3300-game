@@ -1,0 +1,7 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Windows Multithreading Server / Client" type="CompoundRunConfigurationType">
+    <toRun name="JavaFX Client Windows" type="Application" />
+    <toRun name="JavaFX Server Windows" type="Application" />
+    <method v="2" />
+  </configuration>
+</component>
