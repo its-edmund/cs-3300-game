@@ -1,3 +1,5 @@
+package window.player;
+
 import javafx.scene.Scene;
 import javafx.scene.shape.Circle;
 

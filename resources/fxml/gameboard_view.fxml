@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.text.Font?>
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            prefHeight="400.0" prefWidth="600.0">
+
+    <top>
+        <HBox alignment="CENTER" spacing="5">
+            <Button
+                fx:id="move1Button"
+                text="Move 1"
+            />
+            <Button
+                fx:id="move3Button"
+                text="Move 3"
+            />
+        </HBox>
+    </top>
+
+    <center>
+        <GridPane fx:id="board" prefWidth="755" prefHeight="755">
+
+        </GridPane>
+<!--        <VBox alignment="CENTER" spacing="5">-->
+<!--            <Label text="Gameboard">-->
+<!--                <font>-->
+<!--                    <Font name = "System Bold" size = "24.0" />-->
+<!--                </font>-->
+<!--            </Label>-->
+<!--        </VBox>-->
+    </center>
+
+
+</BorderPane>
