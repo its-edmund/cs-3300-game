@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Text?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            prefHeight="400.0" prefWidth="600.0">
+    <top>
+        <HBox alignment="CENTER" spacing = "5">
+            <fx:define>
+                <ToggleGroup fx:id="playerCountBtns" />
+            </fx:define>
+
+            <RadioButton
+                    fx:id = "two"
+                    text = "2 Players"
+                    selected = "true"
+                    toggleGroup = "$playerCountBtns"
+            />
+            <RadioButton
+                    fx:id = "three"
+                    text = "3 Players"
+                    toggleGroup = "$playerCountBtns"
+            />
+            <RadioButton
+                    fx:id = "four"
+                    text = "4 Players"
+                    toggleGroup = "$playerCountBtns"
+            />
+        </HBox>
+    </top>
+    <center>
+        <VBox alignment="CENTER" spacing = "5">
+            <HBox spacing = "5"
+                  fx:id = "playerNames"
+            />
+            <HBox spacing = "30"
+                  fx:id = "colorPickers"
+            />
+            <Button
+                    fx:id = "submitPlayersBtn"
+                    text = "Submit Names"
+            />
+            <Button
+                fx:id = "startGame"
+                text = "START GAME"
+                />
+        </VBox>
+    </center>
+    <bottom>
+        <HBox alignment="CENTER" spacing="5">
+            <Text fx:id="playerOrder">
+
+            </Text>
+            <Text fx:id="startingMoney">
+
+            </Text>
+        </HBox>
+    </bottom>
+</BorderPane>

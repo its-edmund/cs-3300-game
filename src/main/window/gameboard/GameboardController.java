@@ -1,9 +1,12 @@
+package window.gameboard;
+
+import core.AbstractController;
+import core.ViewHandler;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -11,46 +14,54 @@ import javafx.scene.text.Text;
 import tile.Tile;
 import window.player.Player;
 
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.ResourceBundle;
 
-public class Board extends BorderPane {
+public class GameboardController extends AbstractController {
+
+    @FXML private Button move1Button;
+    @FXML private Button move3Button;
+    @FXML private GridPane board;
 
     public ArrayList<ArrayList<Integer>> path;
     public Player player;
-    private Button move1ForwardButton;
-    private Button move3ForwardButton;
-    private HBox buttons;
-    private GridPane board;
 
-    public Board() {
-        super();
-        this.setPrefSize(755, 800);
+    public GameboardController(ViewHandler viewHandler) {
+        super(viewHandler);
         player = new Player();
         board = new GridPane();
-        board.setPrefSize(755, 755);
-        move1ForwardButton = new Button("Move 1 Forward");
-        move3ForwardButton = new Button("Move 3 Forward");
-        move1ForwardButton.setOnAction(new EventHandler<ActionEvent>() {
+    }
+
+    @Override
+    public void initialize(URL location, ResourceBundle bundle) {
+        move1Button.setOnAction(new EventHandler<ActionEvent>() {
 
             @Override
-            public void handle(ActionEvent event) {
+            public void handle(ActionEvent actionEvent) {
                 move1Forward();
             }
         });
-
-        move3ForwardButton.setOnAction(new EventHandler<ActionEvent>() {
-
+        move3Button.setOnAction(new EventHandler<ActionEvent>() {
             @Override
-            public void handle(ActionEvent event) {
+            public void handle(ActionEvent actionEvent) {
                 move3Forward();
             }
         });
-        buttons = new HBox();
-        buttons.getChildren().addAll(move1ForwardButton, move3ForwardButton);
-        this.setTop(buttons);
+        createBoard();
     }
 
-    public void createBoard() {
+    private void move1Forward() {
+        board.getChildren().removeAll(this.player);
+        this.player.setCurrentLocation(this.player.getCurrentLocation() + 1);
+        board.add(this.player, path.get(this.player.getCurrentLocation()).get(0), path.get(this.player.getCurrentLocation()).get(1));
+    }
+    private void move3Forward() {
+        board.getChildren().removeAll(this.player);
+        this.player.setCurrentLocation(this.player.getCurrentLocation() + 3);
+        board.add(this.player, path.get(this.player.getCurrentLocation()).get(0), path.get(this.player.getCurrentLocation()).get(1));
+    }
+    private void createBoard() {
         int BOARD_SIZE = 15;
 
         path = new ArrayList<ArrayList<Integer>>();
@@ -146,18 +157,5 @@ public class Board extends BorderPane {
             }
         }
         this.player.setLocationLimit(path.size());
-        this.setCenter(board);
-    }
-
-    private void move1Forward() {
-        board.getChildren().removeAll(this.player);
-        this.player.setCurrentLocation(this.player.getCurrentLocation() + 1);
-        board.add(this.player, path.get(this.player.getCurrentLocation()).get(0), path.get(this.player.getCurrentLocation()).get(1));
-    }
-
-    private void move3Forward() {
-        board.getChildren().removeAll(this.player);
-        this.player.setCurrentLocation(this.player.getCurrentLocation() + 3);
-        board.add(this.player, path.get(this.player.getCurrentLocation()).get(0), path.get(this.player.getCurrentLocation()).get(1));
     }
 }
