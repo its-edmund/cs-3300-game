@@ -21,42 +21,23 @@ import window.player.Player;
 
 public class ConfigurationController extends AbstractController {
 
-    @FXML
-    private ToggleGroup playerCountBtns;
-    @FXML
-    private Button submitPlayersBtn;
-    @FXML
-    private HBox playerNames;
-    @FXML
-    private HBox colorPickers;
-    @FXML
-    private RadioButton two;
-    @FXML
-    private RadioButton three;
-    @FXML
-    private RadioButton four;
-    @FXML
-    private Text playerOrder;
-    @FXML
-    private Text startingMoney;
-    @FXML
-    private Button startGame;
+    @FXML private ToggleGroup playerCountBtns;
+    @FXML private Button submitPlayersBtn;
+    @FXML private HBox playerNames;
+    @FXML private HBox colorPickers;
+    @FXML private RadioButton two;
+    @FXML private RadioButton three;
+    @FXML private RadioButton four;
+    @FXML private Text playerOrder;
+    @FXML private Text startingMoney;
+    @FXML private Button startGame;
 
     public ArrayList<Player> players;
 
     public ConfigurationController(ViewHandler viewHandler) {
         super(viewHandler);
-        playerCountBtns = new ToggleGroup();
-        submitPlayersBtn = new Button();
-        playerNames = new HBox();
-        two = new RadioButton();
-        three = new RadioButton();
-        four = new RadioButton();
-        playerOrder = new Text();
-        startingMoney = new Text();
-        startGame = new Button();
+
         players = new ArrayList<>();
-        colorPickers = new HBox();
     }
 
     @Override
