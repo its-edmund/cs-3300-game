@@ -22,7 +22,7 @@ public class StartController extends AbstractController {
         startButton.setOnAction(
                 e -> {
                     try {
-                        viewHandler.launchGameboard();
+                        viewHandler.launchTeamSelectionMenu();
                     } catch (IOException ex) {
                         ex.printStackTrace();
                     }

@@ -4,6 +4,8 @@ import core.AbstractWindow;
 import core.ViewHandler;
 import window.gameboard.GameboardController;
 import window.gameboard.GameboardWindow;
+import window.start.ConfigurationWindow;
+import window.start.ConfigurationController;
 import window.start.StartController;
 import window.start.StartWindow;
 
@@ -19,7 +21,7 @@ public class WindowFactory {
         if ("START".equals(windowName)) {
             return new StartWindow(new StartController(viewHandler), bundle);
         } else if ("TEAM_SELECTION".equals(windowName)) {
-
+            return new ConfigurationWindow(new ConfigurationController(viewHandler), bundle);
         } else if ("GAMEBOARD".equals(windowName)) {
             return new GameboardWindow(new GameboardController(viewHandler), bundle);
         }

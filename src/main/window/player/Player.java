@@ -1,6 +1,7 @@
 package window.player;
 
 import javafx.scene.Scene;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
 import java.util.ArrayList;
@@ -13,9 +14,17 @@ public class Player extends Circle {
     private int y;
     private int currentLocation;
     private int locationLimit = 15;
+    public String name;
+    public Color color;
 
     public Player() {
         this(0, 0);
+    }
+
+    public Player(String name, Color color) {
+        this(0,0);
+        this.name = name;
+        this.color = color;
     }
 
     public Player(int x, int y) {

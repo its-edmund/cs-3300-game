@@ -39,7 +39,6 @@ public class AppViewHandler implements ViewHandler {
         buildAndShowScene(primaryStage, windowFactory.createWindow("GAMEBOARD", this, bundle));
     }
 
-
     private void buildAndShowScene(Stage stage, AbstractWindow window) throws IOException {
 
         // Alternatively, use:
