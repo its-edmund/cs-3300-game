@@ -35,4 +35,7 @@ public class Tile extends Rectangle {
         this.X_COORDINATE = X_COORDINATE;
         this.Y_COORDINATE = Y_COORDINATE;
     }
+    public TileType getType() {
+        return type;
+    }
 }
