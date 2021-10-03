@@ -157,6 +157,5 @@ public class GameboardController extends AbstractController {
             }
         }
         this.player.setLocationLimit(path.size());
-//        this.setCenter(board);
     }
 }

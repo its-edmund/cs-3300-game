@@ -10,6 +10,7 @@ import core.AbstractWindow;
 import core.ViewHandler;
 import core.AppPaths;
 
+import window.ScreenEnum;
 import window.WindowFactory;
 
 public class AppViewHandler implements ViewHandler {
@@ -26,17 +27,17 @@ public class AppViewHandler implements ViewHandler {
 
     @Override
     public void launchStartWindow() throws IOException {
-        buildAndShowScene(primaryStage, windowFactory.createWindow("START", this, bundle));
+        buildAndShowScene(primaryStage, windowFactory.createWindow(ScreenEnum.START, this, bundle));
     }
 
     @Override
     public void launchTeamSelectionMenu() throws IOException {
-        buildAndShowScene(primaryStage, windowFactory.createWindow("TEAM_SELECTION", this, bundle));
+//        buildAndShowScene(primaryStage, windowFactory.createWindow(ScreenEnum.TEAM_SELECTION, this, bundle));
     }
 
     @Override
     public void launchGameboard() throws IOException {
-        buildAndShowScene(primaryStage, windowFactory.createWindow("GAMEBOARD", this, bundle));
+        buildAndShowScene(primaryStage, windowFactory.createWindow(ScreenEnum.GAMEBOARD, this, bundle));
     }
 
 
