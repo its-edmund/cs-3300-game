@@ -13,21 +13,15 @@ import java.util.ResourceBundle;
 
 public class WindowFactory {
 
-    public AbstractWindow createWindow(String windowName, ViewHandler viewHandler, ResourceBundle bundle) {
-        if (windowName == null) {
-            return null;
-        }
+    public AbstractWindow createWindow(ScreenEnum screenName, ViewHandler viewHandler, ResourceBundle bundle) {
 
-        if ("START".equals(windowName)) {
+        if (screenName == ScreenEnum.START) {
             return new StartWindow(new StartController(viewHandler), bundle);
-        } else if ("TEAM_SELECTION".equals(windowName)) {
+        } else if (screenName == ScreenEnum.CONFIG) {
             return new ConfigurationWindow(new ConfigurationController(viewHandler), bundle);
-        } else if ("GAMEBOARD".equals(windowName)) {
+        }else if (screenName == ScreenEnum.GAMEBOARD) {
             return new GameboardWindow(new GameboardController(viewHandler), bundle);
         }
-
         return null;
     }
-
-
 }

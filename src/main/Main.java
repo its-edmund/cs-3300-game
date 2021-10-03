@@ -1,4 +1,5 @@
 import core.AppPaths;
+import core.AppViewHandler;
 import javafx.application.Application;
 import javafx.stage.Stage;
 

@@ -12,7 +12,6 @@
             xmlns:fx="http://javafx.com/fxml"
             prefHeight="400.0" prefWidth="600.0">
 
-
     <center>
         <VBox alignment="CENTER" spacing="5">
             <Label text="Masterpiece">
@@ -27,6 +26,5 @@
             />
         </VBox>
     </center>
-
 
 </BorderPane>
