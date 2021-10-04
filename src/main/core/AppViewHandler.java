@@ -12,6 +12,7 @@ import core.AbstractWindow;
 import core.ViewHandler;
 import core.AppPaths;
 
+import state.State;
 import window.ScreenEnum;
 import window.WindowFactory;
 
@@ -21,10 +22,13 @@ public class AppViewHandler implements ViewHandler {
     private final ResourceBundle bundle;
     private final WindowFactory windowFactory;
 
+    private State state;
+
     public AppViewHandler(Stage primaryStage, ResourceBundle bundle) {
         this.primaryStage = primaryStage;
         this.bundle = bundle;
         this.windowFactory = new WindowFactory();
+        this.state = new State();
     }
 
     @Override
@@ -40,6 +44,16 @@ public class AppViewHandler implements ViewHandler {
     @Override
     public void launchGameboard() throws IOException {
         buildAndShowScene(primaryStage, windowFactory.createWindow(ScreenEnum.GAMEBOARD, this, bundle));
+    }
+
+    @Override
+    public void updateState(State state) {
+        this.state = state;
+    }
+
+    @Override
+    public State getState() {
+        return this.state;
     }
 
     private void buildAndShowScene(Stage stage, AbstractWindow window) throws IOException {

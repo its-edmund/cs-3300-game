@@ -7,13 +7,17 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import tile.Tile;
 import window.player.Player;
+import window.player.PlayerController;
 
+import java.awt.*;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -23,6 +27,8 @@ public class GameboardController extends AbstractController {
     @FXML private Button move1Button;
     @FXML private Button move3Button;
     @FXML private GridPane board;
+
+    @FXML private HBox playerProfileHbox;
 
     public ArrayList<ArrayList<Integer>> path;
     public Player player;
@@ -49,6 +55,7 @@ public class GameboardController extends AbstractController {
             }
         });
         createBoard();
+        createPlayerProfiles();
     }
 
     private void move1Forward() {
@@ -157,5 +164,26 @@ public class GameboardController extends AbstractController {
             }
         }
         this.player.setLocationLimit(path.size());
+    }
+    private void createPlayerProfiles() {
+        // Get the gamestate
+        PlayerController playerController = viewHandler.getState().getPlayerController();
+
+        for (Player player : playerController.getPlayers()) {
+
+            StackPane stackPane = new StackPane();
+
+            Rectangle rectangle = new Rectangle();
+            rectangle.setWidth(200);
+            rectangle.setHeight(50);
+            rectangle.setFill(player.color);
+            rectangle.setStroke(Color.BLACK);
+
+            Text text = new Text();
+            text.setText(player.name + "\n" + "$" + player.money);
+
+            stackPane.getChildren().addAll(rectangle, text);
+            playerProfileHbox.getChildren().addAll(stackPane);
+        }
     }
 }

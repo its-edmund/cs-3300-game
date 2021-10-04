@@ -1,4 +1,4 @@
-package window.start;
+package window.config_screen;
 
 import core.AbstractController;
 import core.ViewHandler;
@@ -17,7 +17,9 @@ import javafx.scene.layout.HBox;
 
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import state.State;
 import window.player.Player;
+import window.player.PlayerController;
 
 public class ConfigurationController extends AbstractController {
 
@@ -80,7 +82,7 @@ public class ConfigurationController extends AbstractController {
                         seenNames.contains(text) ||
                         color == null ||
                         seenColors.contains(color)))){
-                    players.add(new Player(text, color));
+                    players.add(new Player(text, color, 1000));
                     seenNames.add(text);
                     seenColors.add(color);
                 } else {
@@ -96,13 +98,26 @@ public class ConfigurationController extends AbstractController {
 
             // Show money and player order after submit
             Collections.shuffle(players);
+            PlayerController playerController = new PlayerController();
+
             String pOrder = "Player Order: ";
-            for (int j = 1; j < players.size() + 1; j++) {
-                pOrder += Integer.toString(j) + ". " + players.get(j - 1).name +
-                        "(Color: " + players.get(j - 1).color.toString() + ")  ";
+
+            for (Player player : players) {
+
+                playerController.addPlayer(player);
+
+//                pOrder += Integer.toString(j) + ". " + players.get(j - 1).name +
+//                        "(Color: " + players.get(j - 1).color.toString() + ")  ";
             }
+
             playerOrder.setText(pOrder);
             startingMoney.setText("Starting Money: $1000");
+
+            // Update the game state
+            State state = viewHandler.getState();
+            state.setPlayerController(playerController);
+            viewHandler.updateState(state);
+
         });
         startGame.setOnAction(e -> {
                 if (!(players.size() == 0)) {

@@ -32,7 +32,7 @@ public abstract class AbstractWindow {
     }
 
     public boolean resizable() {
-        return false;
+        return true;
     }
 
     protected abstract String iconFileName();

@@ -4,8 +4,8 @@ import core.AbstractWindow;
 import core.ViewHandler;
 import window.gameboard.GameboardController;
 import window.gameboard.GameboardWindow;
-import window.start.ConfigurationWindow;
-import window.start.ConfigurationController;
+import window.config_screen.ConfigurationWindow;
+import window.config_screen.ConfigurationController;
 import window.start.StartController;
 import window.start.StartWindow;
 
