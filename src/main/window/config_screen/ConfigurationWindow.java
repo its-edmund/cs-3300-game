@@ -1,4 +1,4 @@
-package window.start;
+package window.config_screen;
 
 import core.AbstractWindow;
 

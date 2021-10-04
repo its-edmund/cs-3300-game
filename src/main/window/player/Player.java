@@ -16,15 +16,17 @@ public class Player extends Circle {
     private int locationLimit = 15;
     public String name;
     public Color color;
+    public int money;
 
     public Player() {
         this(0, 0);
     }
 
-    public Player(String name, Color color) {
+    public Player(String name, Color color, int money) {
         this(0,0);
         this.name = name;
         this.color = color;
+        this.money = money;
     }
 
     public Player(int x, int y) {
