@@ -8,12 +8,17 @@
 
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.shape.Rectangle?>
+<?import javafx.geometry.Insets?>
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             prefHeight="400.0" prefWidth="600.0">
 
+    <padding>
+        <Insets top="0" bottom="0" left="-10" right="-10" />
+    </padding>
+
     <top>
-        <VBox alignment="CENTER" spacing="10">
+        <VBox fx:id="hudVBox" alignment="CENTER" spacing="10">
 
             <HBox fx:id="playerProfileHbox" alignment="CENTER" spacing="5">
 
@@ -35,9 +40,9 @@
     </top>
 
     <center>
-        <GridPane fx:id="board" prefWidth="755" prefHeight="755">
+        <Pane fx:id="board">
 
-        </GridPane>
+        </Pane>
 <!--        <VBox alignment="CENTER" spacing="5">-->
 <!--            <Label text="Gameboard">-->
 <!--                <font>-->

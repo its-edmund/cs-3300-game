@@ -1,14 +1,14 @@
 package window.gameboard;
 
 import core.AbstractController;
+import core.AppViewHandler;
 import core.ViewHandler;
+import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
@@ -26,9 +26,11 @@ public class GameboardController extends AbstractController {
 
     @FXML private Button move1Button;
     @FXML private Button move3Button;
-    @FXML private GridPane board;
+    @FXML private Pane board;
 
     @FXML private HBox playerProfileHbox;
+
+    @FXML private VBox hudVBox;
 
     public ArrayList<ArrayList<Integer>> path;
     public Player player;
@@ -36,7 +38,6 @@ public class GameboardController extends AbstractController {
     public GameboardController(ViewHandler viewHandler) {
         super(viewHandler);
         player = new Player();
-        board = new GridPane();
     }
 
     @Override
@@ -54,25 +55,174 @@ public class GameboardController extends AbstractController {
                 move3Forward();
             }
         });
+
         createBoard();
         createPlayerProfiles();
     }
 
+
     private void move1Forward() {
-        board.getChildren().removeAll(this.player);
-        this.player.setCurrentLocation(this.player.getCurrentLocation() + 1);
-        board.add(this.player, path.get(this.player.getCurrentLocation()).get(0), path.get(this.player.getCurrentLocation()).get(1));
+//        board.getChildren().removeAll(this.player);
+//        this.player.setCurrentLocation(this.player.getCurrentLocation() + 1);
+//        board.add(this.player, path.get(this.player.getCurrentLocation()).get(0), path.get(this.player.getCurrentLocation()).get(1));
     }
     private void move3Forward() {
-        board.getChildren().removeAll(this.player);
-        this.player.setCurrentLocation(this.player.getCurrentLocation() + 3);
-        board.add(this.player, path.get(this.player.getCurrentLocation()).get(0), path.get(this.player.getCurrentLocation()).get(1));
+//        board.getChildren().removeAll(this.player);
+//        this.player.setCurrentLocation(this.player.getCurrentLocation() + 3);
+//        board.add(this.player, path.get(this.player.getCurrentLocation()).get(0), path.get(this.player.getCurrentLocation()).get(1));
     }
+
     private void createBoard() {
         int BOARD_SIZE = 15;
 
         path = new ArrayList<ArrayList<Integer>>();
 
+//        tile.setText("Width: " + viewHandler.getScreenDimensions()[0] + "\n"
+//                + "Height: " + viewHandler.getScreenDimensions()[1] + "\n"
+//                + "HUD height:" + hudVBox.getHeight());
+
+//        Tile tile1 = new Tile(0, 0);
+//        tile1.relocate(0.5, 0.5, viewHandler);
+//
+//        ChangeListener<Number> stageWidthListener1 = (observable, oldVal, newVal) -> {
+////            String labelText = tile.getText();
+//////            String newText = "Width: " + viewHandler.getScreenDimensions()[0] + "\n"
+//////                    + labelText.substring(labelText.indexOf("Height"), labelText.indexOf("HUD") - 1) + "\n"
+//////                    + "HUD height:" + hudVBox.getHeight();
+////            tile.setText("Width: " + viewHandler.getScreenDimensions()[0] + "\n"
+////                    + "Height: " + viewHandler.getScreenDimensions()[1] + "\n"
+////                    + "HUD height:" + hudVBox.getHeight());
+//
+////            tile.setText(newText);
+//
+////            tile.setText("Width: " + viewHandler.getScreenDimensions()[0] + "\n"
+////                    + "Height: " + viewHandler.getScreenDimensions()[1] + "\n"
+////                    + "HUD height:" + hudVBox.getHeight());
+//
+//
+////            tile.relocate(viewHandler.getScreenDimensions()[0],
+////                    viewHandler.getScreenDimensions()[1]);
+//            tile1.relocate(0.5, 0.5, viewHandler);
+//        };
+//        ChangeListener<Number> stageHeightListener1 = (observable, oldVal, newVal) -> {
+////            String labelText = tile.getText();
+////            String newText = labelText.substring(labelText.indexOf("Width"), labelText.indexOf("Height") - 1) + "\n"
+////                    + "Height: " + viewHandler.getScreenDimensions()[1] + "\n"
+////                    + "HUD height:" + hudVBox.getHeight();
+//
+////            tile.setText("Width: " + viewHandler.getScreenDimensions()[0] + "\n"
+////                    + "Height: " + viewHandler.getScreenDimensions()[1] + "\n"
+////                    + "HUD height:" + hudVBox.getHeight());
+////
+////            tile.setText(newText);
+//
+////            tile.setText("Width: " + viewHandler.getScreenDimensions()[0] + "\n"
+////                    + "Height: " + viewHandler.getScreenDimensions()[1] + "\n"
+////                    + "HUD height:" + hudVBox.getHeight());
+//
+////            tile.relocate(viewHandler.getScreenDimensions()[0],
+////                    viewHandler.getScreenDimensions()[1]);
+//            tile1.relocate(0.5, 0.5, viewHandler);
+//        };
+//
+//        viewHandler.addEventOnScreenWidthChange(stageWidthListener1);
+//        viewHandler.addEventOnScreenHeightChange(stageHeightListener1);
+//
+//        board.getChildren().addAll(tile1);
+
+       
+
+        /*
+            *
+          *   |
+        *        |
+          |    |
+            |
+         */
+        double x = 0.1;
+        double y = 0;
+        
+        while (x < 0.5) {
+
+            y = -1 * x + 0.6;
+
+            Tile tile = new Tile(x, y, (AppViewHandler) viewHandler);
+//            tile.relocate(x, y, viewHandler);
+
+            board.getChildren().addAll(tile);
+
+            x += (0.4 / 15);
+        }
+
+        
+        /*
+            |
+          |    |
+        |        *
+          |    *
+            *
+         */
+        x = 0.5;
+        y = 0;
+
+        while (x < 0.9) {
+
+            y = -1 * x + 1.4;
+
+            Tile tile = new Tile(x, y, (AppViewHandler) viewHandler);
+//            tile.relocate(x, y, viewHandler);
+
+            board.getChildren().addAll(tile);
+
+            x += (0.4 / 15);
+        }
+        
+        /*
+            |
+          |    |
+        *        |
+          *    |
+            *
+         */
+        x = 0.1;
+        y = 0;
+
+        while (x < 0.5) {
+
+            y = x + 0.4;
+
+            Tile tile = new Tile(x, y, (AppViewHandler) viewHandler);
+//            tile.relocate(x, y, viewHandler);
+
+            board.getChildren().addAll(tile);
+
+            x += (0.4 / 15);
+        }
+        
+        /*
+            *
+          |    *
+        |        *
+          |    |
+            |
+         */
+        x = 0.5;
+        y = 0;
+
+        while (x < 0.9) {
+
+            y = x - 0.4;
+
+            Tile tile = new Tile(x, y, (AppViewHandler) viewHandler);
+//            tile.relocate(x, y, viewHandler);
+
+            board.getChildren().addAll(tile);
+
+            x += (0.4 / 15);
+        }
+
+
+        /*
         for (int i = 0; i < BOARD_SIZE; i++) {
             ArrayList<Integer> coordinate = new ArrayList<Integer>();
             coordinate.add(0);
@@ -164,6 +314,7 @@ public class GameboardController extends AbstractController {
             }
         }
         this.player.setLocationLimit(path.size());
+         */
     }
     private void createPlayerProfiles() {
         // Get the gamestate

@@ -3,9 +3,14 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Text?>
 
+<?import javafx.geometry.Insets?>
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             prefHeight="400.0" prefWidth="600.0">
+    <padding>
+        <Insets top="10" bottom="10" left="0" right="0" />
+    </padding>
+
     <top>
         <HBox alignment="CENTER" spacing = "5">
             <fx:define>
@@ -39,23 +44,10 @@
                   fx:id = "colorPickers"
             />
             <Button
-                    fx:id = "submitPlayersBtn"
-                    text = "Submit Names"
-            />
-            <Button
                 fx:id = "startGame"
                 text = "START GAME"
                 />
         </VBox>
     </center>
-    <bottom>
-        <HBox alignment="CENTER" spacing="5">
-            <Text fx:id="playerOrder">
 
-            </Text>
-            <Text fx:id="startingMoney">
-
-            </Text>
-        </HBox>
-    </bottom>
 </BorderPane>

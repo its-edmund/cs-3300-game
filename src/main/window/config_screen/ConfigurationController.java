@@ -67,7 +67,9 @@ public class ConfigurationController extends AbstractController {
                 }
             }
         });
-        submitPlayersBtn.setOnAction(e -> {
+
+        startGame.setOnAction(e -> {
+
             players = new ArrayList<>();
             HashSet<String> seenNames = new HashSet<>();
             HashSet<Color> seenColors = new HashSet<>();
@@ -81,7 +83,7 @@ public class ConfigurationController extends AbstractController {
                         text.trim().isEmpty() ||
                         seenNames.contains(text) ||
                         color == null ||
-                        seenColors.contains(color)))){
+                        seenColors.contains(color)))) {
                     players.add(new Player(text, color, 1000));
                     seenNames.add(text);
                     seenColors.add(color);
@@ -100,35 +102,23 @@ public class ConfigurationController extends AbstractController {
             Collections.shuffle(players);
             PlayerController playerController = new PlayerController();
 
-            String pOrder = "Player Order: ";
-
             for (Player player : players) {
-
                 playerController.addPlayer(player);
 
-//                pOrder += Integer.toString(j) + ". " + players.get(j - 1).name +
-//                        "(Color: " + players.get(j - 1).color.toString() + ")  ";
-            }
+                // Update the game state
+                State state = viewHandler.getState();
+                state.setPlayerController(playerController);
+                viewHandler.updateState(state);
 
-            playerOrder.setText(pOrder);
-            startingMoney.setText("Starting Money: $1000");
-
-            // Update the game state
-            State state = viewHandler.getState();
-            state.setPlayerController(playerController);
-            viewHandler.updateState(state);
-
-        });
-        startGame.setOnAction(e -> {
                 if (!(players.size() == 0)) {
-                        try {
-                            viewHandler.launchGameboard();
-                        } catch (IOException ex) {
-                            ex.printStackTrace();
-                        }
+                    try {
+                        viewHandler.launchGameboard();
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
                     }
                 }
-        );
+            }
+        });
 
     }
 }

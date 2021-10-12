@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ResourceBundle;
 
+import javafx.beans.value.ChangeListener;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
@@ -24,11 +25,17 @@ public class AppViewHandler implements ViewHandler {
 
     private State state;
 
+    public final double INITIAL_SCREEN_WIDTH;
+    public final double INITIAL_SCREEN_HEIGHT;
+
     public AppViewHandler(Stage primaryStage, ResourceBundle bundle) {
         this.primaryStage = primaryStage;
         this.bundle = bundle;
         this.windowFactory = new WindowFactory();
         this.state = new State();
+
+        INITIAL_SCREEN_WIDTH = getScreenDimensions()[0];
+        INITIAL_SCREEN_HEIGHT = getScreenDimensions()[1];
     }
 
     @Override
@@ -49,6 +56,22 @@ public class AppViewHandler implements ViewHandler {
     @Override
     public void updateState(State state) {
         this.state = state;
+    }
+
+    @Override
+    public double[] getScreenDimensions() {
+        double[] dimensions = {primaryStage.getWidth(), primaryStage.getHeight()};
+        return dimensions;
+    }
+
+    @Override
+    public void addEventOnScreenWidthChange(ChangeListener<Number> event) {
+        primaryStage.widthProperty().addListener(event);
+    }
+
+    @Override
+    public void addEventOnScreenHeightChange(ChangeListener<Number> event) {
+        primaryStage.heightProperty().addListener(event);
     }
 
     @Override

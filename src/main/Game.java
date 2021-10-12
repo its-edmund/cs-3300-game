@@ -17,8 +17,6 @@ public class Game extends Application {
     private BorderPane root;
     private Scene gameScene;
 
-    private Board board = new Board();
-
     public static void main(String[] args) {
         launch(args);
     }
@@ -29,8 +27,8 @@ public class Game extends Application {
         try {
 
             this.stage = primaryStage;
-            this.gameScene = new Scene(board, WIDTH, HEIGHT);
-            board.createBoard();
+//            this.gameScene = new Scene(board, WIDTH, HEIGHT);
+//            board.createBoard();
             this.stage.setScene(gameScene);
 
             primaryStage.show();
