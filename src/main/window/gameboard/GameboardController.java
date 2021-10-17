@@ -10,10 +10,12 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import tile.Tile;
+import token.Token;
 import window.player.Player;
 import window.player.PlayerController;
 
@@ -21,6 +23,8 @@ import java.awt.*;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
+
+import static tile.TileType.*;
 
 public class GameboardController extends AbstractController {
 
@@ -32,34 +36,44 @@ public class GameboardController extends AbstractController {
 
     @FXML private VBox hudVBox;
 
-    public ArrayList<ArrayList<Integer>> path;
-    public Player player;
+    GameStateController gameStateController;
+    ChanceCard chanceCard;
+
+    public ArrayList<Tile> path;
 
     public GameboardController(ViewHandler viewHandler) {
         super(viewHandler);
-        player = new Player();
     }
 
     @Override
     public void initialize(URL location, ResourceBundle bundle) {
+
+        createBoard();
+        createPlayerProfiles();
+        createChanceCards();
+
+        gameStateController = new GameStateController(viewHandler, this);
+
+        for (Player player : viewHandler.getState().getPlayerController().getPlayers()) {
+            player.setupPlayerMover(this);
+        }
+
         move1Button.setOnAction(new EventHandler<ActionEvent>() {
 
             @Override
             public void handle(ActionEvent actionEvent) {
-                move1Forward();
+                gameStateController.handleDiceRoll(1);
             }
         });
         move3Button.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
-                move3Forward();
+                gameStateController.handleDiceRoll(3);
             }
         });
 
-        createBoard();
-        createPlayerProfiles();
+        viewHandler.triggerResize();
     }
-
 
     private void move1Forward() {
 //        board.getChildren().removeAll(this.player);
@@ -75,7 +89,7 @@ public class GameboardController extends AbstractController {
     private void createBoard() {
         int BOARD_SIZE = 15;
 
-        path = new ArrayList<ArrayList<Integer>>();
+        path = new ArrayList<>();
 
 //        tile.setText("Width: " + viewHandler.getScreenDimensions()[0] + "\n"
 //                + "Height: " + viewHandler.getScreenDimensions()[1] + "\n"
@@ -130,8 +144,6 @@ public class GameboardController extends AbstractController {
 //
 //        board.getChildren().addAll(tile1);
 
-       
-
         /*
             *
           *   |
@@ -139,44 +151,28 @@ public class GameboardController extends AbstractController {
           |    |
             |
          */
-        double x = 0.1;
+        double x = 0.5;
         double y = 0;
+        double step = (0.4 / 15);
         
-        while (x < 0.5) {
+        while (x >= 0.1) {
 
             y = -1 * x + 0.6;
 
-            Tile tile = new Tile(x, y, (AppViewHandler) viewHandler);
-//            tile.relocate(x, y, viewHandler);
+            Tile tile = new Tile(x, y, viewHandler);
+
+            if ((path.size() % 2) == 0) {
+                tile.setType(LOSE_MONEY);
+            } else {
+                tile.setType(GAIN_MONEY);
+            }
 
             board.getChildren().addAll(tile);
+            path.add(tile);
 
-            x += (0.4 / 15);
+            x -= step;
         }
 
-        
-        /*
-            |
-          |    |
-        |        *
-          |    *
-            *
-         */
-        x = 0.5;
-        y = 0;
-
-        while (x < 0.9) {
-
-            y = -1 * x + 1.4;
-
-            Tile tile = new Tile(x, y, (AppViewHandler) viewHandler);
-//            tile.relocate(x, y, viewHandler);
-
-            board.getChildren().addAll(tile);
-
-            x += (0.4 / 15);
-        }
-        
         /*
             |
           |    |
@@ -191,12 +187,46 @@ public class GameboardController extends AbstractController {
 
             y = x + 0.4;
 
-            Tile tile = new Tile(x, y, (AppViewHandler) viewHandler);
-//            tile.relocate(x, y, viewHandler);
+            Tile tile = new Tile(x, y, viewHandler);
+
+            if ((path.size() % 2) == 0) {
+                tile.setType(LOSE_MONEY);
+            } else {
+                tile.setType(GAIN_MONEY);
+            }
 
             board.getChildren().addAll(tile);
+            path.add(tile);
 
             x += (0.4 / 15);
+        }
+        
+        /*
+            |
+          |    |
+        |        *
+          |    *
+            *
+         */
+        x = 0.5;
+        y = 0;
+
+        while (x < 0.9 - step) {
+
+            y = -1 * x + 1.4;
+
+            Tile tile = new Tile(x, y, viewHandler);
+
+            if ((path.size() % 2) == 0) {
+                tile.setType(LOSE_MONEY);
+            } else {
+                tile.setType(GAIN_MONEY);
+            }
+
+            board.getChildren().addAll(tile);
+            path.add(tile);
+
+            x += step;
         }
         
         /*
@@ -206,21 +236,46 @@ public class GameboardController extends AbstractController {
           |    |
             |
          */
-        x = 0.5;
+        x = 0.9;
         y = 0;
 
-        while (x < 0.9) {
+        while (x >= 0.5 + step) {
 
             y = x - 0.4;
 
-            Tile tile = new Tile(x, y, (AppViewHandler) viewHandler);
-//            tile.relocate(x, y, viewHandler);
+            Tile tile = new Tile(x, y, viewHandler);
+
+            if ((path.size() % 2) == 0) {
+                tile.setType(LOSE_MONEY);
+            } else {
+                tile.setType(GAIN_MONEY);
+            }
 
             board.getChildren().addAll(tile);
+            path.add(tile);
 
-            x += (0.4 / 15);
+            x -= step;
         }
 
+        // Add all player tokens to the first square
+        PlayerController playerController = viewHandler.getState().getPlayerController();
+
+//        path.get(0).getRectangle().setFill(Color.GREEN);
+//        path.get(15).getRectangle().setFill(Color.BLUE);
+//        path.get(30).getRectangle().setFill(Color.BLUE);
+//        path.get(45).getRectangle().setFill(Color.BLUE);
+
+        path.get(0).setType(START);
+        path.get(11).setType(CHANCE);
+        path.get(19).setType(CHANCE);
+        path.get(26).setType(CHANCE);
+        path.get(34).setType(CHANCE);
+        path.get(41).setType(CHANCE);
+        path.get(49).setType(CHANCE);
+
+        for (Player player : playerController.getPlayers()) {
+            path.get(0).addToken(player.getToken());
+        }
 
         /*
         for (int i = 0; i < BOARD_SIZE; i++) {
@@ -316,25 +371,75 @@ public class GameboardController extends AbstractController {
         this.player.setLocationLimit(path.size());
          */
     }
+
     private void createPlayerProfiles() {
         // Get the gamestate
         PlayerController playerController = viewHandler.getState().getPlayerController();
 
         for (Player player : playerController.getPlayers()) {
 
-            StackPane stackPane = new StackPane();
+//            StackPane stackPane = new StackPane();
+//
+//            Rectangle playerProfileRectangle = new Rectangle();
+//            playerProfileRectangle.setWidth(200);
+//            playerProfileRectangle.setHeight(50);
+//            playerProfileRectangle.setFill(player.color);
+//            playerProfileRectangle.setStroke(Color.BLACK);
+//            playerProfileRectangle.setStrokeWidth(5);
+//
+//            Text playerProfileText = new Text();
+//            playerProfileText.setText(player.name + "\n" + "$" + player.money);
+//
+//            stackPane.getChildren().addAll(playerProfileRectangle, playerProfileText);
 
-            Rectangle rectangle = new Rectangle();
-            rectangle.setWidth(200);
-            rectangle.setHeight(50);
-            rectangle.setFill(player.color);
-            rectangle.setStroke(Color.BLACK);
-
-            Text text = new Text();
-            text.setText(player.name + "\n" + "$" + player.money);
-
-            stackPane.getChildren().addAll(rectangle, text);
-            playerProfileHbox.getChildren().addAll(stackPane);
+            PlayerProfile playerProfile = new PlayerProfile(player);
+            playerProfileHbox.getChildren().addAll(playerProfile);
         }
+
+        changePlayerStatus(0);
+    }
+
+    private void createChanceCards() {
+        chanceCard = new ChanceCard(viewHandler);
+        board.getChildren().add(chanceCard);
+    }
+
+    public void moveToken(Token playerToken, int moveAmount) {
+        path.get(playerToken.getTokenLocation()).removeToken(playerToken);
+
+        int newLoc = playerToken.getTokenLocation() + moveAmount;
+
+        if (path.size() - 1 < newLoc || playerToken.getFinished()) {
+            playerToken.setFinished(true);
+            newLoc = 0;
+        }
+
+        playerToken.setTokenLocation(newLoc);
+
+        path.get(playerToken.getTokenLocation()).addToken(playerToken);
+    }
+
+    public void changePlayerStatus(int newPlayerTurnIndex) {
+        PlayerProfile prevPlayerStackPane;
+        PlayerProfile currPlayerStackPane;
+
+        if (newPlayerTurnIndex == 0) {
+            prevPlayerStackPane =
+                    (PlayerProfile) playerProfileHbox.getChildren().get(playerProfileHbox.getChildren().size() - 1);
+            currPlayerStackPane =
+                    (PlayerProfile) playerProfileHbox.getChildren().get(0);
+        } else {
+            prevPlayerStackPane =
+                    (PlayerProfile) playerProfileHbox.getChildren().get(newPlayerTurnIndex - 1);
+            currPlayerStackPane =
+                    (PlayerProfile) playerProfileHbox.getChildren().get(newPlayerTurnIndex);
+        }
+
+        prevPlayerStackPane.getPlayerProfileRectangle().setStroke(Color.BLACK);
+        currPlayerStackPane.getPlayerProfileRectangle().setStroke(Color.GREEN);
+    }
+
+    public Tile getTileTokenOccupies(Token playerToken) {
+        return path.get(playerToken.getTokenLocation());
     }
 }

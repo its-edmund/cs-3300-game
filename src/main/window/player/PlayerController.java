@@ -23,6 +23,14 @@ public class PlayerController {
         return null;
     }
 
+    public Player get(int index) {
+        if (index < 0 || index >= players.size()) {
+            throw new IndexOutOfBoundsException();
+        } else {
+            return players.get(index);
+        }
+    }
+
     public ArrayList<Player> getPlayers() {
         return players;
     }

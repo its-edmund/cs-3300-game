@@ -16,4 +16,5 @@ public interface ViewHandler {
     void addEventOnScreenWidthChange(ChangeListener<Number> event);
     void addEventOnScreenHeightChange(ChangeListener<Number> event);
     State getState();
+    void triggerResize();
 }

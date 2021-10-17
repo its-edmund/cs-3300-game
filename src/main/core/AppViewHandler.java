@@ -79,6 +79,12 @@ public class AppViewHandler implements ViewHandler {
         return this.state;
     }
 
+    @Override
+    public void triggerResize() {
+        primaryStage.setWidth(INITIAL_SCREEN_WIDTH);
+        primaryStage.setHeight(INITIAL_SCREEN_HEIGHT);
+    }
+
     private void buildAndShowScene(Stage stage, AbstractWindow window) throws IOException {
 
         // Alternatively, use:
@@ -95,4 +101,6 @@ public class AppViewHandler implements ViewHandler {
         stage.setScene(new Scene(window.root()));
         stage.show();
     }
+
+
 }

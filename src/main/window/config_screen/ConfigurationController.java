@@ -1,6 +1,7 @@
 package window.config_screen;
 
 import core.AbstractController;
+import core.AppViewHandler;
 import core.ViewHandler;
 
 import java.io.IOException;
@@ -84,7 +85,10 @@ public class ConfigurationController extends AbstractController {
                         seenNames.contains(text) ||
                         color == null ||
                         seenColors.contains(color)))) {
-                    players.add(new Player(text, color, 1000));
+                    players.add(new Player(text,
+                            color,
+                            1000,
+                            (AppViewHandler) viewHandler));
                     seenNames.add(text);
                     seenColors.add(color);
                 } else {
