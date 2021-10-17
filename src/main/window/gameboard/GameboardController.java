@@ -14,8 +14,10 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.scene.control.Label;
 import tile.Tile;
 import token.Token;
+import window.dice.Dice;
 import window.player.Player;
 import window.player.PlayerController;
 
@@ -30,7 +32,9 @@ public class GameboardController extends AbstractController {
 
     @FXML private Button move1Button;
     @FXML private Button move3Button;
+    @FXML private Button rollDice;
     @FXML private Pane board;
+    @FXML private Label diceLabel;
 
     @FXML private HBox playerProfileHbox;
 
@@ -38,6 +42,7 @@ public class GameboardController extends AbstractController {
 
     GameStateController gameStateController;
     ChanceCard chanceCard;
+    Dice dice = new Dice(6);
 
     public ArrayList<Tile> path;
 
@@ -69,6 +74,13 @@ public class GameboardController extends AbstractController {
             @Override
             public void handle(ActionEvent actionEvent) {
                 gameStateController.handleDiceRoll(3);
+            }
+        });
+        rollDice.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                dice.rollDice();
+                diceLabel.setText("Dice Roll: " + dice.getValue());
             }
         });
 
