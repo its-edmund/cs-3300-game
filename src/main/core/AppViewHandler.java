@@ -60,8 +60,13 @@ public class AppViewHandler implements ViewHandler {
 
     @Override
     public double[] getScreenDimensions() {
-        double[] dimensions = {primaryStage.getWidth(), primaryStage.getHeight()};
-        return dimensions;
+        if (primaryStage != null) {
+            double[] dimensions = {primaryStage.getWidth(), primaryStage.getHeight()};
+            return dimensions;
+        } else {
+            return new double[]{0,0};
+        }
+
     }
 
     @Override

@@ -51,13 +51,6 @@ public class Player extends Circle {
         return playerToken;
     }
 
-    public void move(int x, int y) {
-        this.x = x;
-        this.y = y;
-        this.setCenterX(x);
-        this.setCenterY(y);
-    }
-
     public int getCurrentLocation() {
         return this.currentLocation;
     }

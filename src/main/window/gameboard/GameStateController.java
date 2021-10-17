@@ -25,7 +25,6 @@ public class GameStateController {
 
         }
 
-
         if (playerTurnIndex == viewHandler.getState().getPlayerController().getPlayers().size() - 1) {
             playerTurnIndex = 0;
         } else {

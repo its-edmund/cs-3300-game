@@ -92,8 +92,8 @@ public class ConfigurationController extends AbstractController {
                     seenNames.add(text);
                     seenColors.add(color);
                 } else {
-                    playerOrder.setText("");
-                    startingMoney.setText("");
+//                    playerOrder.setText("");
+//                    startingMoney.setText("");
                     Alert a = new Alert(Alert.AlertType.ERROR);
                     a.setContentText("Please enter valid distinct names and colors");
                     a.show();

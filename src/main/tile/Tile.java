@@ -68,14 +68,16 @@ public class Tile extends StackPane {
         this.rectangleText = new Text();
         rectangleText.setFont(new Font(10));
 
-        ChangeListener<Number> stageWidthListener = (observable, oldVal, newVal) -> {
-            this.relocate(posX, posY, viewHandler);
-        };
-        ChangeListener<Number> stageHeightListener = (observable, oldVal, newVal) -> {
-            this.relocate(posX, posY, viewHandler);
-        };
-        viewHandler.addEventOnScreenWidthChange(stageWidthListener);
-        viewHandler.addEventOnScreenHeightChange(stageHeightListener);
+        if (viewHandler != null) {
+            ChangeListener<Number> stageWidthListener = (observable, oldVal, newVal) -> {
+                this.relocate(posX, posY, viewHandler);
+            };
+            ChangeListener<Number> stageHeightListener = (observable, oldVal, newVal) -> {
+                this.relocate(posX, posY, viewHandler);
+            };
+            viewHandler.addEventOnScreenWidthChange(stageWidthListener);
+            viewHandler.addEventOnScreenHeightChange(stageHeightListener);
+        }
 
         this.getChildren().addAll(rectangle, rectangleText);
 
