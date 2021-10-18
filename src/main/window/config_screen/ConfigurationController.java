@@ -1,6 +1,7 @@
 package window.config_screen;
 
 import core.AbstractController;
+import core.AppViewHandler;
 import core.ViewHandler;
 
 import java.io.IOException;
@@ -67,7 +68,9 @@ public class ConfigurationController extends AbstractController {
                 }
             }
         });
-        submitPlayersBtn.setOnAction(e -> {
+
+        startGame.setOnAction(e -> {
+
             players = new ArrayList<>();
             HashSet<String> seenNames = new HashSet<>();
             HashSet<Color> seenColors = new HashSet<>();
@@ -81,13 +84,16 @@ public class ConfigurationController extends AbstractController {
                         text.trim().isEmpty() ||
                         seenNames.contains(text) ||
                         color == null ||
-                        seenColors.contains(color)))){
-                    players.add(new Player(text, color, 1000));
+                        seenColors.contains(color)))) {
+                    players.add(new Player(text,
+                            color,
+                            1000,
+                            (AppViewHandler) viewHandler));
                     seenNames.add(text);
                     seenColors.add(color);
                 } else {
-                    playerOrder.setText("");
-                    startingMoney.setText("");
+//                    playerOrder.setText("");
+//                    startingMoney.setText("");
                     Alert a = new Alert(Alert.AlertType.ERROR);
                     a.setContentText("Please enter valid distinct names and colors");
                     a.show();
@@ -100,35 +106,23 @@ public class ConfigurationController extends AbstractController {
             Collections.shuffle(players);
             PlayerController playerController = new PlayerController();
 
-            String pOrder = "Player Order: ";
-
             for (Player player : players) {
-
                 playerController.addPlayer(player);
 
-//                pOrder += Integer.toString(j) + ". " + players.get(j - 1).name +
-//                        "(Color: " + players.get(j - 1).color.toString() + ")  ";
-            }
+                // Update the game state
+                State state = viewHandler.getState();
+                state.setPlayerController(playerController);
+                viewHandler.updateState(state);
 
-            playerOrder.setText(pOrder);
-            startingMoney.setText("Starting Money: $1000");
-
-            // Update the game state
-            State state = viewHandler.getState();
-            state.setPlayerController(playerController);
-            viewHandler.updateState(state);
-
-        });
-        startGame.setOnAction(e -> {
                 if (!(players.size() == 0)) {
-                        try {
-                            viewHandler.launchGameboard();
-                        } catch (IOException ex) {
-                            ex.printStackTrace();
-                        }
+                    try {
+                        viewHandler.launchGameboard();
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
                     }
                 }
-        );
+            }
+        });
 
     }
 }

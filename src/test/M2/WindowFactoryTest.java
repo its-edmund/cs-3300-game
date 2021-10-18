@@ -1,10 +1,12 @@
-package window;
+package M2;
 
 import core.AbstractWindow;
 import core.AppViewHandler;
 import core.ViewHandler;
 import javafx.stage.Stage;
 import org.junit.Test;
+import window.ScreenEnum;
+import window.WindowFactory;
 
 import java.io.IOException;
 
