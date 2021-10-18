@@ -63,6 +63,7 @@ public class GameboardController extends AbstractController {
             player.setupPlayerMover(this);
         }
 
+
         move1Button.setOnAction(new EventHandler<ActionEvent>() {
 
             @Override
@@ -435,6 +436,10 @@ public class GameboardController extends AbstractController {
     public void changePlayerStatus(int newPlayerTurnIndex) {
         PlayerProfile prevPlayerStackPane;
         PlayerProfile currPlayerStackPane;
+
+        if (newPlayerTurnIndex < 0) {
+            throw new IllegalArgumentException();
+        }
 
         if (newPlayerTurnIndex == 0) {
             prevPlayerStackPane =

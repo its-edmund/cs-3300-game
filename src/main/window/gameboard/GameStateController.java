@@ -22,7 +22,7 @@ public class GameStateController {
         boolean gotChance = movingPlayer.getPlayerMover().movePlayer(movingPlayer, movement);
 
         if (gotChance) {
-
+            System.out.println(movingPlayer.getName() + " landed on a chance tile!");
         }
 
         if (playerTurnIndex == viewHandler.getState().getPlayerController().getPlayers().size() - 1) {
