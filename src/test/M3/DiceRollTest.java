@@ -7,7 +7,7 @@ import static org.junit.Assert.assertTrue;
 
 public class DiceRollTest {
     @Test
-    public void testDiceRoll10Max() {
+    public void testDiceRollLimits() {
         int max = 10;
         Dice dice = new Dice(max);
 
@@ -18,13 +18,11 @@ public class DiceRollTest {
     }
 
     @Test
-    public void testDiceRoll20Max() {
-        int max = 20;
-        Dice dice = new Dice(max);
-
-        for (int i = 0; i < 1000; i++) {
+    public void testDiceRollMax() {
+        for (int i = 2; i < 10; i++) {
+            Dice dice = new Dice(i);
             dice.rollDice();
-            assertTrue(dice.getValue() <= max && dice.getValue() >= 1);
+            assertTrue(dice.getValue() <= i && dice.getValue() >= 1);
         }
     }
 }
