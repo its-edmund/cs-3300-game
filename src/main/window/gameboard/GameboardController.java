@@ -81,6 +81,7 @@ public class GameboardController extends AbstractController {
             public void handle(ActionEvent actionEvent) {
                 dice.rollDice();
                 diceLabel.setText("Dice Roll: " + dice.getValue());
+                gameStateController.handleDiceRoll(dice.getValue());
             }
         });
 
