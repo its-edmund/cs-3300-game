@@ -45,6 +45,7 @@ public class Player extends Circle {
         this.currentLocation = 0;
         this.x = x;
         this.y = y;
+        this.money = new SimpleIntegerProperty(1000);
     }
 
     public Token getToken() {
