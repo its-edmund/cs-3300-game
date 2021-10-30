@@ -7,6 +7,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.Scene;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import tile.Tile;
 import token.Token;
 import window.gameboard.GameboardController;
 
@@ -18,7 +19,6 @@ public class Player extends Circle {
     private static float radius = 20.0f;
     private int x;
     private int y;
-    private int currentLocation;
     private int locationLimit = 15;
     private Token playerToken;
     private PlayerMover playerMover;
@@ -42,7 +42,6 @@ public class Player extends Circle {
 
     public Player(int x, int y) {
         super(x, y, radius);
-        this.currentLocation = 0;
         this.x = x;
         this.y = y;
         this.money = new SimpleIntegerProperty(1000);
@@ -53,18 +52,11 @@ public class Player extends Circle {
     }
 
     public int getCurrentLocation() {
-        return this.currentLocation;
+        return this.getToken().getTokenLocation();
     }
 
     public PlayerMover getPlayerMover() {
         return playerMover;
-    }
-
-    public void setCurrentLocation(int currentLocation) {
-        if (currentLocation >= locationLimit || currentLocation < 0) {
-            return;
-        }
-        this.currentLocation = currentLocation;
     }
 
     public void setLocationLimit(int limit) {
@@ -72,17 +64,22 @@ public class Player extends Circle {
     }
 
     public void setupPlayerMover(GameboardController gameboardController) {
-        playerMover = new PlayerMover(gameboardController);
+        playerMover = new PlayerMover(this, gameboardController);
     }
 
     public String getName() {
         return name;
     }
-
     public Color getColor() {return color; }
-
     public int getMoney() {
         return money.get();
+    }
+    public Tile getBlockingTile() {
+        if (playerMover != null) {
+            return playerMover.getNextTile();
+        } else {
+            throw new RuntimeException("PlayerMover is undefined!\n");
+        }
     }
     public IntegerProperty getMoneyIntegerProperty() {
         return money;

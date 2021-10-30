@@ -38,5 +38,4 @@ public abstract class AbstractWindow {
     protected abstract String iconFileName();
     protected abstract String fxmlFileName();
     public abstract String titleBundleKey();
-
 }
