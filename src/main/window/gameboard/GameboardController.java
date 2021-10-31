@@ -53,15 +53,22 @@ public class GameboardController extends AbstractController {
     @Override
     public void initialize(URL location, ResourceBundle bundle) {
 
+        if (board == null) {
+            board = new Pane();
+        }
+
         createBoard();
         createPlayerProfiles();
         createChanceCards();
 
         gameStateController = new GameStateController(viewHandler, this);
 
-        for (Player player : viewHandler.getState().getPlayerController().getPlayers()) {
-            player.setupPlayerMover(this);
+        if (viewHandler != null) {
+            for (Player player : viewHandler.getState().getPlayerController().getPlayers()) {
+                player.setupPlayerMover(this);
+            }
         }
+
 
         // check the check card
 //        NewChanceCard chanceCard = new NewChanceCard();
@@ -69,14 +76,16 @@ public class GameboardController extends AbstractController {
 //        chanceCard.setPosY(0.5);
 //        board.getChildren().addAll(chanceCard);
 
-        rollDice.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                dice.rollDice();
-                diceLabel.setText("Dice Roll: " + dice.getValue());
-                gameStateController.handleDiceRoll(dice.getValue());
-            }
-        });
+        if (rollDice != null) {
+            rollDice.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent actionEvent) {
+                    dice.rollDice();
+                    diceLabel.setText("Dice Roll: " + dice.getValue());
+                    gameStateController.handleDiceRoll(dice.getValue());
+                }
+            });
+        }
 
         if (viewHandler != null) {
             ChangeListener<Number> stageWidthListener = (observable, oldVal, newVal) -> {
@@ -246,7 +255,12 @@ public class GameboardController extends AbstractController {
         path.get(7).addWall(WallOrientationEnum.TOP);
 
         // Add all player tokens to the first square
-        PlayerController playerController = viewHandler.getState().getPlayerController();
+        PlayerController playerController;
+        if (viewHandler != null) {
+            playerController = viewHandler.getState().getPlayerController();
+        } else {
+            playerController = new PlayerController();
+        }
 
         for (Player player : playerController.getPlayers()) {
             path.get(0).addToken(player.getToken());
@@ -255,7 +269,12 @@ public class GameboardController extends AbstractController {
     }
     private void createPlayerProfiles() {
         // Get the gamestate
-        PlayerController playerController = viewHandler.getState().getPlayerController();
+        PlayerController playerController;
+        if (viewHandler != null) {
+            playerController = viewHandler.getState().getPlayerController();
+        } else {
+            playerController = new PlayerController();
+        }
 
         for (Player player : playerController.getPlayers()) {
 
@@ -266,8 +285,11 @@ public class GameboardController extends AbstractController {
         changePlayerStatus(0);
     }
     private void createChanceCards() {
-        chanceCard = new ChanceCard(viewHandler);
-        board.getChildren().add(chanceCard);
+        if (viewHandler != null) {
+            chanceCard = new ChanceCard(viewHandler);
+            board.getChildren().add(chanceCard);
+        }
+
     }
 
     // Board functions
@@ -307,12 +329,15 @@ public class GameboardController extends AbstractController {
     // Return 0 if movement succeeded
     // Return positive number if movement blocked by wall
     public int moveToken(Token playerToken, int moveAmount) {
-        path.get(playerToken.getTokenLocation()).removeToken(playerToken);
+        if (path != null && path.get(playerToken.getTokenLocation()).hasToken()) {
+            path.get(playerToken.getTokenLocation()).removeToken(playerToken);
+        }
 
         int newLoc = playerToken.getTokenLocation() + moveAmount;
 
         // Check if the playerToken is at the end
-        if (path.size() - 1 <= newLoc || playerToken.getFinished()) {
+        if (path != null &&
+                (path.size() - 1 <= newLoc || playerToken.getFinished())) {
             playerToken.setTokenLocation(0);
             path.get(playerToken.getTokenLocation()).addToken(playerToken);
 
@@ -324,18 +349,25 @@ public class GameboardController extends AbstractController {
         // Check for a wall
         // If the move amount is negative, we won't check for a wall
         for (int i = 0; i <= moveAmount; i++) {
-            Tile tile = path.get(playerToken.getTokenLocation() + i);
+            if (path != null) {
+                Tile tile = path.get(playerToken.getTokenLocation() + i);
 
-            if (tile.hasWall() && tile.getWall().isActive()) {
-                playerToken.setTokenLocation(playerToken.getTokenLocation() + i - 1);
-                path.get(playerToken.getTokenLocation()).addToken(playerToken);
-                return moveAmount - i + 1;
+                if (tile.hasWall() && tile.getWall().isActive()) {
+                    playerToken.setTokenLocation(playerToken.getTokenLocation() + i - 1);
+                    path.get(playerToken.getTokenLocation()).addToken(playerToken);
+                    return moveAmount - i + 1;
+                }
             }
+
         }
 
         // If there is no wall, move to the location
         playerToken.setTokenLocation(newLoc);
-        path.get(playerToken.getTokenLocation()).addToken(playerToken);
+
+        if (path != null) {
+            path.get(playerToken.getTokenLocation()).addToken(playerToken);
+        }
+
         return 0;
     }
 
@@ -347,20 +379,25 @@ public class GameboardController extends AbstractController {
             throw new IllegalArgumentException();
         }
 
-        if (newPlayerTurnIndex == 0) {
-            prevPlayerStackPane =
-                    (PlayerProfile) playerProfileHbox.getChildren().get(playerProfileHbox.getChildren().size() - 1);
-            currPlayerStackPane =
-                    (PlayerProfile) playerProfileHbox.getChildren().get(0);
-        } else {
-            prevPlayerStackPane =
-                    (PlayerProfile) playerProfileHbox.getChildren().get(newPlayerTurnIndex - 1);
-            currPlayerStackPane =
-                    (PlayerProfile) playerProfileHbox.getChildren().get(newPlayerTurnIndex);
+        if (playerProfileHbox != null) {
+            if (newPlayerTurnIndex == 0) {
+                prevPlayerStackPane =
+                        (PlayerProfile) playerProfileHbox.getChildren().get(playerProfileHbox.getChildren().size() - 1);
+                currPlayerStackPane =
+                        (PlayerProfile) playerProfileHbox.getChildren().get(0);
+            } else {
+                prevPlayerStackPane =
+                        (PlayerProfile) playerProfileHbox.getChildren().get(newPlayerTurnIndex - 1);
+                currPlayerStackPane =
+                        (PlayerProfile) playerProfileHbox.getChildren().get(newPlayerTurnIndex);
+            }
+
+            prevPlayerStackPane.getPlayerProfileRectangle().setStroke(Color.BLACK);
+            currPlayerStackPane.getPlayerProfileRectangle().setStroke(Color.GREEN);
         }
 
-        prevPlayerStackPane.getPlayerProfileRectangle().setStroke(Color.BLACK);
-        currPlayerStackPane.getPlayerProfileRectangle().setStroke(Color.GREEN);
+
+
     }
 
     public Pane getBoard() {

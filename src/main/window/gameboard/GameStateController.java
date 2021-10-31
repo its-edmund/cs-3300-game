@@ -26,7 +26,9 @@ public class GameStateController {
         this.gameboardController = gameboardController;
         playerTurnIndex = 0;
 
-        viewHandler.getState().setCurrentState(GameStates.MOVING);
+        if (viewHandler != null) {
+            viewHandler.getState().setCurrentState(GameStates.MOVING);
+        }
     }
 
     public void handleDiceRoll(int movement) {

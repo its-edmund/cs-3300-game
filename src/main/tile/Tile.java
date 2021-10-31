@@ -142,6 +142,9 @@ public class Tile extends StackPane {
         tokenArr.remove(token);
         layoutTokens();
     }
+    public boolean hasToken() {
+        return !tokenArr.isEmpty();
+    }
     public void layoutTokens() {
         if (tokenArr.size() == 1) {
             tokenArr.get(0).setTranslateX(0);
