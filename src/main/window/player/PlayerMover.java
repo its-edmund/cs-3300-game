@@ -64,10 +64,6 @@ public class PlayerMover extends AbstractMoveMediator {
     public int getRemainingMoves() {
         return remainingMoves;
     }
-    public void setRemainingMoves(int remainingMoves) {
-        this.remainingMoves = remainingMoves;
-    }
-
     public Tile getCurrentTile() {
         return gameboardController.getTile(player.getCurrentLocation());
     }
@@ -75,6 +71,9 @@ public class PlayerMover extends AbstractMoveMediator {
         return gameboardController.getTile(player.getCurrentLocation() + 1);
     }
 
+    public void setRemainingMoves(int remainingMoves) {
+        this.remainingMoves = remainingMoves;
+    }
     // For M3 Tests
     public int setTile(Tile tile, Player player) {
         TileType tileType = tile.getType();

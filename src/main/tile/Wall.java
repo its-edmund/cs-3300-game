@@ -8,11 +8,11 @@ import javafx.scene.shape.Rectangle;
 
 public class Wall extends StackPane {
 
-    private Rectangle wall;
-    private WallOrientationEnum orientation;
-
     private final double WIDTH = 2;
     private final double HEIGHT = 15;
+
+    private Rectangle wall;
+    private WallOrientationEnum orientation;
 
     public Wall(Tile tile, WallOrientationEnum orientation) {
         super();

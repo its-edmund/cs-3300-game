@@ -4,11 +4,12 @@ import java.util.Random;
 
 public class Dice {
     private int value;
+    private final int MAX;
+
     private Random random = new Random();
-    private int max;
 
     public Dice(int max) {
-        this.max = max;
+        this.MAX = max;
     }
 
     public int getValue() {
@@ -16,6 +17,6 @@ public class Dice {
     }
 
     public void rollDice() {
-        value = random.nextInt(max) + 1;
+        value = random.nextInt(MAX) + 1;
     }
 }

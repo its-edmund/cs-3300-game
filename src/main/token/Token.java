@@ -7,9 +7,9 @@ import javafx.scene.shape.Circle;
 
 public class Token extends Circle {
 
-    int tokenLocation;
-    final int radius = 3;
-    boolean isFinished;
+    private int tokenLocation;
+    private final int RADIUS = 3;
+    private boolean isFinished;
 
     public Token(Color color, AppViewHandler viewHandler) {
 
@@ -17,30 +17,28 @@ public class Token extends Circle {
 
         this.setStroke(Color.BLACK);
         this.setFill(color);
-        this.setRadius(radius);
+        this.setRadius(RADIUS);
 
         this.tokenLocation = 0;
 
         isFinished = false;
     }
 
+    // Getters and Setters
     public int getTokenLocation() {
         return tokenLocation;
     }
-
     public int getTokenRadius() {
-        return radius;
+        return RADIUS;
+    }
+    public boolean getFinished() {
+        return isFinished;
     }
 
     public void setTokenLocation(int tokenLocation) {
         this.tokenLocation = tokenLocation;
     }
-
     public void setFinished(boolean isFinished) {
         this.isFinished = isFinished;
-    }
-
-    public boolean getFinished() {
-        return isFinished;
     }
 }

@@ -8,8 +8,6 @@ public class ResizableStackPane extends StackPane implements Resizable {
 
     protected double posX = 0;
     protected double posY = 0;
-    private double centerX = 0;
-    private double centerY = 0;
 
     @Override
     public void onResize() {
@@ -37,8 +35,6 @@ public class ResizableStackPane extends StackPane implements Resizable {
     public void setPosY(double posY) {
         this.posY = posY;
     }
-    public void setCenterX(double centerX) {this.centerX = centerX; }
-    public void setCenterY(double centerY) {this.centerY = centerY; }
 
     public double getPosX() {
         return posX;
@@ -46,7 +42,5 @@ public class ResizableStackPane extends StackPane implements Resizable {
     public double getPosY() {
         return posY;
     }
-    public double getCenterX() { return centerX; }
-    public double getCenterY() { return centerY; }
 
 }

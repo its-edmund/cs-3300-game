@@ -15,13 +15,10 @@ public class State {
     public void setPlayerController(PlayerController playerController) {
         this.playerController = playerController;
     }
-
     public GameStates getCurrentState() {
         return currentState;
     }
-
     public void setCurrentState(GameStates newState) {
         currentState = newState;
     }
-
 }

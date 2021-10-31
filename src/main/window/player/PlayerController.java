@@ -14,6 +14,7 @@ public class PlayerController {
         players.add(player);
     }
 
+    // Getters and Setters
     public Player getPlayer(Player targetPlayer) {
         for (Player player : players) {
             if (player == targetPlayer)
@@ -22,7 +23,6 @@ public class PlayerController {
 
         return null;
     }
-
     public Player get(int index) {
         if (index < 0 || index >= players.size()) {
             throw new IndexOutOfBoundsException();
@@ -30,7 +30,6 @@ public class PlayerController {
             return players.get(index);
         }
     }
-
     public ArrayList<Player> getPlayers() {
         return players;
     }

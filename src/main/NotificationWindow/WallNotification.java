@@ -127,14 +127,12 @@ public class WallNotification extends ResizableStackPane {
     public ButtonDecision getDecision() {
         return decision;
     }
-
     public void setActive(boolean active) {
         this.setVisible(active);
     }
     public boolean getActive() {
         return this.isVisible();
     }
-
     public double getPosX() {
 
         double screenWidth = (AppViewHandler.getScreenWidth() - this.getWidth());

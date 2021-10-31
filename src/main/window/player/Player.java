@@ -47,26 +47,13 @@ public class Player extends Circle {
         this.money = new SimpleIntegerProperty(1000);
     }
 
-    public Token getToken() {
-        return playerToken;
-    }
-
-    public int getCurrentLocation() {
-        return this.getToken().getTokenLocation();
-    }
-
-    public PlayerMover getPlayerMover() {
-        return playerMover;
-    }
-
+    // Getters and Setters
     public void setLocationLimit(int limit) {
         this.locationLimit = limit;
     }
-
     public void setupPlayerMover(GameboardController gameboardController) {
         playerMover = new PlayerMover(this, gameboardController);
     }
-
     public String getName() {
         return name;
     }
@@ -86,5 +73,14 @@ public class Player extends Circle {
     }
     public void setMoney(int money) {
         this.money.set(money);
+    }
+    public Token getToken() {
+        return playerToken;
+    }
+    public int getCurrentLocation() {
+        return this.getToken().getTokenLocation();
+    }
+    public PlayerMover getPlayerMover() {
+        return playerMover;
     }
 }

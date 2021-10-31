@@ -19,7 +19,6 @@ public class GameStateController {
     private WallNotification wallNotification;
     private NewChanceCard chanceCard;
     private VictoryNotification victoryNotification;
-
     private AbstractNotificationWindow notification;
 
     public GameStateController(ViewHandler viewHandler, GameboardController gameboardController) {
@@ -98,14 +97,14 @@ public class GameStateController {
 
         gameboardController.changePlayerStatus(playerTurnIndex);
     }
+
+    // Getters and Setters
     public Player getMovingPlayer() {
         return viewHandler.getState().getPlayerController().get(playerTurnIndex);
     }
-
     public GameStates getCurrentGamestate() {
         return viewHandler.getState().getCurrentState();
     }
-
     public void setCurrentGamestate(GameStates currentState) {
         viewHandler.getState().setCurrentState(currentState);
     }

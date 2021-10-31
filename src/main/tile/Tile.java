@@ -22,9 +22,6 @@ public class Tile extends StackPane {
     private double width;
     private double height;
 
-    private double posX;
-    private double posY;
-
     private TileType type;
 
     private Rectangle rectangle;
@@ -83,15 +80,11 @@ public class Tile extends StackPane {
         rectangle.setScaleX(gameboardController.getViewHandler().getScreenDimensions()[1] / 400);
         rectangle.setScaleY(gameboardController.getViewHandler().getScreenDimensions()[1] / 400);
 
-//        if (this.getChildren().size() > 2) {
-//            System.out.println("We don't have orphans!");
-//        }
         if (this.getChildren().size() > 2) {
-//            System.out.println(this.getChildren().get(this.getChildren().size() - 1).toString());
             for (Object obj : this.getChildren()) {
                 if (obj instanceof Token) {
                      Token token = (Token) obj;
-//                     token.setRadius(token.getTokenRadius() * );
+
                      token.setScaleX(gameboardController.getViewHandler().getScreenDimensions()[1] / 400);
                      token.setScaleY(gameboardController.getViewHandler().getScreenDimensions()[1] / 400);
                 } else if (obj instanceof Wall) {
@@ -102,7 +95,6 @@ public class Tile extends StackPane {
 
                     wallStackPane.relocate(this);
                 }
-
             }
         }
 

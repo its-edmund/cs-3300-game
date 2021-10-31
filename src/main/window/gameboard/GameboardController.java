@@ -38,9 +38,7 @@ public class GameboardController extends AbstractController {
     @FXML private Button rollDice;
     @FXML private Pane board;
     @FXML private Label diceLabel;
-
     @FXML private HBox playerProfileHbox;
-
     @FXML private VBox hudVBox;
 
     GameStateController gameStateController;
@@ -255,7 +253,6 @@ public class GameboardController extends AbstractController {
         }
 
     }
-
     private void createPlayerProfiles() {
         // Get the gamestate
         PlayerController playerController = viewHandler.getState().getPlayerController();
@@ -268,16 +265,12 @@ public class GameboardController extends AbstractController {
 
         changePlayerStatus(0);
     }
-
     private void createChanceCards() {
         chanceCard = new ChanceCard(viewHandler);
         board.getChildren().add(chanceCard);
     }
 
     // Board functions
-    public Pane getBoard() {
-        return board;
-    }
     public void repositionChild(double x, double y, Node child) {
 //        double screenWidth = (viewHandler.getScreenDimensions()[0] - 16);
 //        double screenHeight = (viewHandler.getScreenDimensions()[1] - 40 - 85);
@@ -294,7 +287,6 @@ public class GameboardController extends AbstractController {
 
         child.relocate(newX, newY);
     }
-
     public void repositionChild2(double x, double y, ResizableStackPane child) {
 //        double screenWidth = (viewHandler.getScreenDimensions()[0] - 16);
 //        double screenHeight = (viewHandler.getScreenDimensions()[1] - 40 - 85);
@@ -310,10 +302,6 @@ public class GameboardController extends AbstractController {
         double newY = y * screenHeight;
 
         child.relocate(newX, newY);
-    }
-
-    public ViewHandler getViewHandler() {
-        return viewHandler;
     }
 
     // Return 0 if movement succeeded
@@ -351,10 +339,6 @@ public class GameboardController extends AbstractController {
         return 0;
     }
 
-    public Tile getTile(int tileLocation) {
-        return path.get(tileLocation);
-    }
-
     public void changePlayerStatus(int newPlayerTurnIndex) {
         PlayerProfile prevPlayerStackPane;
         PlayerProfile currPlayerStackPane;
@@ -379,6 +363,15 @@ public class GameboardController extends AbstractController {
         currPlayerStackPane.getPlayerProfileRectangle().setStroke(Color.GREEN);
     }
 
+    public Pane getBoard() {
+        return board;
+    }
+    public Tile getTile(int tileLocation) {
+        return path.get(tileLocation);
+    }
+    public ViewHandler getViewHandler() {
+        return viewHandler;
+    }
     public Tile getTileTokenOccupies(Token playerToken) {
         return path.get(playerToken.getTokenLocation());
     }
