@@ -17,8 +17,8 @@ public class ChanceCard extends AbstractNotificationController implements Resiza
     @FXML Rectangle promptBox;
     @FXML StackPane notificationWindow;
 
-    private final double WIDTH = 250;
-    private final double HEIGHT = 100;
+    private final double WIDTH = 125;
+    private final double HEIGHT = 50;
 
     private final int NUM_CHANCE_CARDS = 3;
     private final int SEED = -1;
@@ -56,7 +56,16 @@ public class ChanceCard extends AbstractNotificationController implements Resiza
 
     @Override
     public void onResize() {
-        promptBox.setScaleX(AppViewHandler.getScreenHeight() / AppViewHandler.INITIAL_SCREEN_HEIGHT);
-        promptBox.setScaleY(AppViewHandler.getScreenHeight() / AppViewHandler.INITIAL_SCREEN_WIDTH);
+
     }
+
+//    @Override
+//    public void onResize() {
+//
+//        // Resize the box
+////        promptBox.setScaleX(AppViewHandler.getScreenHeight() / AppViewHandler.INITIAL_SCREEN_HEIGHT);
+////        promptBox.setScaleY(AppViewHandler.getScreenHeight() / AppViewHandler.INITIAL_SCREEN_WIDTH);
+//
+//
+//    }
 }

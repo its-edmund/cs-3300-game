@@ -1,8 +1,10 @@
 package window.gameboard;
 
 import NotificationWindow.*;
+import NotificationWindow.ChanceCard.NewChanceCard;
 import core.GameStates;
 import core.ViewHandler;
+import javafx.scene.Parent;
 import javafx.scene.layout.Pane;
 import window.player.Player;
 import core.PostMoveActionType;
@@ -15,6 +17,9 @@ public class GameStateController {
     private int playerTurnIndex;
 
     private WallNotification wallNotification;
+    private NewChanceCard chanceCard;
+    private VictoryNotification victoryNotification;
+
     private AbstractNotificationWindow notification;
 
     public GameStateController(ViewHandler viewHandler, GameboardController gameboardController) {
@@ -56,27 +61,30 @@ public class GameStateController {
     private void handlePostMoveAction(PostMoveActionType action) {
         if (action == PostMoveActionType.CHANCE) {
 
+            chanceCard = new NewChanceCard(this);
+            chanceCard.setPosX(0.5);
+            chanceCard.setPosY(0.5);
+            gameboardController.getBoard().getChildren().addAll(chanceCard);
 
-            notification = (new NotificationWindowFactory())
-                    .createNotificationWindow(NotificationScreenEnum.CHANCE_CARD, viewHandler);
+            viewHandler.getState().setCurrentState(GameStates.WAITING_FOR_RESPONSE);
 
-            Pane board = gameboardController.getBoard();
-            board.getChildren().addAll(notification.getParent());
-
-//            gameboardController.repositionChild(0.5, 0.5);
-
-//            changePlayerTurn();
         } else if (action == PostMoveActionType.WALL) {
 
             wallNotification = new WallNotification(this);
-            Pane board = gameboardController.getBoard();
-            board.getChildren().addAll(wallNotification);
-            gameboardController.repositionChild(0.5, 0.5, wallNotification);
+            wallNotification.setPosX(0.5);
+            wallNotification.setPosY(0.5);
+            gameboardController.getBoard().getChildren().addAll(wallNotification);
 
             viewHandler.getState().setCurrentState(GameStates.WAITING_FOR_RESPONSE);
 
         } else if (action == PostMoveActionType.VICTORY) {
             System.out.println("Game over!");
+
+            victoryNotification = new VictoryNotification(viewHandler);
+            victoryNotification.setPosX(0.5);
+            victoryNotification.setPosY(0.5);
+            gameboardController.getBoard().getChildren().addAll(victoryNotification);
+
         } else {
             changePlayerTurn();
         }
@@ -94,4 +102,11 @@ public class GameStateController {
         return viewHandler.getState().getPlayerController().get(playerTurnIndex);
     }
 
+    public GameStates getCurrentGamestate() {
+        return viewHandler.getState().getCurrentState();
+    }
+
+    public void setCurrentGamestate(GameStates currentState) {
+        viewHandler.getState().setCurrentState(currentState);
+    }
 }

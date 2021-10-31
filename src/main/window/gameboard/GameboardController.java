@@ -1,14 +1,16 @@
 package window.gameboard;
 
-import core.AbstractController;
-import core.AppViewHandler;
-import core.Resizable;
-import core.ViewHandler;
+import NotificationWindow.AbstractNotificationWindow;
+import NotificationWindow.ChanceCard.NewChanceCard;
+import NotificationWindow.NotificationScreenEnum;
+import NotificationWindow.NotificationWindowFactory;
+import core.*;
 import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -18,6 +20,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.control.Label;
 import tile.Tile;
+import tile.TileType;
 import tile.Wall;
 import tile.WallOrientationEnum;
 import token.Token;
@@ -29,8 +32,6 @@ import java.awt.*;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
-
-import static tile.TileType.*;
 
 public class GameboardController extends AbstractController {
 
@@ -64,6 +65,12 @@ public class GameboardController extends AbstractController {
             player.setupPlayerMover(this);
         }
 
+        // check the check card
+//        NewChanceCard chanceCard = new NewChanceCard();
+//        chanceCard.setPosX(0.5);
+//        chanceCard.setPosY(0.5);
+//        board.getChildren().addAll(chanceCard);
+
         rollDice.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
@@ -77,14 +84,28 @@ public class GameboardController extends AbstractController {
             ChangeListener<Number> stageWidthListener = (observable, oldVal, newVal) -> {
                 for (Node node : board.getChildren()) {
                     if (node instanceof Resizable) {
-                        ((Resizable) node).onResize();
+
+                        ResizableStackPane resizableNode = (ResizableStackPane) node;
+                        resizableNode.onResize();
+
+                        resizableNode.relocate(
+                                resizableNode.getPosX(),
+                                resizableNode.getPosY()
+                        );
                     }
                 }
             };
             ChangeListener<Number> stageHeightListener = (observable, oldVal, newVal) -> {
                 for (Node node : board.getChildren()) {
                     if (node instanceof Resizable) {
-                        ((Resizable) node).onResize();
+
+                        ResizableStackPane resizableNode = (ResizableStackPane) node;
+                        resizableNode.onResize();
+
+                        resizableNode.relocate(
+                                resizableNode.getPosX(),
+                                resizableNode.getPosY()
+                        );
                     }
                 }
             };
@@ -119,9 +140,9 @@ public class GameboardController extends AbstractController {
             Tile tile = new Tile(x, y, this);
 
             if ((path.size() % 2) == 0) {
-                tile.setType(LOSE_MONEY);
+                tile.setType(TileType.LOSE_MONEY);
             } else {
-                tile.setType(GAIN_MONEY);
+                tile.setType(TileType.GAIN_MONEY);
             }
 
             board.getChildren().addAll(tile);
@@ -147,9 +168,9 @@ public class GameboardController extends AbstractController {
             Tile tile = new Tile(x, y, this);
 
             if ((path.size() % 2) == 0) {
-                tile.setType(LOSE_MONEY);
+                tile.setType(TileType.LOSE_MONEY);
             } else {
-                tile.setType(GAIN_MONEY);
+                tile.setType(TileType.GAIN_MONEY);
             }
 
             board.getChildren().addAll(tile);
@@ -175,9 +196,9 @@ public class GameboardController extends AbstractController {
             Tile tile = new Tile(x, y, this);
 
             if ((path.size() % 2) == 0) {
-                tile.setType(LOSE_MONEY);
+                tile.setType(TileType.LOSE_MONEY);
             } else {
-                tile.setType(GAIN_MONEY);
+                tile.setType(TileType.GAIN_MONEY);
             }
 
             board.getChildren().addAll(tile);
@@ -203,9 +224,9 @@ public class GameboardController extends AbstractController {
             Tile tile = new Tile(x, y, this);
 
             if ((path.size() % 2) == 0) {
-                tile.setType(LOSE_MONEY);
+                tile.setType(TileType.LOSE_MONEY);
             } else {
-                tile.setType(GAIN_MONEY);
+                tile.setType(TileType.GAIN_MONEY);
             }
 
             board.getChildren().addAll(tile);
@@ -215,13 +236,14 @@ public class GameboardController extends AbstractController {
         }
 
         // Add the special tiles to the board
-        path.get(0).setType(START);
-        path.get(11).setType(CHANCE);
-        path.get(19).setType(CHANCE);
-        path.get(26).setType(CHANCE);
-        path.get(34).setType(CHANCE);
-        path.get(41).setType(CHANCE);
-        path.get(49).setType(CHANCE);
+//        path.get(0).setType(START);
+        path.get(0).setType(TileType.END);
+        path.get(11).setType(TileType.CHANCE);
+        path.get(19).setType(TileType.CHANCE);
+        path.get(26).setType(TileType.CHANCE);
+        path.get(34).setType(TileType.CHANCE);
+        path.get(41).setType(TileType.CHANCE);
+        path.get(49).setType(TileType.CHANCE);
 
         path.get(7).addWall(WallOrientationEnum.TOP);
 
@@ -272,6 +294,24 @@ public class GameboardController extends AbstractController {
 
         child.relocate(newX, newY);
     }
+
+    public void repositionChild2(double x, double y, ResizableStackPane child) {
+//        double screenWidth = (viewHandler.getScreenDimensions()[0] - 16);
+//        double screenHeight = (viewHandler.getScreenDimensions()[1] - 40 - 85);
+
+        double screenWidth = (AppViewHandler.getScreenWidth() - child.getWidth());
+        double screenHeight = (AppViewHandler.getScreenHeight() - child.getHeight()
+                        - 40 - hudVBox.getHeight());
+
+        // 16: width offscreen
+        double newX = x * screenHeight + (screenWidth - screenHeight) / 2;
+        // 40: height offscreen
+        // 85: height of HUD
+        double newY = y * screenHeight;
+
+        child.relocate(newX, newY);
+    }
+
     public ViewHandler getViewHandler() {
         return viewHandler;
     }
@@ -284,9 +324,13 @@ public class GameboardController extends AbstractController {
         int newLoc = playerToken.getTokenLocation() + moveAmount;
 
         // Check if the playerToken is at the end
-        if (path.size() - 1 < newLoc || playerToken.getFinished()) {
+        if (path.size() - 1 <= newLoc || playerToken.getFinished()) {
+            playerToken.setTokenLocation(0);
+            path.get(playerToken.getTokenLocation()).addToken(playerToken);
+
             playerToken.setFinished(true);
             newLoc = 0;
+            return 0;
         }
 
         // Check for a wall

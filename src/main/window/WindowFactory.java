@@ -8,6 +8,8 @@ import window.config_screen.ConfigurationWindow;
 import window.config_screen.ConfigurationController;
 import window.start.StartController;
 import window.start.StartWindow;
+import window.victory_screen.VictoryScreenController;
+import window.victory_screen.VictoryScreenWindow;
 
 import java.util.ResourceBundle;
 
@@ -21,6 +23,8 @@ public class WindowFactory {
             return new ConfigurationWindow(new ConfigurationController(viewHandler), bundle);
         }else if (screenName == ScreenEnum.GAMEBOARD) {
             return new GameboardWindow(new GameboardController(viewHandler), bundle);
+        } else if (screenName == ScreenEnum.VICTORY) {
+            return new VictoryScreenWindow(new VictoryScreenController(viewHandler), bundle);
         }
         return null;
     }

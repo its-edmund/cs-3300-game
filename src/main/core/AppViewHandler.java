@@ -45,6 +45,9 @@ public class AppViewHandler implements ViewHandler {
     @Override public void launchGameboard() throws IOException {
         buildAndShowScene(primaryStage, windowFactory.createWindow(ScreenEnum.GAMEBOARD, this, bundle));
     }
+    @Override public void launchVictoryScreen() throws IOException {
+        buildAndShowScene(primaryStage, windowFactory.createWindow(ScreenEnum.VICTORY, this, bundle));
+    }
 
     @Override
     public void updateState(State state) {

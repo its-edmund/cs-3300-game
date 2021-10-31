@@ -202,6 +202,8 @@ public class Tile extends StackPane {
             rectangle.setFill(Color.DARKRED);
         } else if (type == START) {
             rectangle.setFill(Color.YELLOW);
+        } else if (type == END) {
+            rectangle.setFill(Color.YELLOW);
         }
     }
     public String getText() {

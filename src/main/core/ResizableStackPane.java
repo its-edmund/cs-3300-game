@@ -4,19 +4,15 @@ import javafx.scene.Node;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Shape;
 
-public class ResizableStackPane extends StackPane implements Resizable{
+public class ResizableStackPane extends StackPane implements Resizable {
 
-    private double posX = 0.5;
-    private double posY = 0.5;
+    protected double posX = 0;
+    protected double posY = 0;
+    private double centerX = 0;
+    private double centerY = 0;
 
     @Override
     public void onResize() {
-//        for (Node child: this.getChildren()) {
-//            if (child instanceof Shape) {
-//                child.setScaleX(AppViewHandler.getScreenHeight() / AppViewHandler.INITIAL_SCREEN_HEIGHT);
-//                child.setScaleY(AppViewHandler.getScreenHeight() / AppViewHandler.INITIAL_SCREEN_HEIGHT);
-//            }
-//        }
 
         this.setScaleX(AppViewHandler.getScreenHeight() / AppViewHandler.INITIAL_SCREEN_HEIGHT);
         this.setScaleY(AppViewHandler.getScreenHeight() / AppViewHandler.INITIAL_SCREEN_HEIGHT);
@@ -34,19 +30,23 @@ public class ResizableStackPane extends StackPane implements Resizable{
         this.relocate(newX, newY);
     }
 
-    public double getPosX() {
-        return posX;
-    }
-
-    public void setPosX() {
+    public void setPosX(double posX) {
         this.posX = posX;
     }
 
+    public void setPosY(double posY) {
+        this.posY = posY;
+    }
+    public void setCenterX(double centerX) {this.centerX = centerX; }
+    public void setCenterY(double centerY) {this.centerY = centerY; }
+
+    public double getPosX() {
+        return posX;
+    }
     public double getPosY() {
         return posY;
     }
+    public double getCenterX() { return centerX; }
+    public double getCenterY() { return centerY; }
 
-    public void setPosY() {
-        this.posY = posY;
-    }
 }

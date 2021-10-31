@@ -1,5 +1,7 @@
 package NotificationWindow;
 
+import core.AppViewHandler;
+import core.ResizableStackPane;
 import core.ViewHandler;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -12,7 +14,7 @@ import tile.Wall;
 import window.gameboard.GameStateController;
 import window.player.Player;
 
-public class WallNotification extends StackPane {
+public class WallNotification extends ResizableStackPane {
 
     private GameStateController gameStateController;
 
@@ -131,5 +133,22 @@ public class WallNotification extends StackPane {
     }
     public boolean getActive() {
         return this.isVisible();
+    }
+
+    public double getPosX() {
+
+        double screenWidth = (AppViewHandler.getScreenWidth() - this.getWidth());
+        double screenHeight = (AppViewHandler.getScreenHeight() - this.getHeight()
+                - 40 - 85);
+        double newX = posX * screenHeight + (screenWidth - screenHeight) / 2;
+
+        return newX;
+    }
+    public double getPosY() {
+        double screenHeight = (AppViewHandler.getScreenHeight() - this.getHeight()
+                - 40 - 85);
+        double newY = posY * screenHeight;
+
+        return newY;
     }
 }
