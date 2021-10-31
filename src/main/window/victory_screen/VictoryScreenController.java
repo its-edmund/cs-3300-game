@@ -20,11 +20,34 @@ public class VictoryScreenController extends AbstractController {
 
     @FXML VBox playerList;
     @FXML Text scoreText;
+    public ArrayList<Player> winnerList;
 
     public VictoryScreenController(ViewHandler viewHandler) {
         super(viewHandler);
     }
 
+    // Testing method
+    public void initWinnerList(boolean winner) {
+        winnerList = new ArrayList<>();
+        Player player1 = new Player("1", null, 1, null);
+        Player player2 = new Player("2", null, 2, null);
+        Player player3 = new Player("3", null, 3, null);
+        Player player4 = new Player("4", null, 4, null);
+        if (winner) {
+            player1.getToken().setTokenLocation(1);
+        }
+        winnerList.add(player1);
+        winnerList.add(player2);
+        winnerList.add(player3);
+        winnerList.add(player4);
+        Collections.sort(winnerList, new Comparator<Player>() {
+            @Override
+            public int compare(Player o1, Player o2) {
+                return Integer.compare(o1.getToken().getTokenLocation(),
+                        o2.getToken().getTokenLocation());
+            }
+        });
+    }
     @Override
     public void initialize(URL location, ResourceBundle bundle) {
         PlayerController playerController
@@ -34,7 +57,7 @@ public class VictoryScreenController extends AbstractController {
         scoreText.setFont(new Font(20));
 
         // Rank the players based off of how far they got on the board
-        ArrayList<Player> winnerList = new ArrayList<>();
+        winnerList = new ArrayList<>();
 
         for (Player player : playerController.getPlayers()) {
             winnerList.add(player);
