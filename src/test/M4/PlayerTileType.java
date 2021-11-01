@@ -13,7 +13,7 @@ import static junit.framework.TestCase.assertEquals;
 
 public class PlayerTileType {
     @Test
-    public void playerFinishTest() {
+    public void testTileType() {
         Player p = new Player("placeholder", Color.BLUE, 100, null);
         GameboardController gameboardController = new GameboardController(null);
         gameboardController.initialize(null, null);

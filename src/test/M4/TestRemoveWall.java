@@ -9,7 +9,7 @@ import static junit.framework.TestCase.assertEquals;
 
 public class TestRemoveWall {
     @Test
-    public void testHasWall() {
+    public void testRemoveWall() {
         GameboardController gameboardController = new GameboardController(null);
         Tile tile = new Tile(0, 0, gameboardController);
 
