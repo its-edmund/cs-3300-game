@@ -254,7 +254,7 @@ public class GameboardController extends AbstractController {
 
         path.get(7).addWall(WallOrientationEnum.TOP);
         path.get(30).addWall(WallOrientationEnum.LEFT);
-        path.get(42).addWall(WallOrientationEnum.LEFT);
+        path.get(42).addWall(WallOrientationEnum.BOTTOM);
 
         // Add all player tokens to the first square
         PlayerController playerController;
