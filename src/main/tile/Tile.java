@@ -10,6 +10,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import token.Token;
+import window.gameboard.GameboardController;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -21,21 +22,20 @@ public class Tile extends StackPane {
     private double width;
     private double height;
 
-    private double posX;
-    private double posY;
-
     private TileType type;
 
     private Rectangle rectangle;
     private Text rectangleText;
     private ArrayList<Token> tokenArr;
+    private Wall tileWall;
 
     // 12, 12
-    public Tile (double posX, double posY, ViewHandler viewHandler) {
-        this(TileType.STANDARD, 12, 12, posX, posY, viewHandler);
+    public Tile (double posX, double posY, GameboardController gameboardController) {
+        this(TileType.STANDARD, 12, 12, posX, posY, gameboardController);
     }
 
-    public Tile (TileType type, double width, double height, double posX, double posY, ViewHandler viewHandler) {
+    public Tile (TileType type, double width, double height,
+                 double posX, double posY, GameboardController gameboardController) {
 
         super();
 
@@ -49,34 +49,22 @@ public class Tile extends StackPane {
         rectangle.setHeight(height);
         rectangle.setFill(Color.BURLYWOOD);
         rectangle.setStroke(Color.BLACK);
-        rectangle.setRotate(45);
 
-//        switch (type) {
-//            case END:
-//                rectangle.setFill(Color.RED);
-//                break;
-//
-//            case START:
-//                rectangle.setFill(Color.GREEN);
-//                break;
-//
-//            case STANDARD:
-//                rectangle.setFill(Color.BURLYWOOD);
-//                break;
-//        }
+        // This rotates ALL children of the Tile
+        this.setRotate(45);
 
         this.rectangleText = new Text();
         rectangleText.setFont(new Font(10));
 
-        if (viewHandler != null) {
+        if (gameboardController.getViewHandler() != null) {
             ChangeListener<Number> stageWidthListener = (observable, oldVal, newVal) -> {
-                this.relocate(posX, posY, viewHandler);
+                this.relocate(posX, posY, gameboardController);
             };
             ChangeListener<Number> stageHeightListener = (observable, oldVal, newVal) -> {
-                this.relocate(posX, posY, viewHandler);
+                this.relocate(posX, posY, gameboardController);
             };
-            viewHandler.addEventOnScreenWidthChange(stageWidthListener);
-            viewHandler.addEventOnScreenHeightChange(stageHeightListener);
+            gameboardController.getViewHandler().addEventOnScreenWidthChange(stageWidthListener);
+            gameboardController.getViewHandler().addEventOnScreenHeightChange(stageHeightListener);
         }
 
         this.getChildren().addAll(rectangle, rectangleText);
@@ -84,42 +72,63 @@ public class Tile extends StackPane {
         tokenArr = new ArrayList<>();
     }
 
+    public void relocate(double x, double y,
+                         GameboardController gameboardController) {
 
+        gameboardController.repositionChild(x, y, this);
 
-    public void relocate(double x, double y, ViewHandler viewHandler) {
+        rectangle.setScaleX(gameboardController.getViewHandler().getScreenDimensions()[1] / 400);
+        rectangle.setScaleY(gameboardController.getViewHandler().getScreenDimensions()[1] / 400);
 
-        double screenWidth = (viewHandler.getScreenDimensions()[0] - 16);
-        double screenHeight = (viewHandler.getScreenDimensions()[1] - 40 - 85);
-
-        // 16: width offscreen
-        double newX = x * screenHeight + (screenWidth - screenHeight) / 2;
-        // 40: height offscreen
-        // 85: height of HUD
-        double newY = y * screenHeight;
-
-        super.relocate(newX, newY);
-        this.setTranslateX((-1 * width) / 2.0);
-        this.setTranslateY((-1 * height) / 2.0);
-
-        rectangle.setWidth(width * viewHandler.getScreenDimensions()[1] / 400);
-        rectangle.setHeight(height * viewHandler.getScreenDimensions()[1] / 400);
-
-//        if (this.getChildren().size() > 2) {
-//            System.out.println("We don't have orphans!");
-//        }
         if (this.getChildren().size() > 2) {
-//            System.out.println(this.getChildren().get(this.getChildren().size() - 1).toString());
             for (Object obj : this.getChildren()) {
                 if (obj instanceof Token) {
                      Token token = (Token) obj;
-                     token.setRadius(token.getTokenRadius() * viewHandler.getScreenDimensions()[1] / 400);
-                }
 
+                     token.setScaleX(gameboardController.getViewHandler().getScreenDimensions()[1] / 400);
+                     token.setScaleY(gameboardController.getViewHandler().getScreenDimensions()[1] / 400);
+                } else if (obj instanceof Wall) {
+                    Wall wallStackPane = ((Wall) obj);
+                    Rectangle wall = wallStackPane.getWall();
+                    wall.setScaleX(gameboardController.getViewHandler().getScreenDimensions()[1] / 400);
+                    wall.setScaleY(gameboardController.getViewHandler().getScreenDimensions()[1] / 400);
+
+                    wallStackPane.relocate(this);
+                }
             }
         }
 
-//        rectangle.setWidth(width * viewHandler.getScreenDimensions()[0] / viewHandler.INITIAL_SCREEN_WIDTH);
-//        rectangle.setHeight(height * viewHandler.getScreenDimensions()[1] / viewHandler.INITIAL_SCREEN_HEIGHT);
+    }
+
+    // For Walls
+    public void addWall(WallOrientationEnum orientation) {
+
+        Wall wall = new Wall(this, orientation);
+
+        if (tileWall == null) {
+            this.getChildren().addAll(wall);
+            tileWall = wall;
+        } else {
+            throw new RuntimeException("Trying to assign a wall to a tile that already " +
+                    "has a wall!\n");
+        }
+
+    }
+    public void removeWall() {
+
+        if (tileWall != null) {
+            this.getChildren().remove(tileWall);
+            tileWall = null;
+        } else {
+            throw new RuntimeException("Trying to remove a wall from a tile that " +
+                    "doesn't have a wall!\n");
+        }
+    }
+    public boolean hasWall() {
+        return this.tileWall != null;
+    }
+    public Wall getWall() {
+        return this.tileWall;
     }
 
     // For Tokens on the Tiles
@@ -132,6 +141,9 @@ public class Tile extends StackPane {
         this.getChildren().remove(token);
         tokenArr.remove(token);
         layoutTokens();
+    }
+    public boolean hasToken() {
+        return !tokenArr.isEmpty();
     }
     public void layoutTokens() {
         if (tokenArr.size() == 1) {
@@ -162,6 +174,12 @@ public class Tile extends StackPane {
     }
 
     // Getters and Setters
+    public double getDefaultWidth() {
+        return width;
+    }
+    public double getDefaultHeight() {
+        return height;
+    }
     public Rectangle getRectangle() {
         return rectangle;
     }
@@ -178,6 +196,8 @@ public class Tile extends StackPane {
         } else if (type == LOSE_MONEY) {
             rectangle.setFill(Color.DARKRED);
         } else if (type == START) {
+            rectangle.setFill(Color.YELLOW);
+        } else if (type == END) {
             rectangle.setFill(Color.YELLOW);
         }
     }

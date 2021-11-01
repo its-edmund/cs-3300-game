@@ -35,6 +35,7 @@
             />
         </HBox>
     </top>
+
     <center>
         <VBox alignment="CENTER" spacing = "5">
             <HBox spacing = "5"

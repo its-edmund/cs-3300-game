@@ -18,10 +18,11 @@ public class TileTestv2 {
     @Test
     public void redTileTest() {
         AppViewHandler viewHandler = null;
-        Tile loseMoneyTile = new Tile(TileType.LOSE_MONEY, 50, 50, 0, 0, viewHandler);
+        GameboardController gameboardController = new GameboardController(viewHandler);
+        Tile loseMoneyTile = new Tile(TileType.LOSE_MONEY, 50, 50, 0, 0, gameboardController);
         GameboardController gController = new GameboardController(viewHandler);
-        PlayerMover player = new PlayerMover(gController);
         Player p = new Player();
+        PlayerMover player = new PlayerMover(p, gController);
         p.setMoney(1000);
         assertEquals(player.setTile(loseMoneyTile, p), 900);
     }
@@ -29,10 +30,13 @@ public class TileTestv2 {
     @Test
     public void greenTileTest() {
         AppViewHandler viewHandler = null;
-        Tile loseMoneyTile = new Tile(TileType.GAIN_MONEY, 50, 50, 0, 0, viewHandler);
+        GameboardController gameboardController = new GameboardController(viewHandler);
+        Tile loseMoneyTile = new Tile(TileType.GAIN_MONEY, 50, 50, 0, 0, gameboardController);
         GameboardController gController = new GameboardController(viewHandler);
-        PlayerMover player = new PlayerMover(gController);
+
         Player p = new Player();
+        PlayerMover player = new PlayerMover(p, gController);
+
         p.setMoney(1000);
         assertEquals(player.setTile(loseMoneyTile, p), 1100);
     }

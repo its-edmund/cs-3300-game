@@ -1,5 +1,5 @@
 package window;
 
 public enum ScreenEnum {
-    START, GAMEBOARD, CONFIG
+    START, GAMEBOARD, CONFIG, VICTORY
 }

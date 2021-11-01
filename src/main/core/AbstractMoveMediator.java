@@ -6,10 +6,12 @@ import window.player.Player;
 public abstract class AbstractMoveMediator {
 
     protected GameboardController gameboardController;
+    protected Player player;
 
-    public AbstractMoveMediator(GameboardController gameboardController) {
+    public AbstractMoveMediator(Player player, GameboardController gameboardController) {
         this.gameboardController = gameboardController;
+        this.player = player;
     }
 
-    public abstract boolean movePlayer(Player player, int moveAmount);
+    public abstract PostMoveActionType movePlayer(int moveAmount);
 }

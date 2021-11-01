@@ -4,6 +4,8 @@ import core.AppViewHandler;
 import tile.Tile;
 import tile.TileType;
 import org.junit.Test;
+import window.gameboard.GameboardController;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
@@ -14,9 +16,10 @@ public class TileTest {
     @Test
     public void createTileTest() {
         AppViewHandler viewHandler = null;
-        Tile Standard = new Tile(0, 0, viewHandler);
+        GameboardController gameboardController = new GameboardController(viewHandler);
+        Tile Standard = new Tile(0, 0, gameboardController);
         assertEquals(Standard.getType(), TileType.STANDARD);
-        Tile NonStandard = new Tile(TileType.START, 50, 50, 0, 0, viewHandler);
+        Tile NonStandard = new Tile(TileType.START, 50, 50, 0, 0, gameboardController);
         assertEquals(NonStandard.getType(), TileType.START);
 
         // Rectangle reprsentation tests

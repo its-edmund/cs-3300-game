@@ -1,12 +1,16 @@
 package window.gameboard;
 
-import core.AbstractController;
-import core.AppViewHandler;
-import core.ViewHandler;
+import NotificationWindow.AbstractNotificationWindow;
+import NotificationWindow.ChanceCard.NewChanceCard;
+import NotificationWindow.NotificationScreenEnum;
+import NotificationWindow.NotificationWindowFactory;
+import core.*;
 import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -16,6 +20,9 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.control.Label;
 import tile.Tile;
+import tile.TileType;
+import tile.Wall;
+import tile.WallOrientationEnum;
 import token.Token;
 import window.dice.Dice;
 import window.player.Player;
@@ -26,24 +33,17 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
-import static tile.TileType.*;
-
 public class GameboardController extends AbstractController {
 
-    @FXML private Button move1Button;
-    @FXML private Button move3Button;
     @FXML private Button rollDice;
     @FXML private Pane board;
     @FXML private Label diceLabel;
-
     @FXML private HBox playerProfileHbox;
-
     @FXML private VBox hudVBox;
 
     GameStateController gameStateController;
     ChanceCard chanceCard;
     Dice dice = new Dice(6);
-
     public ArrayList<Tile> path;
 
     public GameboardController(ViewHandler viewHandler) {
@@ -53,110 +53,81 @@ public class GameboardController extends AbstractController {
     @Override
     public void initialize(URL location, ResourceBundle bundle) {
 
+        if (board == null) {
+            board = new Pane();
+        }
+
         createBoard();
         createPlayerProfiles();
         createChanceCards();
 
         gameStateController = new GameStateController(viewHandler, this);
 
-        for (Player player : viewHandler.getState().getPlayerController().getPlayers()) {
-            player.setupPlayerMover(this);
+        if (viewHandler != null) {
+            for (Player player : viewHandler.getState().getPlayerController().getPlayers()) {
+                player.setupPlayerMover(this);
+            }
         }
 
 
-        move1Button.setOnAction(new EventHandler<ActionEvent>() {
+        // check the check card
+//        NewChanceCard chanceCard = new NewChanceCard();
+//        chanceCard.setPosX(0.5);
+//        chanceCard.setPosY(0.5);
+//        board.getChildren().addAll(chanceCard);
 
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                gameStateController.handleDiceRoll(1);
-            }
-        });
-        move3Button.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                gameStateController.handleDiceRoll(3);
-            }
-        });
-        rollDice.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                dice.rollDice();
-                diceLabel.setText("Dice Roll: " + dice.getValue());
-                gameStateController.handleDiceRoll(dice.getValue());
-            }
-        });
+        if (rollDice != null) {
+            rollDice.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent actionEvent) {
+                    dice.rollDice();
+                    diceLabel.setText("Dice Roll: " + dice.getValue());
+                    gameStateController.handleDiceRoll(dice.getValue());
+                }
+            });
+        }
 
-        viewHandler.triggerResize();
-    }
+        if (viewHandler != null) {
+            ChangeListener<Number> stageWidthListener = (observable, oldVal, newVal) -> {
+                for (Node node : board.getChildren()) {
+                    if (node instanceof Resizable) {
 
-    private void move1Forward() {
-//        board.getChildren().removeAll(this.player);
-//        this.player.setCurrentLocation(this.player.getCurrentLocation() + 1);
-//        board.add(this.player, path.get(this.player.getCurrentLocation()).get(0), path.get(this.player.getCurrentLocation()).get(1));
-    }
-    private void move3Forward() {
-//        board.getChildren().removeAll(this.player);
-//        this.player.setCurrentLocation(this.player.getCurrentLocation() + 3);
-//        board.add(this.player, path.get(this.player.getCurrentLocation()).get(0), path.get(this.player.getCurrentLocation()).get(1));
+                        ResizableStackPane resizableNode = (ResizableStackPane) node;
+                        resizableNode.onResize();
+
+                        resizableNode.relocate(
+                                resizableNode.getPosX(),
+                                resizableNode.getPosY()
+                        );
+                    }
+                }
+            };
+            ChangeListener<Number> stageHeightListener = (observable, oldVal, newVal) -> {
+                for (Node node : board.getChildren()) {
+                    if (node instanceof Resizable) {
+
+                        ResizableStackPane resizableNode = (ResizableStackPane) node;
+                        resizableNode.onResize();
+
+                        resizableNode.relocate(
+                                resizableNode.getPosX(),
+                                resizableNode.getPosY()
+                        );
+                    }
+                }
+            };
+            viewHandler.addEventOnScreenWidthChange(stageWidthListener);
+            viewHandler.addEventOnScreenHeightChange(stageHeightListener);
+        }
+
+        // It would be nice if we could get this to work...
+//        viewHandler.triggerResize();
     }
 
     private void createBoard() {
         int BOARD_SIZE = 15;
 
         path = new ArrayList<>();
-
-//        tile.setText("Width: " + viewHandler.getScreenDimensions()[0] + "\n"
-//                + "Height: " + viewHandler.getScreenDimensions()[1] + "\n"
-//                + "HUD height:" + hudVBox.getHeight());
-
-//        Tile tile1 = new Tile(0, 0);
-//        tile1.relocate(0.5, 0.5, viewHandler);
-//
-//        ChangeListener<Number> stageWidthListener1 = (observable, oldVal, newVal) -> {
-////            String labelText = tile.getText();
-//////            String newText = "Width: " + viewHandler.getScreenDimensions()[0] + "\n"
-//////                    + labelText.substring(labelText.indexOf("Height"), labelText.indexOf("HUD") - 1) + "\n"
-//////                    + "HUD height:" + hudVBox.getHeight();
-////            tile.setText("Width: " + viewHandler.getScreenDimensions()[0] + "\n"
-////                    + "Height: " + viewHandler.getScreenDimensions()[1] + "\n"
-////                    + "HUD height:" + hudVBox.getHeight());
-//
-////            tile.setText(newText);
-//
-////            tile.setText("Width: " + viewHandler.getScreenDimensions()[0] + "\n"
-////                    + "Height: " + viewHandler.getScreenDimensions()[1] + "\n"
-////                    + "HUD height:" + hudVBox.getHeight());
-//
-//
-////            tile.relocate(viewHandler.getScreenDimensions()[0],
-////                    viewHandler.getScreenDimensions()[1]);
-//            tile1.relocate(0.5, 0.5, viewHandler);
-//        };
-//        ChangeListener<Number> stageHeightListener1 = (observable, oldVal, newVal) -> {
-////            String labelText = tile.getText();
-////            String newText = labelText.substring(labelText.indexOf("Width"), labelText.indexOf("Height") - 1) + "\n"
-////                    + "Height: " + viewHandler.getScreenDimensions()[1] + "\n"
-////                    + "HUD height:" + hudVBox.getHeight();
-//
-////            tile.setText("Width: " + viewHandler.getScreenDimensions()[0] + "\n"
-////                    + "Height: " + viewHandler.getScreenDimensions()[1] + "\n"
-////                    + "HUD height:" + hudVBox.getHeight());
-////
-////            tile.setText(newText);
-//
-////            tile.setText("Width: " + viewHandler.getScreenDimensions()[0] + "\n"
-////                    + "Height: " + viewHandler.getScreenDimensions()[1] + "\n"
-////                    + "HUD height:" + hudVBox.getHeight());
-//
-////            tile.relocate(viewHandler.getScreenDimensions()[0],
-////                    viewHandler.getScreenDimensions()[1]);
-//            tile1.relocate(0.5, 0.5, viewHandler);
-//        };
-//
-//        viewHandler.addEventOnScreenWidthChange(stageWidthListener1);
-//        viewHandler.addEventOnScreenHeightChange(stageHeightListener1);
-//
-//        board.getChildren().addAll(tile1);
 
         /*
             *
@@ -173,12 +144,12 @@ public class GameboardController extends AbstractController {
 
             y = -1 * x + 0.6;
 
-            Tile tile = new Tile(x, y, viewHandler);
+            Tile tile = new Tile(x, y, this);
 
             if ((path.size() % 2) == 0) {
-                tile.setType(LOSE_MONEY);
+                tile.setType(TileType.LOSE_MONEY);
             } else {
-                tile.setType(GAIN_MONEY);
+                tile.setType(TileType.GAIN_MONEY);
             }
 
             board.getChildren().addAll(tile);
@@ -201,12 +172,12 @@ public class GameboardController extends AbstractController {
 
             y = x + 0.4;
 
-            Tile tile = new Tile(x, y, viewHandler);
+            Tile tile = new Tile(x, y, this);
 
             if ((path.size() % 2) == 0) {
-                tile.setType(LOSE_MONEY);
+                tile.setType(TileType.LOSE_MONEY);
             } else {
-                tile.setType(GAIN_MONEY);
+                tile.setType(TileType.GAIN_MONEY);
             }
 
             board.getChildren().addAll(tile);
@@ -229,12 +200,12 @@ public class GameboardController extends AbstractController {
 
             y = -1 * x + 1.4;
 
-            Tile tile = new Tile(x, y, viewHandler);
+            Tile tile = new Tile(x, y, this);
 
             if ((path.size() % 2) == 0) {
-                tile.setType(LOSE_MONEY);
+                tile.setType(TileType.LOSE_MONEY);
             } else {
-                tile.setType(GAIN_MONEY);
+                tile.setType(TileType.GAIN_MONEY);
             }
 
             board.getChildren().addAll(tile);
@@ -257,12 +228,12 @@ public class GameboardController extends AbstractController {
 
             y = x - 0.4;
 
-            Tile tile = new Tile(x, y, viewHandler);
+            Tile tile = new Tile(x, y, this);
 
             if ((path.size() % 2) == 0) {
-                tile.setType(LOSE_MONEY);
+                tile.setType(TileType.LOSE_MONEY);
             } else {
-                tile.setType(GAIN_MONEY);
+                tile.setType(TileType.GAIN_MONEY);
             }
 
             board.getChildren().addAll(tile);
@@ -271,140 +242,43 @@ public class GameboardController extends AbstractController {
             x -= step;
         }
 
+        // Add the special tiles to the board
+//        path.get(0).setType(START);
+        path.get(0).setType(TileType.END);
+        path.get(11).setType(TileType.CHANCE);
+        path.get(19).setType(TileType.CHANCE);
+        path.get(26).setType(TileType.CHANCE);
+        path.get(34).setType(TileType.CHANCE);
+        path.get(41).setType(TileType.CHANCE);
+        path.get(49).setType(TileType.CHANCE);
+
+        path.get(7).addWall(WallOrientationEnum.TOP);
+        path.get(30).addWall(WallOrientationEnum.LEFT);
+        path.get(42).addWall(WallOrientationEnum.BOTTOM);
+
         // Add all player tokens to the first square
-        PlayerController playerController = viewHandler.getState().getPlayerController();
-
-//        path.get(0).getRectangle().setFill(Color.GREEN);
-//        path.get(15).getRectangle().setFill(Color.BLUE);
-//        path.get(30).getRectangle().setFill(Color.BLUE);
-//        path.get(45).getRectangle().setFill(Color.BLUE);
-
-        path.get(0).setType(START);
-        path.get(11).setType(CHANCE);
-        path.get(19).setType(CHANCE);
-        path.get(26).setType(CHANCE);
-        path.get(34).setType(CHANCE);
-        path.get(41).setType(CHANCE);
-        path.get(49).setType(CHANCE);
+        PlayerController playerController;
+        if (viewHandler != null) {
+            playerController = viewHandler.getState().getPlayerController();
+        } else {
+            playerController = new PlayerController();
+        }
 
         for (Player player : playerController.getPlayers()) {
             path.get(0).addToken(player.getToken());
         }
 
-        /*
-        for (int i = 0; i < BOARD_SIZE; i++) {
-            ArrayList<Integer> coordinate = new ArrayList<Integer>();
-            coordinate.add(0);
-            coordinate.add(i);
-
-            path.add(coordinate);
-
-            Tile tile = new Tile(0, i);
-            tile.setFill(Color.BURLYWOOD);
-            tile.setStroke(Color.BLACK);
-
-            Text text = new Text();
-            if (i == 0) {
-                tile.setFill(Color.BLUE);
-                text.setText("Start");
-            }
-            text.setFont(Font.font(12));
-            board.add(new StackPane(tile, text), 0, i);
-        }
-
-        for (int i = 1; i < BOARD_SIZE; i++) {
-            ArrayList<Integer> coordinate = new ArrayList<Integer>();
-            coordinate.add(i);
-            coordinate.add(14);
-
-            path.add(coordinate);
-
-            Tile tile = new Tile(i, 14);
-            tile.setFill(Color.BURLYWOOD);
-            tile.setStroke(Color.BLACK);
-
-            Text text = new Text();
-            text.setFont(Font.font(40));
-            board.add(new StackPane(tile, text), i, 14);
-        }
-
-        for (int i = BOARD_SIZE - 2; i >= 0; i--) {
-            ArrayList<Integer> coordinate = new ArrayList<Integer>();
-            coordinate.add(14);
-            coordinate.add(i);
-
-            path.add(coordinate);
-
-            Tile tile = new Tile(14, i);
-            tile.setFill(Color.BURLYWOOD);
-            tile.setStroke(Color.BLACK);
-
-            Text text = new Text();
-            text.setFont(Font.font(40));
-            board.add(new StackPane(tile, text), 14, i);
-        }
-
-        for (int i = BOARD_SIZE - 2; i > 0; i--) {
-            ArrayList<Integer> coordinate = new ArrayList<Integer>();
-            coordinate.add(i);
-            coordinate.add(0);
-
-            path.add(coordinate);
-
-            Tile tile = new Tile(i, 0);
-            tile.setFill(Color.BURLYWOOD);
-            tile.setStroke(Color.BLACK);
-
-            Text text = new Text();
-            if (i == 1) {
-                tile.setFill(Color.GREEN);
-                text.setText("End");
-            }
-            text.setFont(Font.font(12));
-            board.add(new StackPane(tile, text), i, 0);
-        }
-
-        for (int i = 0; i < BOARD_SIZE; i++) {
-            for (int j = 0; j < BOARD_SIZE; j++) {
-                if (i == 0 || i == BOARD_SIZE - 1 || j == 0 || j == BOARD_SIZE - 1) {
-
-                    if (i == 0 && j == 0) {
-                        this.player = new Player();
-
-                        this.player.toFront();
-                        board.add(this.player, path.get(0).get(0), path.get(0).get(1));
-                    }
-
-                    // GridPane.setRowIndex(tile, i);
-                    // GridPane.setColumnIndex(tile, j);
-                    // gameBoard.getChildren().addAll(tile, text);
-                    // tile.setOnMouseClicked(event -> tile.setFill(Color.RED));
-                }
-            }
-        }
-        this.player.setLocationLimit(path.size());
-         */
     }
-
     private void createPlayerProfiles() {
         // Get the gamestate
-        PlayerController playerController = viewHandler.getState().getPlayerController();
+        PlayerController playerController;
+        if (viewHandler != null) {
+            playerController = viewHandler.getState().getPlayerController();
+        } else {
+            playerController = new PlayerController();
+        }
 
         for (Player player : playerController.getPlayers()) {
-
-//            StackPane stackPane = new StackPane();
-//
-//            Rectangle playerProfileRectangle = new Rectangle();
-//            playerProfileRectangle.setWidth(200);
-//            playerProfileRectangle.setHeight(50);
-//            playerProfileRectangle.setFill(player.color);
-//            playerProfileRectangle.setStroke(Color.BLACK);
-//            playerProfileRectangle.setStrokeWidth(5);
-//
-//            Text playerProfileText = new Text();
-//            playerProfileText.setText(player.name + "\n" + "$" + player.money);
-//
-//            stackPane.getChildren().addAll(playerProfileRectangle, playerProfileText);
 
             PlayerProfile playerProfile = new PlayerProfile(player);
             playerProfileHbox.getChildren().addAll(playerProfile);
@@ -412,25 +286,91 @@ public class GameboardController extends AbstractController {
 
         changePlayerStatus(0);
     }
-
     private void createChanceCards() {
-        chanceCard = new ChanceCard(viewHandler);
-        board.getChildren().add(chanceCard);
+        if (viewHandler != null) {
+            chanceCard = new ChanceCard(viewHandler);
+            board.getChildren().add(chanceCard);
+        }
+
     }
 
-    public void moveToken(Token playerToken, int moveAmount) {
-        path.get(playerToken.getTokenLocation()).removeToken(playerToken);
+    // Board functions
+    public void repositionChild(double x, double y, Node child) {
+//        double screenWidth = (viewHandler.getScreenDimensions()[0] - 16);
+//        double screenHeight = (viewHandler.getScreenDimensions()[1] - 40 - 85);
+
+        double screenWidth = (viewHandler.getScreenDimensions()[0] - 16);
+        double screenHeight =
+                (viewHandler.getScreenDimensions()[1] - 40 - hudVBox.getHeight());
+
+        // 16: width offscreen
+        double newX = x * screenHeight + (screenWidth - screenHeight) / 2;
+        // 40: height offscreen
+        // 85: height of HUD
+        double newY = y * screenHeight;
+
+        child.relocate(newX, newY);
+    }
+    public void repositionChild2(double x, double y, ResizableStackPane child) {
+//        double screenWidth = (viewHandler.getScreenDimensions()[0] - 16);
+//        double screenHeight = (viewHandler.getScreenDimensions()[1] - 40 - 85);
+
+        double screenWidth = (AppViewHandler.getScreenWidth() - child.getWidth());
+        double screenHeight = (AppViewHandler.getScreenHeight() - child.getHeight()
+                        - 40 - hudVBox.getHeight());
+
+        // 16: width offscreen
+        double newX = x * screenHeight + (screenWidth - screenHeight) / 2;
+        // 40: height offscreen
+        // 85: height of HUD
+        double newY = y * screenHeight;
+
+        child.relocate(newX, newY);
+    }
+
+    // Return 0 if movement succeeded
+    // Return positive number if movement blocked by wall
+    public int moveToken(Token playerToken, int moveAmount) {
+        if (path != null && path.get(playerToken.getTokenLocation()).hasToken()) {
+            path.get(playerToken.getTokenLocation()).removeToken(playerToken);
+        }
 
         int newLoc = playerToken.getTokenLocation() + moveAmount;
 
-        if (path.size() - 1 < newLoc || playerToken.getFinished()) {
+        // Check if the playerToken is at the end
+        if (path != null &&
+                (path.size() - 1 <= newLoc || playerToken.getFinished())) {
+            playerToken.setTokenLocation(0);
+            path.get(playerToken.getTokenLocation()).addToken(playerToken);
+
             playerToken.setFinished(true);
             newLoc = 0;
+            return 0;
         }
 
+        // Check for a wall
+        // If the move amount is negative, we won't check for a wall
+        for (int i = 0; i <= moveAmount; i++) {
+            if (path != null) {
+                Tile tile = path.get(playerToken.getTokenLocation() + i);
+
+                if (tile.hasWall() && tile.getWall().isActive()) {
+                    playerToken.setTokenLocation(playerToken.getTokenLocation() + i - 1);
+                    path.get(playerToken.getTokenLocation()).addToken(playerToken);
+                    return moveAmount - i + 1;
+                }
+            }
+
+        }
+
+        // If there is no wall, move to the location
         playerToken.setTokenLocation(newLoc);
 
-        path.get(playerToken.getTokenLocation()).addToken(playerToken);
+        if (path != null) {
+            path.get(playerToken.getTokenLocation()).addToken(playerToken);
+        }
+
+        return 0;
     }
 
     public void changePlayerStatus(int newPlayerTurnIndex) {
@@ -441,22 +381,36 @@ public class GameboardController extends AbstractController {
             throw new IllegalArgumentException();
         }
 
-        if (newPlayerTurnIndex == 0) {
-            prevPlayerStackPane =
-                    (PlayerProfile) playerProfileHbox.getChildren().get(playerProfileHbox.getChildren().size() - 1);
-            currPlayerStackPane =
-                    (PlayerProfile) playerProfileHbox.getChildren().get(0);
-        } else {
-            prevPlayerStackPane =
-                    (PlayerProfile) playerProfileHbox.getChildren().get(newPlayerTurnIndex - 1);
-            currPlayerStackPane =
-                    (PlayerProfile) playerProfileHbox.getChildren().get(newPlayerTurnIndex);
+        if (playerProfileHbox != null) {
+            if (newPlayerTurnIndex == 0) {
+                prevPlayerStackPane =
+                        (PlayerProfile) playerProfileHbox.getChildren().get(playerProfileHbox.getChildren().size() - 1);
+                currPlayerStackPane =
+                        (PlayerProfile) playerProfileHbox.getChildren().get(0);
+            } else {
+                prevPlayerStackPane =
+                        (PlayerProfile) playerProfileHbox.getChildren().get(newPlayerTurnIndex - 1);
+                currPlayerStackPane =
+                        (PlayerProfile) playerProfileHbox.getChildren().get(newPlayerTurnIndex);
+            }
+
+            prevPlayerStackPane.getPlayerProfileRectangle().setStroke(Color.BLACK);
+            currPlayerStackPane.getPlayerProfileRectangle().setStroke(Color.GREEN);
         }
 
-        prevPlayerStackPane.getPlayerProfileRectangle().setStroke(Color.BLACK);
-        currPlayerStackPane.getPlayerProfileRectangle().setStroke(Color.GREEN);
+
+
     }
 
+    public Pane getBoard() {
+        return board;
+    }
+    public Tile getTile(int tileLocation) {
+        return path.get(tileLocation);
+    }
+    public ViewHandler getViewHandler() {
+        return viewHandler;
+    }
     public Tile getTileTokenOccupies(Token playerToken) {
         return path.get(playerToken.getTokenLocation());
     }
