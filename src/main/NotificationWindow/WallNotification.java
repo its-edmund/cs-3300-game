@@ -92,7 +92,7 @@ public class WallNotification extends AbstractNotification {
     // Button Handlers
     private void handleYesButton() {
 
-        Player currentPlayer = gameStateController.getMovingPlayer();
+        Player currentPlayer = viewHandler.getState().getPlayerController().getCurrentPlayer();
 
         if (currentPlayer.getMoney() < 500) {
             displayErrorMessage();
@@ -103,23 +103,16 @@ public class WallNotification extends AbstractNotification {
             Wall blockingWall = currentPlayer.getBlockingTile().getWall();
             blockingWall.setActive(false);
 
-//            gameStateController.resumePlayerMoveAfterWallRemoved();
             viewHandler.getState().updateState(GameStates.MOVING);
         }
 
-//        this.setVisible(false);
     }
     private void handleNoButton() {
 
-        Player currentPlayer = gameStateController.getMovingPlayer();
+        Player currentPlayer = viewHandler.getState().getPlayerController().getCurrentPlayer();
         currentPlayer.getPlayerMover().setRemainingMoves(-3);
 
         viewHandler.getState().updateState(GameStates.MOVING);
-
-//        gameStateController.setCurrentGamestate(GameStates.MOVING);
-//        gameStateController.handleCurrentPlayerMovement(-3);
-
-//        this.setVisible(false);
     }
 
     // Show error message

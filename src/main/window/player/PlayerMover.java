@@ -59,8 +59,8 @@ public class PlayerMover extends AbstractMoveMediator {
         PostMoveActionType postMoveActionType = PostMoveActionType.NORMAL;
 
         if (i == 0) {
-//            System.out.println("Movement succeeded.");
 
+            // Movement not blocked: see if we landed on a special tile
             TileType tileType = gameboardController.getTileTokenOccupies(player.getToken()).getType();
 
             if (tileType == TileType.CHANCE) {
@@ -75,14 +75,8 @@ public class PlayerMover extends AbstractMoveMediator {
                 postMoveActionType = PostMoveActionType.VICTORY;
             }
         } else {
-//            System.out.println("Movement blocked.");
+            // Movement is blocked by a wall
             remainingMoves = i;
-
-//            WallNotification wallNotification = new WallNotification(this);
-//            Pane board = gameboardController.getBoard();
-//            board.getChildren().addAll(wallNotification);
-//            gameboardController.repositionChild(0.5, 0.5, wallNotification);
-
             postMoveActionType = PostMoveActionType.WALL;
         }
 

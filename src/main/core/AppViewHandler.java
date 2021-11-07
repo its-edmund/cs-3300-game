@@ -113,14 +113,22 @@ public class AppViewHandler implements ViewHandler {
 
     public static void resizeNewNodes() {
         if (!newNodes.isEmpty()) {
+
+            ArrayList<Resizable> updatedNewNodes = new ArrayList<>();
+
             for (Resizable node : newNodes) {
+                // Check if the node is in the scene
                 if (!node.justAddedToScene()) {
+                    // If it is, properly size the node
                     node.onResize();
+                } else {
+                    // Node hasn't been added yet
+                    // Keep it in the list
+                    updatedNewNodes.add(node);
                 }
             }
 
-            // empty the newNodes arrayList
-            newNodes = new ArrayList<>();
+            newNodes = updatedNewNodes;
         }
     }
 

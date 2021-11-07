@@ -76,7 +76,7 @@ public class ChanceCardNotification extends AbstractNotification {
 
     public void onExit() {
 
-        Player player = gameStateController.getMovingPlayer();
+        Player player = viewHandler.getState().getPlayerController().getCurrentPlayer();
         this.setVisible(false);
 
         if (seed == 0) {
@@ -84,65 +84,37 @@ public class ChanceCardNotification extends AbstractNotification {
             player.setMoney(player.getMoney() + 300);
             viewHandler.getState().updateState(GameStates.END_TURN);
 
-            // end the current player's turn
-//            Platform.runLater(() -> {
-//                gameStateController.endPlayerMove();
-//            });
-
         } else if ( seed == 1) {
             // subtract money
             player.setMoney(player.getMoney() - 100);
             viewHandler.getState().updateState(GameStates.END_TURN);
 
-            // end the current player's turn
-//            Platform.runLater(() -> {
-//                gameStateController.endPlayerMove();
-//            });
 
         } else if (seed == 2) {
 
             // advance 3 squares
-            gameStateController.getMovingPlayer().getPlayerMover().setRemainingMoves(3);
-
+            viewHandler.getState().getPlayerController().getCurrentPlayer().getPlayerMover().setRemainingMoves(4);
             viewHandler.getState().updateState(GameStates.MOVING);
 
-//            Platform.runLater(() -> {
-//                gameStateController.handleCurrentPlayerMovement(4);
-//            });
 
         } else if (seed == 3) {
 
             //advance 1 squares
-            gameStateController.getMovingPlayer().getPlayerMover().setRemainingMoves(1);
-
+            viewHandler.getState().getPlayerController().getCurrentPlayer().getPlayerMover().setRemainingMoves(1);
             viewHandler.getState().updateState(GameStates.MOVING);
 
-//            gameStateController.setCurrentGamestate(GameStates.MOVING);
-//            Platform.runLater(() -> {
-//                gameStateController.handleCurrentPlayerMovement(1);
-//            });
         } else if (seed == 4) {
 
             // go back 2 squares
-            gameStateController.getMovingPlayer().getPlayerMover().setRemainingMoves(-2);
-
+            viewHandler.getState().getPlayerController().getCurrentPlayer().getPlayerMover().setRemainingMoves(-2);
             viewHandler.getState().updateState(GameStates.MOVING);
 
-//            gameStateController.setCurrentGamestate(GameStates.MOVING);
-//            Platform.runLater(() -> {
-//                gameStateController.handleCurrentPlayerMovement(-2);
-//            });
         } else if (seed == 5) {
 
             // go back 1 square
-            gameStateController.getMovingPlayer().getPlayerMover().setRemainingMoves(-2);
-
+            viewHandler.getState().getPlayerController().getCurrentPlayer().getPlayerMover().setRemainingMoves(-1);
             viewHandler.getState().updateState(GameStates.MOVING);
 
-//            gameStateController.setCurrentGamestate(GameStates.MOVING);
-//            Platform.runLater(() -> {
-//                gameStateController.handleCurrentPlayerMovement(-1);
-//            });
         }
     }
 

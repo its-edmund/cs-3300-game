@@ -1,15 +1,18 @@
 package window.player;
 
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+
 import java.util.ArrayList;
 
 public class PlayerController {
 
     private ArrayList<Player> players;
-    private int currentPlayerIndex;
+    private IntegerProperty currentPlayerIndex;
 
     public PlayerController() {
         players = new ArrayList<>();
-        currentPlayerIndex = 0;
+        this.currentPlayerIndex = new SimpleIntegerProperty(0);
     }
 
     public void addPlayer(Player player) {
@@ -18,14 +21,17 @@ public class PlayerController {
 
     // Getters and Setters
 
+    public IntegerProperty getCurrentPlayerIndexProperty() {
+        return currentPlayerIndex;
+    }
     public Player getCurrentPlayer() {
-        return players.get(currentPlayerIndex);
+        return players.get(currentPlayerIndex.get());
     }
     public void endCurrentPlayerTurn() {
-        if (currentPlayerIndex == numPlayers() - 1) {
-            currentPlayerIndex = 0;
+        if (currentPlayerIndex.get() == numPlayers() - 1) {
+            currentPlayerIndex.set(0);
         } else {
-            currentPlayerIndex++;
+            currentPlayerIndex.set(currentPlayerIndex.get() + 1);
         }
     }
     public int numPlayers() {

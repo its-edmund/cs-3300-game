@@ -108,18 +108,18 @@ public class ConfigurationController extends AbstractController {
 
             for (Player player : players) {
                 playerController.addPlayer(player);
+            }
 
-                // Update the game state
-                State state = viewHandler.getState();
-                state.setPlayerController(playerController);
-                viewHandler.updateState(state);
+            // Update the game state
+            State state = viewHandler.getState();
+            state.setPlayerController(playerController);
+            viewHandler.updateState(state);
 
-                if (!(players.size() == 0)) {
-                    try {
-                        viewHandler.launchGameboard();
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
-                    }
+            if (!(players.size() == 0)) {
+                try {
+                    viewHandler.launchGameboard();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
                 }
             }
         });

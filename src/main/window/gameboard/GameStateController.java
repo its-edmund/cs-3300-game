@@ -62,16 +62,15 @@ public class GameStateController {
                                 case VICTORY_NOTIFICATION:
                                 case WALL_NOTIFICATION:
                                     prevStateTask = () -> {
-                                        gameboardController.getBoard().getChildren().remove(currentNotification);
-                                        currentNotification = null;
+                                        viewHandler.getState().removeNotification();
                                     };
                                     break;
                                 case END_TURN:
 
-                                    prevStateTask = () -> {
-                                        gameboardController.changePlayerStatus(playerTurnIndex);
-                                    };
-                                    break;
+//                                    prevStateTask = () -> {
+//                                        gameboardController.changePlayerStatus(playerTurnIndex);
+//                                    };
+//                                    break;
                             }
 
                             Runnable currStateTask = null;
@@ -90,25 +89,25 @@ public class GameStateController {
                                 case CHANCE_NOTIFICATION:
 
                                     currStateTask = () -> {
-                                        currentNotification =
-                                                notificationWindowFactory.createNotification(GameStates.CHANCE_NOTIFICATION);
-                                        gameboardController.getBoard().getChildren().add(currentNotification);
+                                        viewHandler.getState().addNotification(
+                                                notificationWindowFactory.createNotification(GameStates.CHANCE_NOTIFICATION)
+                                        );
                                     };
                                     break;
                                 case WALL_NOTIFICATION:
 
                                     currStateTask = () -> {
-                                        currentNotification =
-                                                notificationWindowFactory.createNotification(GameStates.WALL_NOTIFICATION);
-                                        gameboardController.getBoard().getChildren().add(currentNotification);
+                                        viewHandler.getState().addNotification(
+                                                notificationWindowFactory.createNotification(GameStates.WALL_NOTIFICATION)
+                                        );
                                     };
                                     break;
                                 case VICTORY_NOTIFICATION:
 
                                     currStateTask = () -> {
-                                        currentNotification =
-                                                notificationWindowFactory.createNotification(GameStates.VICTORY_NOTIFICATION);
-                                        gameboardController.getBoard().getChildren().add(currentNotification);
+                                        viewHandler.getState().addNotification(
+                                                notificationWindowFactory.createNotification(GameStates.VICTORY_NOTIFICATION)
+                                        );
                                     };
                                     break;
                                 case GAME_OVER:
@@ -122,25 +121,6 @@ public class GameStateController {
                                     };
                                     break;
                             }
-
-//                        if (currentState == GameStates.GAMEBOARD_IDLE) {
-//                            gameboardController.changePlayerStatus(playerTurnIndex);
-//                        } else if (currentState == GameStates.MOVING) {
-//                            handleCurrentPlayerMovement2();
-//                        } else if (currentState == GameStates.CHANCE_NOTIFICATION) {
-//
-//                            currentNotification =
-//                                    notificationWindowFactory.createNotification(GameStates.CHANCE_NOTIFICATION);
-//                            gameboardController.getBoard().getChildren().add(currentNotification);
-//                        } else if (currentState == GameStates.WALL_NOTIFICATION) {
-//                            currentNotification =
-//                                    notificationWindowFactory.createNotification(GameStates.WALL_NOTIFICATION);
-//                            gameboardController.getBoard().getChildren().add(currentNotification);
-//                        } else if (currentState == GameStates.VICTORY_NOTIFICATION) {
-//                            currentNotification =
-//                                    notificationWindowFactory.createNotification(GameStates.VICTORY_NOTIFICATION);
-//                            gameboardController.getBoard().getChildren().add(currentNotification);
-//                        }
 
                             // If we are not immediately leaving the current state,
                             // update previous state
@@ -178,7 +158,6 @@ public class GameStateController {
         Player movingPlayer = viewHandler.getState().getPlayerController().getCurrentPlayer();
         PostMoveActionType action = movingPlayer.getPlayerMover().movePlayer2();
         handlePostMoveAction(action);
-
     }
 
 //    public void resumePlayerMoveAfterWallRemoved() {

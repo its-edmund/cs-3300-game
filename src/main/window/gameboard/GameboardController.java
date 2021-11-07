@@ -37,6 +37,8 @@ public class GameboardController extends AbstractController {
     Dice dice = new Dice(6);
     public ArrayList<Tile> path;
 
+    private static Node currentNotification;
+
     public GameboardController(ViewHandler viewHandler) {
         super(viewHandler);
     }
@@ -47,6 +49,9 @@ public class GameboardController extends AbstractController {
         if (board == null) {
             board = new Pane();
         }
+
+        // add board to the current state
+        viewHandler.getState().setGameBoard(board);
 
         createBoard();
         createPlayerProfiles();
@@ -59,13 +64,6 @@ public class GameboardController extends AbstractController {
                 player.setupPlayerMover(this);
             }
         }
-
-
-        // check the check card
-//        NewChanceCard chanceCard = new NewChanceCard();
-//        chanceCard.setPosX(0.5);
-//        chanceCard.setPosY(0.5);
-//        board.getChildren().addAll(chanceCard);
 
         if (rollDice != null) {
             rollDice.setOnAction(new EventHandler<ActionEvent>() {
@@ -117,8 +115,14 @@ public class GameboardController extends AbstractController {
             viewHandler.addEventOnScreenHeightChange(stageHeightListener);
         }
 
-        // It would be nice if we could get this to work...
-//        viewHandler.triggerResize();
+
+        // Link the playerTurnIndex to updating the UI
+        PlayerController playerController = viewHandler.getState().getPlayerController();
+        playerController.getCurrentPlayerIndexProperty().addListener((obs, oldVal, newVal) -> {
+            changePlayerStatus(newVal.intValue());
+        });
+
+
     }
 
     private void createBoard() {
@@ -334,30 +338,32 @@ public class GameboardController extends AbstractController {
 
         int newLoc = playerToken.getTokenLocation() + moveAmount;
 
-        // Check if the playerToken is at the end
-        if (path != null &&
-                (path.size() - 1 <= newLoc || playerToken.getFinished())) {
-            playerToken.setTokenLocation(0);
-            path.get(playerToken.getTokenLocation()).addToken(playerToken);
+        if (moveAmount >= 0) {
+            // Check if the playerToken is at the end
+            if (path != null &&
+                    (path.size() - 1 <= newLoc || playerToken.getFinished())) {
+                playerToken.setTokenLocation(0);
+                path.get(playerToken.getTokenLocation()).addToken(playerToken);
 
-            playerToken.setFinished(true);
-            newLoc = 0;
-            return 0;
-        }
-
-        // Check for a wall
-        // If the move amount is negative, we won't check for a wall
-        for (int i = 0; i <= moveAmount; i++) {
-            if (path != null) {
-                Tile tile = path.get(playerToken.getTokenLocation() + i);
-
-                if (tile.hasWall() && tile.getWall().isActive()) {
-                    playerToken.setTokenLocation(playerToken.getTokenLocation() + i - 1);
-                    path.get(playerToken.getTokenLocation()).addToken(playerToken);
-                    return moveAmount - i + 1;
-                }
+                playerToken.setFinished(true);
+                newLoc = 0;
+                return 0;
             }
 
+            // Check for a wall
+            // If the move amount is negative, we won't check for a wall
+            for (int i = 0; i <= moveAmount; i++) {
+                if (path != null) {
+                    Tile tile = path.get(playerToken.getTokenLocation() + i);
+
+                    if (tile.hasWall() && tile.getWall().isActive()) {
+                        playerToken.setTokenLocation(playerToken.getTokenLocation() + i - 1);
+                        path.get(playerToken.getTokenLocation()).addToken(playerToken);
+                        return moveAmount - i + 1;
+                    }
+                }
+
+            }
         }
 
         // If there is no wall, move to the location
@@ -411,5 +417,10 @@ public class GameboardController extends AbstractController {
     public Tile getTileTokenOccupies(Token playerToken) {
         return path.get(playerToken.getTokenLocation());
     }
+
+    public static void addNewNotification(Node node) {
+
+    }
+
 
 }
