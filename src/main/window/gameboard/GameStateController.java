@@ -1,13 +1,21 @@
 package window.gameboard;
 
 import NotificationWindow.*;
-import NotificationWindow.ChanceCard.NewChanceCard;
+import NotificationWindow.ChanceCardNotification;
+import core.AppViewHandler;
 import core.GameStates;
 import core.ViewHandler;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.application.Platform;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.Parent;
-import javafx.scene.layout.Pane;
+import javafx.util.Duration;
 import window.player.Player;
 import core.PostMoveActionType;
+
+import java.io.IOException;
 
 public class GameStateController {
 
@@ -16,22 +24,146 @@ public class GameStateController {
 
     private int playerTurnIndex;
 
-    private WallNotification wallNotification;
-    private NewChanceCard chanceCard;
-    private VictoryNotification victoryNotification;
-    private AbstractNotificationWindow notification;
+//    private WallNotification wallNotification;
+//    private ChanceCardNotification chanceCard;
+//    private VictoryNotification victoryNotification;
+//    private AbstractNotificationWindow notification;
+
+    private AbstractNotification currentNotification;
+
+    private NotificationWindowFactory notificationWindowFactory;
 
     public GameStateController(ViewHandler viewHandler, GameboardController gameboardController) {
         this.viewHandler = viewHandler;
         this.gameboardController = gameboardController;
         playerTurnIndex = 0;
 
+        notificationWindowFactory = new NotificationWindowFactory(this, viewHandler);
+
         if (viewHandler != null) {
-            viewHandler.getState().setCurrentState(GameStates.MOVING);
+//            viewHandler.getState().setCurrentState(GameStates.MOVING);
+            viewHandler.getState().updateState(GameStates.GAMEBOARD_IDLE);
         }
+
+        Timeline manageGamestate = new Timeline(new KeyFrame(Duration.seconds(0.5),
+                new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent actionEvent) {
+
+                        if (viewHandler.getState().stateChangeOccurred()) {
+
+                            Runnable prevStateTask = null;
+
+                            // Cleanup from the previous state
+                            switch (viewHandler.getState().getPrevState()) {
+                                // If we exited from a notification,
+                                // remove the notification
+                                case CHANCE_NOTIFICATION:
+                                case VICTORY_NOTIFICATION:
+                                case WALL_NOTIFICATION:
+                                    prevStateTask = () -> {
+                                        gameboardController.getBoard().getChildren().remove(currentNotification);
+                                        currentNotification = null;
+                                    };
+                                    break;
+                                case END_TURN:
+
+                                    prevStateTask = () -> {
+                                        gameboardController.changePlayerStatus(playerTurnIndex);
+                                    };
+                                    break;
+                            }
+
+                            Runnable currStateTask = null;
+
+                            switch (viewHandler.getState().getCurrentState()) {
+                                case MOVING:
+                                    currStateTask = () -> {
+                                        handleCurrentPlayerMovement2();
+                                    };
+                                    break;
+                                case END_TURN:
+                                    currStateTask = () -> {
+                                        endPlayerMove();
+                                    };
+                                    break;
+                                case CHANCE_NOTIFICATION:
+
+                                    currStateTask = () -> {
+                                        currentNotification =
+                                                notificationWindowFactory.createNotification(GameStates.CHANCE_NOTIFICATION);
+                                        gameboardController.getBoard().getChildren().add(currentNotification);
+                                    };
+                                    break;
+                                case WALL_NOTIFICATION:
+
+                                    currStateTask = () -> {
+                                        currentNotification =
+                                                notificationWindowFactory.createNotification(GameStates.WALL_NOTIFICATION);
+                                        gameboardController.getBoard().getChildren().add(currentNotification);
+                                    };
+                                    break;
+                                case VICTORY_NOTIFICATION:
+
+                                    currStateTask = () -> {
+                                        currentNotification =
+                                                notificationWindowFactory.createNotification(GameStates.VICTORY_NOTIFICATION);
+                                        gameboardController.getBoard().getChildren().add(currentNotification);
+                                    };
+                                    break;
+                                case GAME_OVER:
+
+                                    currStateTask = () -> {
+                                        try {
+                                            viewHandler.launchVictoryScreen();
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                        }
+                                    };
+                                    break;
+                            }
+
+//                        if (currentState == GameStates.GAMEBOARD_IDLE) {
+//                            gameboardController.changePlayerStatus(playerTurnIndex);
+//                        } else if (currentState == GameStates.MOVING) {
+//                            handleCurrentPlayerMovement2();
+//                        } else if (currentState == GameStates.CHANCE_NOTIFICATION) {
+//
+//                            currentNotification =
+//                                    notificationWindowFactory.createNotification(GameStates.CHANCE_NOTIFICATION);
+//                            gameboardController.getBoard().getChildren().add(currentNotification);
+//                        } else if (currentState == GameStates.WALL_NOTIFICATION) {
+//                            currentNotification =
+//                                    notificationWindowFactory.createNotification(GameStates.WALL_NOTIFICATION);
+//                            gameboardController.getBoard().getChildren().add(currentNotification);
+//                        } else if (currentState == GameStates.VICTORY_NOTIFICATION) {
+//                            currentNotification =
+//                                    notificationWindowFactory.createNotification(GameStates.VICTORY_NOTIFICATION);
+//                            gameboardController.getBoard().getChildren().add(currentNotification);
+//                        }
+
+                            // If we are not immediately leaving the current state,
+                            // update previous state
+                            viewHandler.getState().updateState();
+
+                            if (prevStateTask != null) {
+                                Platform.runLater(prevStateTask);
+                            }
+                            if (currStateTask != null) {
+                                Platform.runLater(currStateTask);
+                            }
+                        }
+                    }
+
+
+                })
+
+        );
+        manageGamestate.setCycleCount(Timeline.INDEFINITE);
+        manageGamestate.play();
     }
 
-    public void handleDiceRoll(int movement) {
+    public void handleCurrentPlayerMovement(int movement) {
 
         if (viewHandler.getState().getCurrentState() == GameStates.MOVING) {
             Player movingPlayer = getMovingPlayer();
@@ -41,73 +173,78 @@ public class GameStateController {
         }
     }
 
-    public void resumePlayerMoveAfterWallRemoved() {
-        viewHandler.getState().setCurrentState(GameStates.MOVING);
+    public void handleCurrentPlayerMovement2() {
 
-        Player movingPlayer = getMovingPlayer();
-        PostMoveActionType action = movingPlayer.getPlayerMover().resumeMove();
-
+        Player movingPlayer = viewHandler.getState().getPlayerController().getCurrentPlayer();
+        PostMoveActionType action = movingPlayer.getPlayerMover().movePlayer2();
         handlePostMoveAction(action);
+
     }
 
-    public void endPlayerMove() {
-        viewHandler.getState().setCurrentState(GameStates.MOVING);
-        Player movingPlayer = getMovingPlayer();
-        movingPlayer.getPlayerMover().setRemainingMoves(0);
+//    public void resumePlayerMoveAfterWallRemoved() {
+//        viewHandler.getState().setCurrentState(GameStates.MOVING);
+//
+//        Player movingPlayer = getMovingPlayer();
+//        PostMoveActionType action = movingPlayer.getPlayerMover().resumeMove();
+//
+//        handlePostMoveAction(action);
+//    }
 
-        changePlayerTurn();
+    public void endPlayerMove() {
+        viewHandler.getState().getPlayerController().getCurrentPlayer().getPlayerMover().setRemainingMoves(0);
+        viewHandler.getState().getPlayerController().endCurrentPlayerTurn();
+        viewHandler.getState().updateState(GameStates.GAMEBOARD_IDLE);
     }
 
     // Helper Functions
     private void handlePostMoveAction(PostMoveActionType action) {
+
+//        if (currentNotification != null) {
+//            gameboardController.getBoard().getChildren().remove(currentNotification);
+//            currentNotification = null;
+//        }
+
         if (action == PostMoveActionType.CHANCE) {
 
-            chanceCard = new NewChanceCard(this);
-            chanceCard.setPosX(0.5);
-            chanceCard.setPosY(0.5);
-            gameboardController.getBoard().getChildren().addAll(chanceCard);
+            viewHandler.getState().updateState(GameStates.CHANCE_NOTIFICATION);
 
-            viewHandler.getState().setCurrentState(GameStates.WAITING_FOR_RESPONSE);
+//            currentNotification = new ChanceCardNotification(this);
+//            currentNotification.setPosX(0.5);
+//            currentNotification.setPosY(0.5);
+//            gameboardController.getBoard().getChildren().addAll(currentNotification);
+//
+//            viewHandler.getState().setCurrentState(GameStates.WAITING_FOR_RESPONSE);
 
         } else if (action == PostMoveActionType.WALL) {
 
-            wallNotification = new WallNotification(this);
-            wallNotification.setPosX(0.5);
-            wallNotification.setPosY(0.5);
-            gameboardController.getBoard().getChildren().addAll(wallNotification);
+            viewHandler.getState().updateState(GameStates.WALL_NOTIFICATION);
 
-            viewHandler.getState().setCurrentState(GameStates.WAITING_FOR_RESPONSE);
+//            currentNotification = new WallNotification(this);
+//            currentNotification.setPosX(0.5);
+//            currentNotification.setPosY(0.5);
+//            gameboardController.getBoard().getChildren().addAll(currentNotification);
+//
+//            viewHandler.getState().setCurrentState(GameStates.WAITING_FOR_RESPONSE);
 
         } else if (action == PostMoveActionType.VICTORY) {
-            System.out.println("Game over!");
 
-            victoryNotification = new VictoryNotification(viewHandler);
-            victoryNotification.setPosX(0.5);
-            victoryNotification.setPosY(0.5);
-            gameboardController.getBoard().getChildren().addAll(victoryNotification);
+            viewHandler.getState().updateState(GameStates.VICTORY_NOTIFICATION);
+
+//            System.out.println("Game over!");
+//
+//            currentNotification = new VictoryNotification(viewHandler);
+//            currentNotification.setPosX(0.5);
+//            currentNotification.setPosY(0.5);
+//            gameboardController.getBoard().getChildren().addAll(currentNotification);
 
         } else {
-            changePlayerTurn();
+            viewHandler.getState().updateState(GameStates.END_TURN);
+//            changePlayerTurn();
         }
-    }
-    private void changePlayerTurn() {
-        if (playerTurnIndex == viewHandler.getState().getPlayerController().getPlayers().size() - 1) {
-            playerTurnIndex = 0;
-        } else {
-            playerTurnIndex++;
-        }
-
-        gameboardController.changePlayerStatus(playerTurnIndex);
     }
 
     // Getters and Setters
     public Player getMovingPlayer() {
         return viewHandler.getState().getPlayerController().get(playerTurnIndex);
-    }
-    public GameStates getCurrentGamestate() {
-        return viewHandler.getState().getCurrentState();
-    }
-    public void setCurrentGamestate(GameStates currentState) {
-        viewHandler.getState().setCurrentState(currentState);
     }
 }

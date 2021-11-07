@@ -1,36 +1,27 @@
 package window.gameboard;
 
-import NotificationWindow.AbstractNotificationWindow;
-import NotificationWindow.ChanceCard.NewChanceCard;
-import NotificationWindow.NotificationScreenEnum;
-import NotificationWindow.NotificationWindowFactory;
+
 import core.*;
 import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Font;
-import javafx.scene.text.Text;
 import javafx.scene.control.Label;
 import tile.Tile;
 import tile.TileType;
-import tile.Wall;
 import tile.WallOrientationEnum;
 import token.Token;
 import window.dice.Dice;
 import window.player.Player;
 import window.player.PlayerController;
 
-import java.awt.*;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.ResourceBundle;
 
 public class GameboardController extends AbstractController {
@@ -80,9 +71,15 @@ public class GameboardController extends AbstractController {
             rollDice.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent actionEvent) {
-                    dice.rollDice();
-                    diceLabel.setText("Dice Roll: " + dice.getValue());
-                    gameStateController.handleDiceRoll(dice.getValue());
+                    if (viewHandler.getState().getCurrentState() == GameStates.GAMEBOARD_IDLE) {
+                        dice.rollDice();
+                        diceLabel.setText("Dice Roll: " + dice.getValue());
+
+                        Player currentPlayer = viewHandler.getState().getPlayerController().getCurrentPlayer();
+                        currentPlayer.getPlayerMover().setRemainingMoves(dice.getValue());
+                        viewHandler.getState().updateState(GameStates.MOVING);
+                    }
+
                 }
             });
         }
@@ -414,4 +411,5 @@ public class GameboardController extends AbstractController {
     public Tile getTileTokenOccupies(Token playerToken) {
         return path.get(playerToken.getTokenLocation());
     }
+
 }

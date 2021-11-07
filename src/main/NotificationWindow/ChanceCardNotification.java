@@ -1,8 +1,10 @@
-package NotificationWindow.ChanceCard;
+package NotificationWindow;
 
 import core.AppViewHandler;
 import core.GameStates;
 import core.ResizableStackPane;
+import core.ViewHandler;
+import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.input.MouseEvent;
@@ -17,9 +19,10 @@ import window.player.Player;
 
 import java.util.Random;
 
-public class NewChanceCard extends ResizableStackPane {
+public class ChanceCardNotification extends AbstractNotification {
 
     GameStateController gameStateController;
+    ViewHandler viewHandler;
 
     Rectangle promptBox;
     Text promptText;
@@ -39,11 +42,13 @@ public class NewChanceCard extends ResizableStackPane {
             "Go back 1 squares"
     };
 
-    public NewChanceCard(GameStateController gameStateController) {
+    public ChanceCardNotification(GameStateController gameStateController, ViewHandler viewHandler) {
 
         this.gameStateController = gameStateController;
+        this.viewHandler = viewHandler;
 
-        seed = (new Random()).nextInt(NUM_CHANCE_CARDS);
+//        seed = (new Random()).nextInt(NUM_CHANCE_CARDS);
+        seed = 2;
 
         promptBox = new Rectangle();
         promptBox.setWidth(WIDTH);
@@ -72,57 +77,72 @@ public class NewChanceCard extends ResizableStackPane {
     public void onExit() {
 
         Player player = gameStateController.getMovingPlayer();
+        this.setVisible(false);
 
         if (seed == 0) {
             // add money
             player.setMoney(player.getMoney() + 300);
-
-            // make an active interface
-            this.setVisible(false);
+            viewHandler.getState().updateState(GameStates.END_TURN);
 
             // end the current player's turn
-            gameStateController.endPlayerMove();
+//            Platform.runLater(() -> {
+//                gameStateController.endPlayerMove();
+//            });
+
         } else if ( seed == 1) {
             // subtract money
             player.setMoney(player.getMoney() - 100);
-
-            // make an active interface
-            this.setVisible(false);
+            viewHandler.getState().updateState(GameStates.END_TURN);
 
             // end the current player's turn
-            gameStateController.endPlayerMove();
+//            Platform.runLater(() -> {
+//                gameStateController.endPlayerMove();
+//            });
+
         } else if (seed == 2) {
 
-            // make an active interface
-            this.setVisible(false);
-
             // advance 3 squares
-            gameStateController.setCurrentGamestate(GameStates.MOVING);
-            player.getPlayerMover().movePlayer(3);
+            gameStateController.getMovingPlayer().getPlayerMover().setRemainingMoves(3);
+
+            viewHandler.getState().updateState(GameStates.MOVING);
+
+//            Platform.runLater(() -> {
+//                gameStateController.handleCurrentPlayerMovement(4);
+//            });
+
         } else if (seed == 3) {
 
-            // make an active interface
-            this.setVisible(false);
-
             //advance 1 squares
-            gameStateController.setCurrentGamestate(GameStates.MOVING);
-            player.getPlayerMover().movePlayer(1);
+            gameStateController.getMovingPlayer().getPlayerMover().setRemainingMoves(1);
+
+            viewHandler.getState().updateState(GameStates.MOVING);
+
+//            gameStateController.setCurrentGamestate(GameStates.MOVING);
+//            Platform.runLater(() -> {
+//                gameStateController.handleCurrentPlayerMovement(1);
+//            });
         } else if (seed == 4) {
 
-            // make an active interface
-            this.setVisible(false);
-
             // go back 2 squares
-            gameStateController.setCurrentGamestate(GameStates.MOVING);
-            player.getPlayerMover().movePlayer(-2);
+            gameStateController.getMovingPlayer().getPlayerMover().setRemainingMoves(-2);
+
+            viewHandler.getState().updateState(GameStates.MOVING);
+
+//            gameStateController.setCurrentGamestate(GameStates.MOVING);
+//            Platform.runLater(() -> {
+//                gameStateController.handleCurrentPlayerMovement(-2);
+//            });
         } else if (seed == 5) {
 
-            // make an active interface
-            this.setVisible(false);
-
             // go back 1 square
-            gameStateController.setCurrentGamestate(GameStates.MOVING);
-            player.getPlayerMover().movePlayer(-1);
+            gameStateController.getMovingPlayer().getPlayerMover().setRemainingMoves(-2);
+
+            viewHandler.getState().updateState(GameStates.MOVING);
+
+//            gameStateController.setCurrentGamestate(GameStates.MOVING);
+//            Platform.runLater(() -> {
+//                gameStateController.handleCurrentPlayerMovement(-1);
+//            });
         }
     }
 

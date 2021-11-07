@@ -1,6 +1,7 @@
 package NotificationWindow;
 
 import core.AppViewHandler;
+import core.GameStates;
 import core.ResizableStackPane;
 import core.ViewHandler;
 import javafx.event.ActionEvent;
@@ -14,9 +15,10 @@ import tile.Wall;
 import window.gameboard.GameStateController;
 import window.player.Player;
 
-public class WallNotification extends ResizableStackPane {
+public class WallNotification extends AbstractNotification {
 
     private GameStateController gameStateController;
+    private ViewHandler viewHandler;
 
     private Rectangle promptBox;
     private Button yesButton;
@@ -28,15 +30,12 @@ public class WallNotification extends ResizableStackPane {
     private final double WIDTH = 250;
     private final double HEIGHT = 100;
 
-    private ButtonDecision decision;
-
-    public WallNotification(GameStateController gameStateController) {
+    public WallNotification(GameStateController gameStateController, ViewHandler viewHandler) {
 
         super();
 
         this.gameStateController = gameStateController;
-
-        decision = ButtonDecision.UNDECIDED;
+        this.viewHandler = viewHandler;
 
         promptBox = new Rectangle();
 
@@ -83,8 +82,8 @@ public class WallNotification extends ResizableStackPane {
         errorMessage.setTranslateY(-5);
         errorMessage.setVisible(false);
 
-        // Makes the notification visible
-        setActive(true);
+//        AppViewHandler.primaryStage.titleProperty().bind(this.widthProperty().asString());
+//        AppViewHandler.primaryStage.titleProperty().bind(this.heightProperty().asString());
 
         this.getChildren().addAll(promptBox, yesButton, noButton,
                 barrierDescription, errorMessage);
@@ -104,18 +103,23 @@ public class WallNotification extends ResizableStackPane {
             Wall blockingWall = currentPlayer.getBlockingTile().getWall();
             blockingWall.setActive(false);
 
-            gameStateController.resumePlayerMoveAfterWallRemoved();
-            setActive(false);
+//            gameStateController.resumePlayerMoveAfterWallRemoved();
+            viewHandler.getState().updateState(GameStates.MOVING);
         }
 
+//        this.setVisible(false);
     }
     private void handleNoButton() {
 
         Player currentPlayer = gameStateController.getMovingPlayer();
-        currentPlayer.getPlayerMover().movePlayer(-3);
+        currentPlayer.getPlayerMover().setRemainingMoves(-3);
 
-        gameStateController.endPlayerMove();
-        setActive(false);
+        viewHandler.getState().updateState(GameStates.MOVING);
+
+//        gameStateController.setCurrentGamestate(GameStates.MOVING);
+//        gameStateController.handleCurrentPlayerMovement(-3);
+
+//        this.setVisible(false);
     }
 
     // Show error message
@@ -123,16 +127,6 @@ public class WallNotification extends ResizableStackPane {
         errorMessage.setVisible(true);
     }
 
-    // Button Decision
-    public ButtonDecision getDecision() {
-        return decision;
-    }
-    public void setActive(boolean active) {
-        this.setVisible(active);
-    }
-    public boolean getActive() {
-        return this.isVisible();
-    }
     public double getPosX() {
 
         double screenWidth = (AppViewHandler.getScreenWidth() - this.getWidth());

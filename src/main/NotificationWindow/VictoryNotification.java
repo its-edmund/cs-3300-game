@@ -14,7 +14,7 @@ import window.gameboard.GameStateController;
 
 import java.io.IOException;
 
-public class VictoryNotification extends ResizableStackPane {
+public class VictoryNotification extends AbstractNotification {
 
     ViewHandler viewHandler;
 

@@ -2,9 +2,16 @@ package core;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
+import com.sun.tools.javac.Main;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.beans.value.ChangeListener;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
@@ -13,17 +20,21 @@ import core.AbstractWindow;
 import core.ViewHandler;
 import core.AppPaths;
 
+import javafx.stage.WindowEvent;
+import javafx.util.Duration;
 import state.State;
 import window.ScreenEnum;
 import window.WindowFactory;
 
 public class AppViewHandler implements ViewHandler {
 
-    private static Stage primaryStage;
+    public static Stage primaryStage;
     private final ResourceBundle bundle;
     private final WindowFactory windowFactory;
 
     private State state;
+
+    private static ArrayList<Resizable> newNodes;
 
     public static final double INITIAL_SCREEN_WIDTH = 600;
     public static final double INITIAL_SCREEN_HEIGHT = 400;
@@ -33,6 +44,20 @@ public class AppViewHandler implements ViewHandler {
         this.bundle = bundle;
         this.windowFactory = new WindowFactory();
         this.state = new State();
+
+        newNodes = new ArrayList<>();
+
+        Timeline resizeNewNodes = new Timeline(new KeyFrame(Duration.seconds(0.1),
+            new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent actionEvent) {
+                    resizeNewNodes();
+                }
+            })
+        );
+
+        resizeNewNodes.setCycleCount(Timeline.INDEFINITE);
+        resizeNewNodes.play();
 
     }
 
@@ -54,6 +79,7 @@ public class AppViewHandler implements ViewHandler {
         this.state = state;
     }
 
+    // Screen Size Methods
     @Override
     public double[] getScreenDimensions() {
         if (primaryStage != null) {
@@ -64,7 +90,6 @@ public class AppViewHandler implements ViewHandler {
         }
 
     }
-
     public static double getScreenWidth() {
         if (primaryStage != null) {
             return primaryStage.getWidth();
@@ -72,7 +97,6 @@ public class AppViewHandler implements ViewHandler {
             return -1;
         }
     }
-
     public static double getScreenHeight() {
         if (primaryStage != null) {
             return primaryStage.getHeight();
@@ -81,11 +105,30 @@ public class AppViewHandler implements ViewHandler {
         }
     }
 
+    // Resizing Methods
+
+    public static void addNewNodeToResize(Resizable node) {
+        newNodes.add(node);
+    }
+
+    public static void resizeNewNodes() {
+        if (!newNodes.isEmpty()) {
+            for (Resizable node : newNodes) {
+                if (!node.justAddedToScene()) {
+                    node.onResize();
+                }
+            }
+
+            // empty the newNodes arrayList
+            newNodes = new ArrayList<>();
+        }
+    }
+
+
     @Override
     public void addEventOnScreenWidthChange(ChangeListener<Number> event) {
         primaryStage.widthProperty().addListener(event);
     }
-
     @Override
     public void addEventOnScreenHeightChange(ChangeListener<Number> event) {
         primaryStage.heightProperty().addListener(event);

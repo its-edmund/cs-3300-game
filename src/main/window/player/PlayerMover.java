@@ -1,6 +1,5 @@
 package window.player;
 
-import NotificationWindow.ButtonDecision;
 import NotificationWindow.WallNotification;
 import core.AbstractMoveMediator;
 import core.PostMoveActionType;
@@ -53,6 +52,43 @@ public class PlayerMover extends AbstractMoveMediator {
 
         return postMoveActionType;
     }
+
+    public PostMoveActionType movePlayer2() {
+        int i = gameboardController.moveToken(player.getToken(), remainingMoves);
+
+        PostMoveActionType postMoveActionType = PostMoveActionType.NORMAL;
+
+        if (i == 0) {
+//            System.out.println("Movement succeeded.");
+
+            TileType tileType = gameboardController.getTileTokenOccupies(player.getToken()).getType();
+
+            if (tileType == TileType.CHANCE) {
+                postMoveActionType = PostMoveActionType.CHANCE;
+            } else if (tileType == TileType.GAIN_MONEY) {
+                player.setMoney(player.getMoney() + 100);
+                postMoveActionType = PostMoveActionType.NORMAL;
+            } else if (tileType == TileType.LOSE_MONEY) {
+                player.setMoney(player.getMoney() - 100);
+                postMoveActionType = PostMoveActionType.NORMAL;
+            } else if (tileType == TileType.END) {
+                postMoveActionType = PostMoveActionType.VICTORY;
+            }
+        } else {
+//            System.out.println("Movement blocked.");
+            remainingMoves = i;
+
+//            WallNotification wallNotification = new WallNotification(this);
+//            Pane board = gameboardController.getBoard();
+//            board.getChildren().addAll(wallNotification);
+//            gameboardController.repositionChild(0.5, 0.5, wallNotification);
+
+            postMoveActionType = PostMoveActionType.WALL;
+        }
+
+        return postMoveActionType;
+    }
+
 
     public PostMoveActionType resumeMove() {
         PostMoveActionType postMoveActionType = movePlayer(remainingMoves);
