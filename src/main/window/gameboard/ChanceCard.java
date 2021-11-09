@@ -1,5 +1,6 @@
 package window.gameboard;
 
+import core.ResizableStackPane;
 import core.ViewHandler;
 import javafx.beans.value.ChangeListener;
 import javafx.scene.control.Label;
@@ -10,7 +11,7 @@ import javafx.scene.text.Font;
 
 import java.util.ArrayList;
 
-public class ChanceCard extends StackPane {
+public class ChanceCard extends ResizableStackPane {
 
     private ArrayList<Rectangle> chanceCards;
     private Rectangle movingChanceCard;
@@ -66,42 +67,42 @@ public class ChanceCard extends StackPane {
 
         }
 
-        ChangeListener<Number> stageWidthListener = (observable, oldVal, newVal) -> {
-            relocate(viewHandler);
-        };
-        ChangeListener<Number> stageHeightListener = (observable, oldVal, newVal) -> {
-            relocate(viewHandler);
-        };
-
-        viewHandler.addEventOnScreenWidthChange(stageWidthListener);
-        viewHandler.addEventOnScreenHeightChange(stageHeightListener);
+//        ChangeListener<Number> stageWidthListener = (observable, oldVal, newVal) -> {
+//            relocate(viewHandler);
+//        };
+//        ChangeListener<Number> stageHeightListener = (observable, oldVal, newVal) -> {
+//            relocate(viewHandler);
+//        };
+//
+//        viewHandler.addEventOnScreenWidthChange(stageWidthListener);
+//        viewHandler.addEventOnScreenHeightChange(stageHeightListener);
 
     }
 
-    public void relocate(ViewHandler viewHandler) {
-        double screenWidth = (viewHandler.getScreenDimensions()[0] - 16);
-        double screenHeight = (viewHandler.getScreenDimensions()[1] - 40 - 85);
-
-        double newX = posX * screenHeight + (screenWidth - screenHeight) / 2;
-        double newY = posY * screenHeight;
-
-        super.relocate(newX, newY);
-        this.setTranslateX((-1 * WIDTH) / 2.0);
-        this.setTranslateY((-1 * HEIGHT) / 2.0);
-
-        this.setWidth(WIDTH * viewHandler.getScreenDimensions()[1] / 400);
-        this.setHeight(HEIGHT * viewHandler.getScreenDimensions()[1] / 400);
-
-        for (Rectangle rectangle : chanceCards) {
-            rectangle.setScaleX(viewHandler.getScreenDimensions()[1] / 400);
-            rectangle.setScaleY(viewHandler.getScreenDimensions()[1] / 400);
-        }
-
-        movingChanceCard.setScaleX(1.3 * viewHandler.getScreenDimensions()[1] / 400);
-        movingChanceCard.setScaleY(1.3* viewHandler.getScreenDimensions()[1] / 400);
-        movingChanceCardText.scaleXProperty().set(1 * viewHandler.getScreenDimensions()[1] / 400);
-        movingChanceCardText.scaleYProperty().set(1 * viewHandler.getScreenDimensions()[1] / 400);
-    }
+//    public void relocate(ViewHandler viewHandler) {
+//        double screenWidth = (viewHandler.getScreenDimensions()[0] - 16);
+//        double screenHeight = (viewHandler.getScreenDimensions()[1] - 40 - 85);
+//
+//        double newX = posX * screenHeight + (screenWidth - screenHeight) / 2;
+//        double newY = posY * screenHeight;
+//
+//        super.relocate(newX, newY);
+//        this.setTranslateX((-1 * WIDTH) / 2.0);
+//        this.setTranslateY((-1 * HEIGHT) / 2.0);
+//
+//        this.setWidth(WIDTH * viewHandler.getScreenDimensions()[1] / 400);
+//        this.setHeight(HEIGHT * viewHandler.getScreenDimensions()[1] / 400);
+//
+//        for (Rectangle rectangle : chanceCards) {
+//            rectangle.setScaleX(viewHandler.getScreenDimensions()[1] / 400);
+//            rectangle.setScaleY(viewHandler.getScreenDimensions()[1] / 400);
+//        }
+//
+//        movingChanceCard.setScaleX(1.3 * viewHandler.getScreenDimensions()[1] / 400);
+//        movingChanceCard.setScaleY(1.3* viewHandler.getScreenDimensions()[1] / 400);
+//        movingChanceCardText.scaleXProperty().set(1 * viewHandler.getScreenDimensions()[1] / 400);
+//        movingChanceCardText.scaleYProperty().set(1 * viewHandler.getScreenDimensions()[1] / 400);
+//    }
 
     public void showChanceCard() {
 

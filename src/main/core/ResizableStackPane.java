@@ -55,10 +55,19 @@ public class ResizableStackPane extends StackPane implements Resizable {
     }
 
     public double getPosX() {
-        return posX;
+        double screenWidth = (AppViewHandler.getScreenWidth() - this.getWidth());
+        double screenHeight = (AppViewHandler.getScreenHeight() - this.getHeight()
+                - 40 - 85);
+        double newX = posX * screenHeight + (screenWidth - screenHeight) / 2;
+
+        return newX;
     }
     public double getPosY() {
-        return posY;
+        double screenHeight = (AppViewHandler.getScreenHeight() - this.getHeight()
+                - 40 - 85);
+        double newY = posY * screenHeight;
+
+        return newY;
     }
 
 }

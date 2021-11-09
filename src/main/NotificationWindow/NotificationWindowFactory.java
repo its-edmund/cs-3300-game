@@ -19,19 +19,23 @@ public class NotificationWindowFactory {
         AbstractNotification notification = null;
 
         if (notificationType == GameStates.CHANCE_NOTIFICATION) {
-            notification = new ChanceCardNotification(gameStateController, viewHandler);
+            notification = new ChanceCardNotification2(viewHandler);
             notification.setPosX(0.5);
             notification.setPosY(0.5);
 
         } else if (notificationType == GameStates.WALL_NOTIFICATION) {
-            notification = new WallNotification(gameStateController, viewHandler);
+            notification = new WallNotification2(viewHandler);
             notification.setPosX(0.5);
             notification.setPosY(0.5);
 
         } else if (notificationType == GameStates.VICTORY_NOTIFICATION) {
-            notification = new VictoryNotification(viewHandler);
+            notification = new VictoryNotification2(viewHandler);
             notification.setPosX(0.5);
             notification.setPosY(0.5);
+        } else if (notificationType == GameStates.EXAMPLE_NOTIFICATION) {
+//            notification = new AbstractClickNotification(viewHandler);
+//            notification.setPosX(0.5);
+//            notification.setPosY(0.5);
         }
 
         return notification;

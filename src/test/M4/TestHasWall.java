@@ -1,6 +1,6 @@
 package M4;
 
-import NotificationWindow.WallNotification;
+
 import org.junit.Test;
 import tile.Tile;
 import tile.WallOrientationEnum;

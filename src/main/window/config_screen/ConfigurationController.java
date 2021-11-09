@@ -87,7 +87,7 @@ public class ConfigurationController extends AbstractController {
                         seenColors.contains(color)))) {
                     players.add(new Player(text,
                             color,
-                            1000,
+                            10000,
                             (AppViewHandler) viewHandler));
                     seenNames.add(text);
                     seenColors.add(color);

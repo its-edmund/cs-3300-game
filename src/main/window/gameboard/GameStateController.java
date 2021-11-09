@@ -61,6 +61,7 @@ public class GameStateController {
                                 case CHANCE_NOTIFICATION:
                                 case VICTORY_NOTIFICATION:
                                 case WALL_NOTIFICATION:
+                                case EXAMPLE_NOTIFICATION:
                                     prevStateTask = () -> {
                                         viewHandler.getState().removeNotification();
                                     };
@@ -110,6 +111,13 @@ public class GameStateController {
                                         );
                                     };
                                     break;
+                                case EXAMPLE_NOTIFICATION:
+                                    currStateTask = () -> {
+                                        viewHandler.getState().addNotification(
+                                                notificationWindowFactory.createNotification(GameStates.EXAMPLE_NOTIFICATION)
+                                        );
+                                    };
+                                    break;
                                 case GAME_OVER:
 
                                     currStateTask = () -> {
@@ -118,6 +126,13 @@ public class GameStateController {
                                         } catch (IOException e) {
                                             e.printStackTrace();
                                         }
+                                    };
+                                    break;
+                                case GAMEBOARD_IDLE:
+                                    currStateTask = () -> {
+                                        viewHandler.getState().addNotification(
+                                                notificationWindowFactory.createNotification(GameStates.VICTORY_NOTIFICATION)
+                                        );
                                     };
                                     break;
                             }
@@ -178,47 +193,22 @@ public class GameStateController {
     // Helper Functions
     private void handlePostMoveAction(PostMoveActionType action) {
 
-//        if (currentNotification != null) {
-//            gameboardController.getBoard().getChildren().remove(currentNotification);
-//            currentNotification = null;
-//        }
-
-        if (action == PostMoveActionType.CHANCE) {
-
-            viewHandler.getState().updateState(GameStates.CHANCE_NOTIFICATION);
-
-//            currentNotification = new ChanceCardNotification(this);
-//            currentNotification.setPosX(0.5);
-//            currentNotification.setPosY(0.5);
-//            gameboardController.getBoard().getChildren().addAll(currentNotification);
-//
-//            viewHandler.getState().setCurrentState(GameStates.WAITING_FOR_RESPONSE);
-
-        } else if (action == PostMoveActionType.WALL) {
-
-            viewHandler.getState().updateState(GameStates.WALL_NOTIFICATION);
-
-//            currentNotification = new WallNotification(this);
-//            currentNotification.setPosX(0.5);
-//            currentNotification.setPosY(0.5);
-//            gameboardController.getBoard().getChildren().addAll(currentNotification);
-//
-//            viewHandler.getState().setCurrentState(GameStates.WAITING_FOR_RESPONSE);
-
-        } else if (action == PostMoveActionType.VICTORY) {
-
-            viewHandler.getState().updateState(GameStates.VICTORY_NOTIFICATION);
-
-//            System.out.println("Game over!");
-//
-//            currentNotification = new VictoryNotification(viewHandler);
-//            currentNotification.setPosX(0.5);
-//            currentNotification.setPosY(0.5);
-//            gameboardController.getBoard().getChildren().addAll(currentNotification);
-
-        } else {
-            viewHandler.getState().updateState(GameStates.END_TURN);
-//            changePlayerTurn();
+        switch (action) {
+            case CHANCE:
+                viewHandler.getState().updateState(GameStates.CHANCE_NOTIFICATION);
+                break;
+            case WALL:
+                viewHandler.getState().updateState(GameStates.WALL_NOTIFICATION);
+                break;
+            case VICTORY:
+                viewHandler.getState().updateState(GameStates.VICTORY_NOTIFICATION);
+                break;
+            case EXAMPLE_NOTIFICATION:
+                viewHandler.getState().updateState(GameStates.EXAMPLE_NOTIFICATION);
+                break;
+            default:
+                viewHandler.getState().updateState(GameStates.END_TURN);
+                break;
         }
     }
 

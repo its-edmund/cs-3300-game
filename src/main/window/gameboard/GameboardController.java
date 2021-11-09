@@ -146,6 +146,8 @@ public class GameboardController extends AbstractController {
             y = -1 * x + 0.6;
 
             Tile tile = new Tile(x, y, this);
+            tile.setPosX(x);
+            tile.setPosY(y);
 
             if ((path.size() % 2) == 0) {
                 tile.setType(TileType.LOSE_MONEY);
@@ -174,6 +176,8 @@ public class GameboardController extends AbstractController {
             y = x + 0.4;
 
             Tile tile = new Tile(x, y, this);
+            tile.setPosX(x);
+            tile.setPosY(y);
 
             if ((path.size() % 2) == 0) {
                 tile.setType(TileType.LOSE_MONEY);
@@ -202,6 +206,8 @@ public class GameboardController extends AbstractController {
             y = -1 * x + 1.4;
 
             Tile tile = new Tile(x, y, this);
+            tile.setPosX(x);
+            tile.setPosY(y);
 
             if ((path.size() % 2) == 0) {
                 tile.setType(TileType.LOSE_MONEY);
@@ -230,6 +236,8 @@ public class GameboardController extends AbstractController {
             y = x - 0.4;
 
             Tile tile = new Tile(x, y, this);
+            tile.setPosX(x);
+            tile.setPosY(y);
 
             if ((path.size() % 2) == 0) {
                 tile.setType(TileType.LOSE_MONEY);
@@ -252,6 +260,11 @@ public class GameboardController extends AbstractController {
         path.get(34).setType(TileType.CHANCE);
         path.get(41).setType(TileType.CHANCE);
         path.get(49).setType(TileType.CHANCE);
+
+//        path.get(2).setType(TileType.LAUNCH_EXAMPLE_NOTIFICATION);
+//        path.get(3).setType(TileType.LAUNCH_EXAMPLE_NOTIFICATION);
+//        path.get(4).setType(TileType.LAUNCH_EXAMPLE_NOTIFICATION);
+//        path.get(5).setType(TileType.LAUNCH_EXAMPLE_NOTIFICATION);
 
         path.get(7).addWall(WallOrientationEnum.TOP);
         path.get(30).addWall(WallOrientationEnum.LEFT);
@@ -290,6 +303,8 @@ public class GameboardController extends AbstractController {
     private void createChanceCards() {
         if (viewHandler != null) {
             chanceCard = new ChanceCard(viewHandler);
+            chanceCard.setPosX(0.5);
+            chanceCard.setPosY(0.5);
             board.getChildren().add(chanceCard);
         }
 

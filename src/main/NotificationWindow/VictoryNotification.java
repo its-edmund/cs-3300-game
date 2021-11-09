@@ -16,8 +16,6 @@ import java.io.IOException;
 
 public class VictoryNotification extends AbstractNotification {
 
-    ViewHandler viewHandler;
-
     Rectangle promptBox;
     Text promptText;
     Button button;
@@ -26,7 +24,7 @@ public class VictoryNotification extends AbstractNotification {
     private final double HEIGHT = 100;
 
     public VictoryNotification(ViewHandler viewHandler) {
-        this.viewHandler = viewHandler;
+        super(viewHandler);
 
         promptBox = new Rectangle();
         promptBox.setWidth(WIDTH);
@@ -62,20 +60,20 @@ public class VictoryNotification extends AbstractNotification {
         }
     }
 
-    public double getPosX() {
-
-        double screenWidth = (AppViewHandler.getScreenWidth() - this.getWidth());
-        double screenHeight = (AppViewHandler.getScreenHeight() - this.getHeight()
-                - 40 - 85);
-        double newX = posX * screenHeight + (screenWidth - screenHeight) / 2;
-
-        return newX;
-    }
-    public double getPosY() {
-        double screenHeight = (AppViewHandler.getScreenHeight() - this.getHeight()
-                - 40 - 85);
-        double newY = posY * screenHeight;
-
-        return newY;
-    }
+//    public double getPosX() {
+//
+//        double screenWidth = (AppViewHandler.getScreenWidth() - this.getWidth());
+//        double screenHeight = (AppViewHandler.getScreenHeight() - this.getHeight()
+//                - 40 - 85);
+//        double newX = posX * screenHeight + (screenWidth - screenHeight) / 2;
+//
+//        return newX;
+//    }
+//    public double getPosY() {
+//        double screenHeight = (AppViewHandler.getScreenHeight() - this.getHeight()
+//                - 40 - 85);
+//        double newY = posY * screenHeight;
+//
+//        return newY;
+//    }
 }

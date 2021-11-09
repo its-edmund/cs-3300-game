@@ -1,6 +1,6 @@
 package window.player;
 
-import NotificationWindow.WallNotification;
+//import NotificationWindow.WallNotification;
 import core.AbstractMoveMediator;
 import core.PostMoveActionType;
 import javafx.scene.layout.Pane;
@@ -27,26 +27,30 @@ public class PlayerMover extends AbstractMoveMediator {
 
             TileType tileType = gameboardController.getTileTokenOccupies(player.getToken()).getType();
 
-            if (tileType == TileType.CHANCE) {
-                postMoveActionType = PostMoveActionType.CHANCE;
-            } else if (tileType == TileType.GAIN_MONEY) {
-                player.setMoney(player.getMoney() + 100);
-                postMoveActionType = PostMoveActionType.NORMAL;
-            } else if (tileType == TileType.LOSE_MONEY) {
-                player.setMoney(player.getMoney() - 100);
-                postMoveActionType = PostMoveActionType.NORMAL;
-            } else if (tileType == TileType.END) {
-                postMoveActionType = PostMoveActionType.VICTORY;
+            switch (tileType) {
+                case CHANCE:
+                    postMoveActionType = PostMoveActionType.CHANCE;
+                    break;
+                case GAIN_MONEY:
+                    player.setMoney(player.getMoney() + 100);
+                    postMoveActionType = PostMoveActionType.NORMAL;
+                    break;
+                case LOSE_MONEY:
+                    player.setMoney(player.getMoney() - 100);
+                    postMoveActionType = PostMoveActionType.NORMAL;
+                    break;
+                case END:
+                    postMoveActionType = PostMoveActionType.VICTORY;
+                    break;
+                case LAUNCH_EXAMPLE_NOTIFICATION:
+                    postMoveActionType = PostMoveActionType.EXAMPLE_NOTIFICATION;
+                    break;
             }
+
         } else {
-//            System.out.println("Movement blocked.");
+            // Movement blocked by wall
+
             remainingMoves = i;
-
-//            WallNotification wallNotification = new WallNotification(this);
-//            Pane board = gameboardController.getBoard();
-//            board.getChildren().addAll(wallNotification);
-//            gameboardController.repositionChild(0.5, 0.5, wallNotification);
-
             postMoveActionType = PostMoveActionType.WALL;
         }
 
@@ -63,16 +67,24 @@ public class PlayerMover extends AbstractMoveMediator {
             // Movement not blocked: see if we landed on a special tile
             TileType tileType = gameboardController.getTileTokenOccupies(player.getToken()).getType();
 
-            if (tileType == TileType.CHANCE) {
-                postMoveActionType = PostMoveActionType.CHANCE;
-            } else if (tileType == TileType.GAIN_MONEY) {
-                player.setMoney(player.getMoney() + 100);
-                postMoveActionType = PostMoveActionType.NORMAL;
-            } else if (tileType == TileType.LOSE_MONEY) {
-                player.setMoney(player.getMoney() - 100);
-                postMoveActionType = PostMoveActionType.NORMAL;
-            } else if (tileType == TileType.END) {
-                postMoveActionType = PostMoveActionType.VICTORY;
+            switch (tileType) {
+                case CHANCE:
+                    postMoveActionType = PostMoveActionType.CHANCE;
+                    break;
+                case GAIN_MONEY:
+                    player.setMoney(player.getMoney() + 100);
+                    postMoveActionType = PostMoveActionType.NORMAL;
+                    break;
+                case LOSE_MONEY:
+                    player.setMoney(player.getMoney() - 100);
+                    postMoveActionType = PostMoveActionType.NORMAL;
+                    break;
+                case END:
+                    postMoveActionType = PostMoveActionType.VICTORY;
+                    break;
+                case LAUNCH_EXAMPLE_NOTIFICATION:
+                    postMoveActionType = PostMoveActionType.EXAMPLE_NOTIFICATION;
+                    break;
             }
         } else {
             // Movement is blocked by a wall
@@ -82,7 +94,6 @@ public class PlayerMover extends AbstractMoveMediator {
 
         return postMoveActionType;
     }
-
 
     public PostMoveActionType resumeMove() {
         PostMoveActionType postMoveActionType = movePlayer(remainingMoves);
