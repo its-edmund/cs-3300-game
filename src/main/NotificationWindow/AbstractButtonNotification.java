@@ -3,19 +3,22 @@ package NotificationWindow;
 import core.ViewHandler;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.layout.HBox;
 
 import java.util.ArrayList;
 
 public abstract class AbstractButtonNotification extends AbstractNotification {
 
-    protected ArrayList<Button> buttons;
+    protected HBox buttons;
     private int indexOfButtonClicked;
 
     public AbstractButtonNotification(ViewHandler viewHandler, int numButtons) {
         super(viewHandler);
 
-        buttons = new ArrayList<>();
+        buttons = new HBox();
+        buttons.setAlignment(Pos.CENTER);
 
         for (int i = 0; i < numButtons; i++) {
             Button button = new Button();
@@ -32,10 +35,10 @@ public abstract class AbstractButtonNotification extends AbstractNotification {
                 }
             });
 
-            buttons.add(button);
-            this.getChildren().add(button);
+            buttons.getChildren().add(button);
         }
 
+        layoutBox.getChildren().add(buttons);
     }
 
     private void recordButtonClicked(int i) {
@@ -44,6 +47,10 @@ public abstract class AbstractButtonNotification extends AbstractNotification {
 
     public int getIndexOfButtonClicked() {
         return indexOfButtonClicked;
+    }
+
+    public Button getButton(int i) {
+        return (Button)buttons.getChildren().get(i);
     }
 
 }

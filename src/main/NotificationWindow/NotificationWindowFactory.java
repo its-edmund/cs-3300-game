@@ -19,23 +19,27 @@ public class NotificationWindowFactory {
         AbstractNotification notification = null;
 
         if (notificationType == GameStates.CHANCE_NOTIFICATION) {
-            notification = new ChanceCardNotification2(viewHandler);
+            notification = new ChanceCardNotification(viewHandler);
             notification.setPosX(0.5);
             notification.setPosY(0.5);
 
         } else if (notificationType == GameStates.WALL_NOTIFICATION) {
-            notification = new WallNotification2(viewHandler);
+            notification = new WallNotification(viewHandler);
             notification.setPosX(0.5);
             notification.setPosY(0.5);
 
         } else if (notificationType == GameStates.VICTORY_NOTIFICATION) {
-            notification = new VictoryNotification2(viewHandler);
+            notification = new VictoryNotification(viewHandler);
             notification.setPosX(0.5);
             notification.setPosY(0.5);
-        } else if (notificationType == GameStates.EXAMPLE_NOTIFICATION) {
-//            notification = new AbstractClickNotification(viewHandler);
-//            notification.setPosX(0.5);
-//            notification.setPosY(0.5);
+        } else if (notificationType == GameStates.NEW_TURN) {
+            notification = new PlayerTurnNotification(viewHandler);
+            notification.setPosX(0.5);
+            notification.setPosY(0.4);
+        } else if (notificationType == GameStates.MASTERPIECE_RULES) {
+            notification = new GameRulesNotification(viewHandler);
+            notification.setPosX(0.5);
+            notification.setPosY(0.5);
         }
 
         return notification;

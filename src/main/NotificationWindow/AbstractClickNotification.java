@@ -22,7 +22,7 @@ public abstract class AbstractClickNotification extends AbstractNotification {
             }
         };
         //Adding event Filter
-        notificationBox.addEventFilter(MouseEvent.MOUSE_CLICKED, eventHandler);
+        this.addEventFilter(MouseEvent.MOUSE_CLICKED, eventHandler);
     }
 
 //    public void onExit() {

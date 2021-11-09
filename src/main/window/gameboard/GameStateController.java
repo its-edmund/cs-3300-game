@@ -1,8 +1,6 @@
 package window.gameboard;
 
 import NotificationWindow.*;
-import NotificationWindow.ChanceCardNotification;
-import core.AppViewHandler;
 import core.GameStates;
 import core.ViewHandler;
 import javafx.animation.KeyFrame;
@@ -10,7 +8,6 @@ import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.Parent;
 import javafx.util.Duration;
 import window.player.Player;
 import core.PostMoveActionType;
@@ -40,12 +37,9 @@ public class GameStateController {
 
         notificationWindowFactory = new NotificationWindowFactory(this, viewHandler);
 
-        if (viewHandler != null) {
-//            viewHandler.getState().setCurrentState(GameStates.MOVING);
-            viewHandler.getState().updateState(GameStates.GAMEBOARD_IDLE);
-        }
+        viewHandler.getState().updateState(GameStates.MASTERPIECE_RULES);
 
-        Timeline manageGamestate = new Timeline(new KeyFrame(Duration.seconds(0.5),
+        Timeline manageGamestate = new Timeline(new KeyFrame(Duration.seconds(0.1),
                 new EventHandler<ActionEvent>() {
                     @Override
                     public void handle(ActionEvent actionEvent) {
@@ -62,6 +56,8 @@ public class GameStateController {
                                 case VICTORY_NOTIFICATION:
                                 case WALL_NOTIFICATION:
                                 case EXAMPLE_NOTIFICATION:
+                                case NEW_TURN:
+                                case MASTERPIECE_RULES:
                                     prevStateTask = () -> {
                                         viewHandler.getState().removeNotification();
                                     };
@@ -129,9 +125,19 @@ public class GameStateController {
                                     };
                                     break;
                                 case GAMEBOARD_IDLE:
+
+                                    break;
+                                case NEW_TURN:
                                     currStateTask = () -> {
                                         viewHandler.getState().addNotification(
-                                                notificationWindowFactory.createNotification(GameStates.VICTORY_NOTIFICATION)
+                                                notificationWindowFactory.createNotification(GameStates.NEW_TURN)
+                                        );
+                                    };
+                                    break;
+                                case MASTERPIECE_RULES:
+                                    currStateTask = () -> {
+                                        viewHandler.getState().addNotification(
+                                                notificationWindowFactory.createNotification(GameStates.MASTERPIECE_RULES)
                                         );
                                     };
                                     break;
@@ -187,7 +193,7 @@ public class GameStateController {
     public void endPlayerMove() {
         viewHandler.getState().getPlayerController().getCurrentPlayer().getPlayerMover().setRemainingMoves(0);
         viewHandler.getState().getPlayerController().endCurrentPlayerTurn();
-        viewHandler.getState().updateState(GameStates.GAMEBOARD_IDLE);
+        viewHandler.getState().updateState(GameStates.NEW_TURN);
     }
 
     // Helper Functions

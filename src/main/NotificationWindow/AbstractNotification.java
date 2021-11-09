@@ -4,6 +4,8 @@ import core.ResizableStackPane;
 import core.ViewHandler;
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
@@ -16,6 +18,7 @@ public abstract class AbstractNotification extends ResizableStackPane {
 
     protected ViewHandler viewHandler;
 
+    protected VBox layoutBox;
     protected Rectangle notificationBox;
     protected Text notificationText;
 
@@ -31,6 +34,9 @@ public abstract class AbstractNotification extends ResizableStackPane {
 
         this.viewHandler = viewHandler;
 
+        layoutBox = new VBox();
+        layoutBox.setAlignment(Pos.CENTER);
+
         notificationBox = new Rectangle();
         notificationBox.setWidth(DEFAULT_WIDTH);
         notificationBox.setHeight(DEFAULT_HEIGHT);
@@ -41,8 +47,9 @@ public abstract class AbstractNotification extends ResizableStackPane {
         notificationText = new Text();
         notificationText.setFont(new Font(DEFAULT_TEXT_SIZE));
         notificationText.setText(DEFAULT_TEXT);
+        layoutBox.getChildren().add(notificationText);
 
-        this.getChildren().addAll(notificationBox, notificationText);
+        this.getChildren().addAll(notificationBox, layoutBox);
     }
 
     public abstract void onExit();

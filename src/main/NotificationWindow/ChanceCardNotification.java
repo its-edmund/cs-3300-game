@@ -1,38 +1,16 @@
 package NotificationWindow;
 
-import core.AppViewHandler;
 import core.GameStates;
-import core.ResizableStackPane;
 import core.ViewHandler;
-import javafx.application.Platform;
-import javafx.event.EventHandler;
-import javafx.fxml.FXML;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Font;
-import javafx.scene.text.Text;
-import window.gameboard.GameStateController;
-import window.gameboard.GameboardController;
 import window.player.Player;
 
 import java.util.Random;
 
-public class ChanceCardNotification extends AbstractNotification {
-
-    GameStateController gameStateController;
-    ViewHandler viewHandler;
-
-    Rectangle promptBox;
-    Text promptText;
-
-    private final double WIDTH = 100;
-    private final double HEIGHT = 50;
+public class ChanceCardNotification extends AbstractClickNotification {
 
     private final int NUM_CHANCE_CARDS = 6;
     private int seed;
-
     private String[] chanceCardTextDescriptions = {
             "Payday! You win $300!",
             "Oh no! You lose $100!",
@@ -43,42 +21,20 @@ public class ChanceCardNotification extends AbstractNotification {
     };
 
     public ChanceCardNotification(ViewHandler viewHandler) {
-
         super(viewHandler);
 
-        this.gameStateController = gameStateController;
-        this.viewHandler = viewHandler;
+        notificationBox.setWidth(120);
+        notificationBox.setHeight(75);
+        notificationBox.setFill(Color.CORNFLOWERBLUE);
 
         seed = (new Random()).nextInt(NUM_CHANCE_CARDS);
-
-        promptBox = new Rectangle();
-        promptBox.setWidth(WIDTH);
-        promptBox.setHeight(HEIGHT);
-        promptBox.setFill(Color.CORNFLOWERBLUE);
-        promptBox.setStroke(Color.BLACK);
-
-        promptText = new Text();
-        promptText.setFont(new Font(10));
-        promptText.setText(chanceCardTextDescriptions[seed]);
-
-        this.getChildren().addAll(promptBox, promptText);
-
-        //Creating the mouse event handler
-        EventHandler<MouseEvent> eventHandler = new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent e) {
-                System.out.println("Chance card clicked!");
-                onExit();
-            }
-        };
-        //Adding event Filter
-        promptBox.addEventFilter(MouseEvent.MOUSE_CLICKED, eventHandler);
+        notificationText.setText(chanceCardTextDescriptions[seed]);
     }
 
+    @Override
     public void onExit() {
 
         Player player = viewHandler.getState().getPlayerController().getCurrentPlayer();
-        this.setVisible(false);
 
         if (seed == 0) {
             // add money
