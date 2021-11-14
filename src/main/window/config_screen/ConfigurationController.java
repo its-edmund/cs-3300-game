@@ -36,6 +36,7 @@ public class ConfigurationController extends AbstractController {
     @FXML private Button startGame;
 
     public ArrayList<Player> players;
+    private Color[] defaultColors = {Color.DARKGREEN, Color.BLUE, Color.VIOLET, Color.RED};
 
     public ConfigurationController(ViewHandler viewHandler) {
         super(viewHandler);
@@ -47,9 +48,14 @@ public class ConfigurationController extends AbstractController {
     public void initialize(URL location, ResourceBundle bundle) {
 
         for (int i = 1; i <= 2; i++) {
+            // Initialize text field
             TextField t = new TextField();
-            ColorPicker cp = new ColorPicker();
             t.setPromptText(("Player " + Integer.toString(i) + " name"));
+
+            // Initialize ColorPicker
+            ColorPicker cp = new ColorPicker();
+            cp.setValue(defaultColors[i - 1]);
+
             playerNames.getChildren().add(t);
             colorPickers.getChildren().add(cp);
         }
@@ -61,6 +67,8 @@ public class ConfigurationController extends AbstractController {
                 int p = btn.getText().charAt(0) - '0';
                 for (int i = 1; i <= p; i++) {
                     ColorPicker cp = new ColorPicker();
+                    cp.setValue(defaultColors[i - 1]);
+
                     TextField t = new TextField();
                     t.setPromptText(("Player " + Integer.toString(i) + " name"));
                     playerNames.getChildren().add(t);

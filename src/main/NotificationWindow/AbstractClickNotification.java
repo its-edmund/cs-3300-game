@@ -25,9 +25,4 @@ public abstract class AbstractClickNotification extends AbstractNotification {
         this.addEventFilter(MouseEvent.MOUSE_CLICKED, eventHandler);
     }
 
-//    public void onExit() {
-//        System.out.println("Exited clickable notification!");
-//        viewHandler.getState().updateState(GameStates.END_TURN);
-//    }
-
 }

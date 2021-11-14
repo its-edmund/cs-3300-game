@@ -3,6 +3,7 @@ package NotificationWindow;
 import core.GameStates;
 import core.ViewHandler;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 import window.player.Player;
 
 import java.util.Random;
@@ -28,7 +29,9 @@ public class ChanceCardNotification extends AbstractClickNotification {
         notificationBox.setFill(Color.CORNFLOWERBLUE);
 
         seed = (new Random()).nextInt(NUM_CHANCE_CARDS);
-        notificationText.setText(chanceCardTextDescriptions[seed]);
+
+        setNotificationText(new Text(chanceCardTextDescriptions[seed]));
+//        notificationText.setText(chanceCardTextDescriptions[seed]);
     }
 
     @Override

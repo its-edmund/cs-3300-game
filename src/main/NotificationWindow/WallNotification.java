@@ -20,7 +20,8 @@ public class WallNotification extends AbstractButtonNotification {
         notificationBox.setWidth(250);
         notificationBox.setHeight(100);
 
-        notificationText.setText("Pay $500 to remove the barrier?");
+        setNotificationText(new Text("Pay $500 to remove the barrier?"));
+//        notificationText.setText("Pay $500 to remove the barrier?");
 
         errorMessage = new Text();
         errorMessage.setText("ERROR: Insufficient funds!");

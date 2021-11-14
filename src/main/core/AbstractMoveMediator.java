@@ -13,5 +13,5 @@ public abstract class AbstractMoveMediator {
         this.player = player;
     }
 
-    public abstract PostMoveActionType movePlayer(int moveAmount);
+    public abstract PostMoveActionType movePlayer();
 }

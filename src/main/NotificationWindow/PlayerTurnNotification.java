@@ -3,6 +3,7 @@ package NotificationWindow;
 import core.GameStates;
 import core.ViewHandler;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 import window.player.Player;
 
 public class PlayerTurnNotification extends AbstractTimedNotification {
@@ -16,7 +17,8 @@ public class PlayerTurnNotification extends AbstractTimedNotification {
         Player currentPlayer
                 = viewHandler.getState().getPlayerController().getCurrentPlayer();
 
-        notificationText.setText(currentPlayer.getName() + ", your turn!");
+        setNotificationText(new Text(currentPlayer.getName() + ", your turn!"));
+//        notificationText.setText(currentPlayer.getName() + ", your turn!");
 
         notificationBox.setFill(currentPlayer.getToken().getFill());
 

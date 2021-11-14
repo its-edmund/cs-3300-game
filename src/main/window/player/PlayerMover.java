@@ -16,48 +16,48 @@ public class PlayerMover extends AbstractMoveMediator {
         super(player, gameboardController);
     }
 
-    @Override
-    public PostMoveActionType movePlayer(int moveAmount) {
-        int i = gameboardController.moveToken(player.getToken(), moveAmount);
+//    @Override
+//    public PostMoveActionType movePlayer(int moveAmount) {
+//        int i = gameboardController.moveToken(player.getToken(), moveAmount);
+//
+//        PostMoveActionType postMoveActionType = PostMoveActionType.NORMAL;
+//
+//        if (i == 0) {
+////            System.out.println("Movement succeeded.");
+//
+//            TileType tileType = gameboardController.getTileTokenOccupies(player.getToken()).getType();
+//
+//            switch (tileType) {
+//                case CHANCE:
+//                    postMoveActionType = PostMoveActionType.CHANCE;
+//                    break;
+//                case GAIN_MONEY:
+//                    player.setMoney(player.getMoney() + 100);
+//                    postMoveActionType = PostMoveActionType.NORMAL;
+//                    break;
+//                case LOSE_MONEY:
+//                    player.setMoney(player.getMoney() - 100);
+//                    postMoveActionType = PostMoveActionType.NORMAL;
+//                    break;
+//                case END:
+//                    postMoveActionType = PostMoveActionType.VICTORY;
+//                    break;
+//                case LAUNCH_EXAMPLE_NOTIFICATION:
+//                    postMoveActionType = PostMoveActionType.EXAMPLE_NOTIFICATION;
+//                    break;
+//            }
+//
+//        } else {
+//            // Movement blocked by wall
+//
+//            remainingMoves = i;
+//            postMoveActionType = PostMoveActionType.WALL;
+//        }
+//
+//        return postMoveActionType;
+//    }
 
-        PostMoveActionType postMoveActionType = PostMoveActionType.NORMAL;
-
-        if (i == 0) {
-//            System.out.println("Movement succeeded.");
-
-            TileType tileType = gameboardController.getTileTokenOccupies(player.getToken()).getType();
-
-            switch (tileType) {
-                case CHANCE:
-                    postMoveActionType = PostMoveActionType.CHANCE;
-                    break;
-                case GAIN_MONEY:
-                    player.setMoney(player.getMoney() + 100);
-                    postMoveActionType = PostMoveActionType.NORMAL;
-                    break;
-                case LOSE_MONEY:
-                    player.setMoney(player.getMoney() - 100);
-                    postMoveActionType = PostMoveActionType.NORMAL;
-                    break;
-                case END:
-                    postMoveActionType = PostMoveActionType.VICTORY;
-                    break;
-                case LAUNCH_EXAMPLE_NOTIFICATION:
-                    postMoveActionType = PostMoveActionType.EXAMPLE_NOTIFICATION;
-                    break;
-            }
-
-        } else {
-            // Movement blocked by wall
-
-            remainingMoves = i;
-            postMoveActionType = PostMoveActionType.WALL;
-        }
-
-        return postMoveActionType;
-    }
-
-    public PostMoveActionType movePlayer2() {
+    public PostMoveActionType movePlayer() {
         int i = gameboardController.moveToken(player.getToken(), remainingMoves);
 
         PostMoveActionType postMoveActionType = PostMoveActionType.NORMAL;
@@ -85,6 +85,9 @@ public class PlayerMover extends AbstractMoveMediator {
                 case LAUNCH_EXAMPLE_NOTIFICATION:
                     postMoveActionType = PostMoveActionType.EXAMPLE_NOTIFICATION;
                     break;
+                case LAUNCH_MINIGAME:
+                    postMoveActionType = PostMoveActionType.MINIGAME;
+                    break;
             }
         } else {
             // Movement is blocked by a wall
@@ -95,11 +98,11 @@ public class PlayerMover extends AbstractMoveMediator {
         return postMoveActionType;
     }
 
-    public PostMoveActionType resumeMove() {
-        PostMoveActionType postMoveActionType = movePlayer(remainingMoves);
-        remainingMoves = 0;
-        return postMoveActionType;
-    }
+//    public PostMoveActionType resumeMove() {
+//        PostMoveActionType postMoveActionType = movePlayer(remainingMoves);
+//        remainingMoves = 0;
+//        return postMoveActionType;
+//    }
 
     // Get / Set remaining moves
     public int getRemainingMoves() {

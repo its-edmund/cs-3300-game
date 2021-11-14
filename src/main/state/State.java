@@ -1,5 +1,6 @@
 package state;
 
+import Minigame.AbstractMinigame;
 import core.GameStates;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
@@ -13,6 +14,7 @@ public class State {
     private Pane board;
 
     private Node currentNotification;
+    private AbstractMinigame currentMinigame;
 
     public PlayerController getPlayerController() {
         return playerController;
@@ -67,11 +69,27 @@ public class State {
         }
     }
     public void addNotification(Node node) {
+
+        // First, remove the current notification
+        removeNotification();
+
         currentNotification = node;
         addNodeToBoard(currentNotification);
     }
     public void removeNotification() {
-        removeNodeFromBoard(currentNotification);
+        if (currentNotification != null)
+            removeNodeFromBoard(currentNotification);
     }
 
+    public AbstractMinigame getCurrentMinigame() {
+        return currentMinigame;
+    }
+
+    public void addMinigame(AbstractMinigame node) {
+        currentMinigame = node;
+        addNodeToBoard(currentMinigame);
+    }
+    public void removeMinigame() {
+        removeNodeFromBoard(currentMinigame);
+    }
 }

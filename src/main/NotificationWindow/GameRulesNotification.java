@@ -2,7 +2,9 @@ package NotificationWindow;
 
 import core.GameStates;
 import core.ViewHandler;
+import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -12,14 +14,12 @@ public class GameRulesNotification extends AbstractButtonNotification{
     public GameRulesNotification(ViewHandler viewHandler) {
         super(viewHandler, 1);
 
-        notificationBox.setWidth(500);
-        notificationBox.setHeight(300);
-
-        notificationText.setText("");
+        notificationBox.setWidth(400);
+        notificationBox.setHeight(250);
 
         getButton(0).setText("OK, lets go!");
 
-        Text line1 = new Text("Welcome to Masterpiece! There are the rules:");
+        Text line1 = new Text("Welcome to Masterpiece! These are the rules:");
         line1.setFont(new Font(14));
 
         Text line2 = new Text("Players take turns rolling the die. The goal of Masterpiece \n" +
@@ -42,11 +42,11 @@ public class GameRulesNotification extends AbstractButtonNotification{
         Text line9 = new Text("This is the goal tile. When you reach this tile, you win and the game is over!");
         line9.setFont(new Font(8));
 
-        layoutBox.getChildren().addAll(line1, line2, line3, line4, line5, line6, line7, line8, line9);
+        setNotificationText(line1, line2, line3, line4, line5, line6, line7, line8, line9);
     }
 
     @Override
     public void onExit() {
-        viewHandler.getState().updateState(GameStates.NEW_TURN);
+        viewHandler.getState().updateState(GameStates.END_TURN);
     }
 }

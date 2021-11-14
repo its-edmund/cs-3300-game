@@ -206,7 +206,7 @@ public class Tile extends ResizableStackPane {
             case END:
                 rectangle.setFill(Color.YELLOW);
                 break;
-            case LAUNCH_EXAMPLE_NOTIFICATION:
+            case LAUNCH_MINIGAME:
                 rectangle.setFill(Color.DARKBLUE);
                 break;
         }

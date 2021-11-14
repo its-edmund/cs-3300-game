@@ -2,6 +2,7 @@ package NotificationWindow;
 
 import core.ViewHandler;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 
 import java.io.IOException;
 
@@ -10,7 +11,8 @@ public class VictoryNotification extends AbstractButtonNotification {
     public VictoryNotification(ViewHandler viewHandler) {
         super(viewHandler, 1);
 
-        notificationText.setText("Victory!");
+//        notificationText.setText("Victory!");
+        setNotificationText(new Text("Victory!"));
 
         notificationBox.setWidth(150);
         notificationBox.setHeight(100);

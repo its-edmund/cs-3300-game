@@ -261,10 +261,13 @@ public class GameboardController extends AbstractController {
         path.get(41).setType(TileType.CHANCE);
         path.get(49).setType(TileType.CHANCE);
 
-//        path.get(2).setType(TileType.LAUNCH_EXAMPLE_NOTIFICATION);
-//        path.get(3).setType(TileType.LAUNCH_EXAMPLE_NOTIFICATION);
-//        path.get(4).setType(TileType.LAUNCH_EXAMPLE_NOTIFICATION);
-//        path.get(5).setType(TileType.LAUNCH_EXAMPLE_NOTIFICATION);
+        path.get(2).setType(TileType.LAUNCH_MINIGAME);
+        path.get(3).setType(TileType.LAUNCH_MINIGAME);
+        path.get(4).setType(TileType.LAUNCH_MINIGAME);
+        path.get(5).setType(TileType.LAUNCH_MINIGAME);
+
+//        path.get(15).setType(TileType.LAUNCH_MINIGAME);
+//        path.get(45).setType(TileType.LAUNCH_MINIGAME);
 
         path.get(7).addWall(WallOrientationEnum.TOP);
         path.get(30).addWall(WallOrientationEnum.LEFT);

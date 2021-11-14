@@ -3,8 +3,10 @@ package NotificationWindow;
 import core.ResizableStackPane;
 import core.ViewHandler;
 import javafx.beans.value.ChangeListener;
+import javafx.collections.ObservableList;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -12,6 +14,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 import java.net.URL;
+import java.util.Collection;
 import java.util.ResourceBundle;
 
 public abstract class AbstractNotification extends ResizableStackPane {
@@ -44,12 +47,20 @@ public abstract class AbstractNotification extends ResizableStackPane {
         notificationBox.setStroke(DEFAULT_STROKE_COLOR);
         notificationBox.setStrokeWidth(3);
 
-        notificationText = new Text();
-        notificationText.setFont(new Font(DEFAULT_TEXT_SIZE));
-        notificationText.setText(DEFAULT_TEXT);
-        layoutBox.getChildren().add(notificationText);
-
         this.getChildren().addAll(notificationBox, layoutBox);
+    }
+
+    public void setNotificationColor(Color color) {
+        notificationBox.setFill(color);
+    }
+    public void setNotificationText(Node... nodes) {
+        layoutBox.getChildren().addAll(nodes);
+    }
+    public void setNotificationWidth(double width) {
+        notificationBox.setWidth(width);
+    }
+    public void setNotificationHeight(double height) {
+        notificationBox.setHeight(height);
     }
 
     public abstract void onExit();

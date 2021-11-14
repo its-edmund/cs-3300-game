@@ -1,5 +1,6 @@
 package Minigame;
 
+import core.GameStates;
 import core.ResizableStackPane;
 import core.ViewHandler;
 import javafx.event.ActionEvent;
@@ -26,6 +27,8 @@ public class ExampleMinigame extends ResizableStackPane {
     public ExampleMinigame(ViewHandler viewHandler) {
         super();
 
+        this.viewHandler = viewHandler;
+
         this.setPosX(0.5);
         this.setPosY(0.5);
 
@@ -47,9 +50,15 @@ public class ExampleMinigame extends ResizableStackPane {
         button.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-
+                onExit();
             }
         });
+
+        this.getChildren().addAll(miniGameScreen, text, button);
+    }
+
+    public void onExit() {
+        viewHandler.getState().updateState(GameStates.END_TURN);
     }
 
 }

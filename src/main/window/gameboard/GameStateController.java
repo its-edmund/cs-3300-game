@@ -1,5 +1,7 @@
 package window.gameboard;
 
+import Minigame.AbstractMinigame;
+import Minigame.MinigameFactory;
 import NotificationWindow.*;
 import core.GameStates;
 import core.ViewHandler;
@@ -8,9 +10,12 @@ import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.control.Label;
+import javafx.scene.paint.Color;
 import javafx.util.Duration;
 import window.player.Player;
 import core.PostMoveActionType;
+import window.player.PlayerController;
 
 import java.io.IOException;
 
@@ -29,6 +34,7 @@ public class GameStateController {
     private AbstractNotification currentNotification;
 
     private NotificationWindowFactory notificationWindowFactory;
+    private MinigameFactory minigameFactory;
 
     public GameStateController(ViewHandler viewHandler, GameboardController gameboardController) {
         this.viewHandler = viewHandler;
@@ -36,6 +42,7 @@ public class GameStateController {
         playerTurnIndex = 0;
 
         notificationWindowFactory = new NotificationWindowFactory(this, viewHandler);
+        minigameFactory = new MinigameFactory(viewHandler);
 
         viewHandler.getState().updateState(GameStates.MASTERPIECE_RULES);
 
@@ -58,16 +65,19 @@ public class GameStateController {
                                 case EXAMPLE_NOTIFICATION:
                                 case NEW_TURN:
                                 case MASTERPIECE_RULES:
+                                case MINIGAME_INSTRUCTIONS:
+                                case MINIGAME_PLAYER_READY:
                                     prevStateTask = () -> {
                                         viewHandler.getState().removeNotification();
                                     };
                                     break;
-                                case END_TURN:
 
-//                                    prevStateTask = () -> {
-//                                        gameboardController.changePlayerStatus(playerTurnIndex);
-//                                    };
-//                                    break;
+                                case MINIGAME_RESULTS:
+                                case END_TURN:
+                                    prevStateTask = () -> {
+                                        viewHandler.getState().removeMinigame();
+                                    };
+                                    break;
                             }
 
                             Runnable currStateTask = null;
@@ -141,6 +151,63 @@ public class GameStateController {
                                         );
                                     };
                                     break;
+                                case MINIGAME_LAUNCH:
+                                    currStateTask = () -> {
+                                        viewHandler.getState().addMinigame(
+                                            minigameFactory.createMinigame(GameStates.MINIGAME_LAUNCH)
+                                        );
+                                    };
+                                    break;
+                                case MINIGAME_INSTRUCTIONS:
+                                    currStateTask = () -> {
+
+                                        AbstractMinigame minigame = viewHandler.getState().getCurrentMinigame();
+
+                                        viewHandler.getState().addNotification(
+                                            notificationWindowFactory.createGenericButtonNotification(
+                                                new Label(minigame.getMinigameTitle()),
+                                                new Label(minigame.getMinigameDescription()),
+                                                "OK, got it!",
+                                                GameStates.MINIGAME_PLAYER_READY,
+                                                250,150
+                                            )
+                                        );
+                                    };
+                                    break;
+                                case MINIGAME_PLAYER_READY:
+                                    currStateTask = () -> {
+
+                                        PlayerController playerController = viewHandler.getState().getPlayerController();
+
+                                        Label desc = new Label(playerController.getCurrentMinigamePlayer().getName()
+                                                + ", are you ready?");
+                                        desc.setTextFill(Color.BLACK);
+
+                                        GenericButtonNotification notification =
+                                                notificationWindowFactory.createGenericButtonNotification(
+                                                        null,
+                                                        desc,
+                                                        "Ready!",
+                                                        GameStates.MINIGAME_PLAY,
+                                                        150,120
+                                                );
+
+                                        notification.setNotificationColor(
+                                                playerController.getCurrentMinigamePlayer().getColor()
+                                        );
+
+                                        viewHandler.getState().addNotification(notification);
+                                    };
+                                    break;
+                                case MINIGAME_PLAY_OVER:
+
+                                    currStateTask = () -> {
+                                        viewHandler.getState().addNotification(
+                                                notificationWindowFactory.createNotification(GameStates.MINIGAME_PLAY_OVER)
+                                        );
+                                    };
+
+                                    break;
                             }
 
                             // If we are not immediately leaving the current state,
@@ -164,20 +231,20 @@ public class GameStateController {
         manageGamestate.play();
     }
 
-    public void handleCurrentPlayerMovement(int movement) {
-
-        if (viewHandler.getState().getCurrentState() == GameStates.MOVING) {
-            Player movingPlayer = getMovingPlayer();
-            PostMoveActionType action = movingPlayer.getPlayerMover().movePlayer(movement);
-
-            handlePostMoveAction(action);
-        }
-    }
+//    public void handleCurrentPlayerMovement(int movement) {
+//
+//        if (viewHandler.getState().getCurrentState() == GameStates.MOVING) {
+//            Player movingPlayer = getMovingPlayer();
+//            PostMoveActionType action = movingPlayer.getPlayerMover().movePlayer(movement);
+//
+//            handlePostMoveAction(action);
+//        }
+//    }
 
     public void handleCurrentPlayerMovement2() {
 
         Player movingPlayer = viewHandler.getState().getPlayerController().getCurrentPlayer();
-        PostMoveActionType action = movingPlayer.getPlayerMover().movePlayer2();
+        PostMoveActionType action = movingPlayer.getPlayerMover().movePlayer();
         handlePostMoveAction(action);
     }
 
@@ -211,6 +278,9 @@ public class GameStateController {
                 break;
             case EXAMPLE_NOTIFICATION:
                 viewHandler.getState().updateState(GameStates.EXAMPLE_NOTIFICATION);
+                break;
+            case MINIGAME:
+                viewHandler.getState().updateState(GameStates.MINIGAME_LAUNCH);
                 break;
             default:
                 viewHandler.getState().updateState(GameStates.END_TURN);

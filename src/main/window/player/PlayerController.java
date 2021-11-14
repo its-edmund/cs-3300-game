@@ -9,10 +9,12 @@ public class PlayerController {
 
     private ArrayList<Player> players;
     private IntegerProperty currentPlayerIndex;
+    private int currentMinigamePlayerIndex;
 
     public PlayerController() {
         players = new ArrayList<>();
         this.currentPlayerIndex = new SimpleIntegerProperty(0);
+        this.currentMinigamePlayerIndex = 0;
     }
 
     public void addPlayer(Player player) {
@@ -27,11 +29,23 @@ public class PlayerController {
     public Player getCurrentPlayer() {
         return players.get(currentPlayerIndex.get());
     }
+    public Player getCurrentMinigamePlayer() {
+        return players.get(currentMinigamePlayerIndex);
+    }
     public void endCurrentPlayerTurn() {
         if (currentPlayerIndex.get() == numPlayers() - 1) {
             currentPlayerIndex.set(0);
         } else {
             currentPlayerIndex.set(currentPlayerIndex.get() + 1);
+        }
+    }
+    public boolean endCurrentMinigamePlayerTurn() {
+        if (currentMinigamePlayerIndex == numPlayers() - 1) {
+            currentMinigamePlayerIndex = 0;
+            return true;
+        } else {
+            currentMinigamePlayerIndex++;
+            return false;
         }
     }
     public int numPlayers() {

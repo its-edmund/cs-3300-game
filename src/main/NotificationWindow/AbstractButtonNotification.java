@@ -1,13 +1,16 @@
 package NotificationWindow;
 
 import core.ViewHandler;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 public abstract class AbstractButtonNotification extends AbstractNotification {
 
@@ -41,14 +44,24 @@ public abstract class AbstractButtonNotification extends AbstractNotification {
         layoutBox.getChildren().add(buttons);
     }
 
+    @Override
+    public void setNotificationText(Node... nodes) {
+        // Call this to add text to the notification
+        super.setNotificationText(nodes);
+
+        // Add and remove the HBox of buttons
+        // This is so the buttons are always positioned at the bottom of the notification
+        layoutBox.getChildren().remove(buttons);
+        layoutBox.getChildren().add(buttons);
+    }
+
+
     private void recordButtonClicked(int i) {
         indexOfButtonClicked = i;
     }
-
-    public int getIndexOfButtonClicked() {
+    protected int getIndexOfButtonClicked() {
         return indexOfButtonClicked;
     }
-
     public Button getButton(int i) {
         return (Button)buttons.getChildren().get(i);
     }
