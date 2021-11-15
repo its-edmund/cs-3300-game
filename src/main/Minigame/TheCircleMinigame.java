@@ -8,6 +8,7 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -50,6 +51,10 @@ public class TheCircleMinigame {
                                 currentTime -= 0.1;
 
                                 if (currentTime <= 0) {
+
+                                    timer.stop();
+                                    cleanup();
+
                                     viewHandler.getState().getPlayerController().
                                             getCurrentMinigamePlayer().setMinigameScore(0);
                                     viewHandler.getState().updateState(GameStates.MINIGAME_INDIVIDUAL_SCORE);
@@ -74,6 +79,15 @@ public class TheCircleMinigame {
 
         minigame.getChildren().addAll(circle1, circle2, circle3, circle4, circle5, circle6);
     }
+
+    public void cleanup() {
+        for (Node node : minigame.getChildren()) {
+            if (node instanceof MinigameCircle) {
+                node.setVisible(false);
+            }
+        }
+    }
+
 
     private class MinigameCircle extends Circle {
 
@@ -114,6 +128,7 @@ public class TheCircleMinigame {
 
                     if (isLast) {
                         timer.stop();
+                        cleanup();
 
                         viewHandler.getState().getPlayerController().
                                 getCurrentMinigamePlayer().setMinigameScore(currentTime * 100);
