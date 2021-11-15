@@ -1,6 +1,7 @@
 package Minigame;
 
 import core.GameStates;
+import core.TestViewHandler;
 import core.ViewHandler;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -26,7 +27,17 @@ public class TheCircleMinigame {
 
         pattern1();
     }
-
+    public TheCircleMinigame() {
+        this.viewHandler = null;
+        this.minigame = null;
+    }
+    public TestViewHandler getViewHandler() {
+        currentTime = 60.0;
+        return new TestViewHandler(0, currentTime);
+    }
+    public void testEndGame(TestViewHandler vh) {
+        vh.setState(1);
+    }
     public void pattern1() {
         double timeLimit = 5.0;
 

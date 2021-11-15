@@ -2,6 +2,7 @@ package Minigame;
 
 import core.GameStates;
 import core.ViewHandler;
+import core.TestViewHandler;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -33,7 +34,18 @@ public class SugarHoneycombMinigame {
 
         shape1();
     }
-
+    public SugarHoneycombMinigame() {
+        this.viewHandler = null;
+        this.minigame = null;
+        currentTime = 0.0;
+    }
+    public TestViewHandler getViewHandler() {
+        currentTime = 60.0;
+        return new TestViewHandler(0, currentTime);
+    }
+    public void testEndGame(TestViewHandler vh) {
+        vh.setState(1);
+    }
     public void shape1() {
 
         timer = new Timeline(
