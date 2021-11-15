@@ -1,7 +1,6 @@
 package window.player;
 
-import NotificationWindow.ButtonDecision;
-import NotificationWindow.WallNotification;
+//import NotificationWindow.WallNotification;
 import core.AbstractMoveMediator;
 import core.PostMoveActionType;
 import javafx.scene.layout.Pane;
@@ -17,48 +16,93 @@ public class PlayerMover extends AbstractMoveMediator {
         super(player, gameboardController);
     }
 
-    @Override
-    public PostMoveActionType movePlayer(int moveAmount) {
-        int i = gameboardController.moveToken(player.getToken(), moveAmount);
+//    @Override
+//    public PostMoveActionType movePlayer(int moveAmount) {
+//        int i = gameboardController.moveToken(player.getToken(), moveAmount);
+//
+//        PostMoveActionType postMoveActionType = PostMoveActionType.NORMAL;
+//
+//        if (i == 0) {
+////            System.out.println("Movement succeeded.");
+//
+//            TileType tileType = gameboardController.getTileTokenOccupies(player.getToken()).getType();
+//
+//            switch (tileType) {
+//                case CHANCE:
+//                    postMoveActionType = PostMoveActionType.CHANCE;
+//                    break;
+//                case GAIN_MONEY:
+//                    player.setMoney(player.getMoney() + 100);
+//                    postMoveActionType = PostMoveActionType.NORMAL;
+//                    break;
+//                case LOSE_MONEY:
+//                    player.setMoney(player.getMoney() - 100);
+//                    postMoveActionType = PostMoveActionType.NORMAL;
+//                    break;
+//                case END:
+//                    postMoveActionType = PostMoveActionType.VICTORY;
+//                    break;
+//                case LAUNCH_EXAMPLE_NOTIFICATION:
+//                    postMoveActionType = PostMoveActionType.EXAMPLE_NOTIFICATION;
+//                    break;
+//            }
+//
+//        } else {
+//            // Movement blocked by wall
+//
+//            remainingMoves = i;
+//            postMoveActionType = PostMoveActionType.WALL;
+//        }
+//
+//        return postMoveActionType;
+//    }
+
+    public PostMoveActionType movePlayer() {
+        int i = gameboardController.moveToken(player.getToken(), remainingMoves);
 
         PostMoveActionType postMoveActionType = PostMoveActionType.NORMAL;
 
         if (i == 0) {
-//            System.out.println("Movement succeeded.");
 
+            // Movement not blocked: see if we landed on a special tile
             TileType tileType = gameboardController.getTileTokenOccupies(player.getToken()).getType();
 
-            if (tileType == TileType.CHANCE) {
-                postMoveActionType = PostMoveActionType.CHANCE;
-            } else if (tileType == TileType.GAIN_MONEY) {
-                player.setMoney(player.getMoney() + 100);
-                postMoveActionType = PostMoveActionType.NORMAL;
-            } else if (tileType == TileType.LOSE_MONEY) {
-                player.setMoney(player.getMoney() - 100);
-                postMoveActionType = PostMoveActionType.NORMAL;
-            } else if (tileType == TileType.END) {
-                postMoveActionType = PostMoveActionType.VICTORY;
+            switch (tileType) {
+                case CHANCE:
+                    postMoveActionType = PostMoveActionType.CHANCE;
+                    break;
+                case GAIN_MONEY:
+                    player.setMoney(player.getMoney() + 100);
+                    postMoveActionType = PostMoveActionType.NORMAL;
+                    break;
+                case LOSE_MONEY:
+                    player.setMoney(player.getMoney() - 100);
+                    postMoveActionType = PostMoveActionType.NORMAL;
+                    break;
+                case END:
+                    postMoveActionType = PostMoveActionType.VICTORY;
+                    break;
+                case LAUNCH_EXAMPLE_NOTIFICATION:
+                    postMoveActionType = PostMoveActionType.EXAMPLE_NOTIFICATION;
+                    break;
+                case LAUNCH_MINIGAME:
+                    postMoveActionType = PostMoveActionType.MINIGAME;
+                    break;
             }
         } else {
-//            System.out.println("Movement blocked.");
+            // Movement is blocked by a wall
             remainingMoves = i;
-
-//            WallNotification wallNotification = new WallNotification(this);
-//            Pane board = gameboardController.getBoard();
-//            board.getChildren().addAll(wallNotification);
-//            gameboardController.repositionChild(0.5, 0.5, wallNotification);
-
             postMoveActionType = PostMoveActionType.WALL;
         }
 
         return postMoveActionType;
     }
 
-    public PostMoveActionType resumeMove() {
-        PostMoveActionType postMoveActionType = movePlayer(remainingMoves);
-        remainingMoves = 0;
-        return postMoveActionType;
-    }
+//    public PostMoveActionType resumeMove() {
+//        PostMoveActionType postMoveActionType = movePlayer(remainingMoves);
+//        remainingMoves = 0;
+//        return postMoveActionType;
+//    }
 
     // Get / Set remaining moves
     public int getRemainingMoves() {

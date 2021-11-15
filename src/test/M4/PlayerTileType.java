@@ -1,6 +1,6 @@
 package M4;
 
-import NotificationWindow.WallNotification;
+//import NotificationWindow.WallNotification;
 import javafx.scene.paint.Color;
 import org.junit.Test;
 import tile.Tile;

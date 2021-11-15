@@ -1,36 +1,27 @@
 package window.gameboard;
 
-import NotificationWindow.AbstractNotificationWindow;
-import NotificationWindow.ChanceCard.NewChanceCard;
-import NotificationWindow.NotificationScreenEnum;
-import NotificationWindow.NotificationWindowFactory;
+
 import core.*;
 import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Font;
-import javafx.scene.text.Text;
 import javafx.scene.control.Label;
 import tile.Tile;
 import tile.TileType;
-import tile.Wall;
 import tile.WallOrientationEnum;
 import token.Token;
 import window.dice.Dice;
 import window.player.Player;
 import window.player.PlayerController;
 
-import java.awt.*;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.ResourceBundle;
 
 public class GameboardController extends AbstractController {
@@ -46,6 +37,8 @@ public class GameboardController extends AbstractController {
     Dice dice = new Dice(6);
     public ArrayList<Tile> path;
 
+    private static Node currentNotification;
+
     public GameboardController(ViewHandler viewHandler) {
         super(viewHandler);
     }
@@ -56,6 +49,9 @@ public class GameboardController extends AbstractController {
         if (board == null) {
             board = new Pane();
         }
+
+        // add board to the current state
+        viewHandler.getState().setGameBoard(board);
 
         createBoard();
         createPlayerProfiles();
@@ -69,20 +65,19 @@ public class GameboardController extends AbstractController {
             }
         }
 
-
-        // check the check card
-//        NewChanceCard chanceCard = new NewChanceCard();
-//        chanceCard.setPosX(0.5);
-//        chanceCard.setPosY(0.5);
-//        board.getChildren().addAll(chanceCard);
-
         if (rollDice != null) {
             rollDice.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent actionEvent) {
-                    dice.rollDice();
-                    diceLabel.setText("Dice Roll: " + dice.getValue());
-                    gameStateController.handleDiceRoll(dice.getValue());
+                    if (viewHandler.getState().getCurrentState() == GameStates.GAMEBOARD_IDLE) {
+                        dice.rollDice();
+                        diceLabel.setText("Dice Roll: " + dice.getValue());
+
+                        Player currentPlayer = viewHandler.getState().getPlayerController().getCurrentPlayer();
+                        currentPlayer.getPlayerMover().setRemainingMoves(dice.getValue());
+                        viewHandler.getState().updateState(GameStates.MOVING);
+                    }
+
                 }
             });
         }
@@ -120,8 +115,14 @@ public class GameboardController extends AbstractController {
             viewHandler.addEventOnScreenHeightChange(stageHeightListener);
         }
 
-        // It would be nice if we could get this to work...
-//        viewHandler.triggerResize();
+
+        // Link the playerTurnIndex to updating the UI
+        PlayerController playerController = viewHandler.getState().getPlayerController();
+        playerController.getCurrentPlayerIndexProperty().addListener((obs, oldVal, newVal) -> {
+            changePlayerStatus(newVal.intValue());
+        });
+
+
     }
 
     private void createBoard() {
@@ -145,6 +146,8 @@ public class GameboardController extends AbstractController {
             y = -1 * x + 0.6;
 
             Tile tile = new Tile(x, y, this);
+            tile.setPosX(x);
+            tile.setPosY(y);
 
             if ((path.size() % 2) == 0) {
                 tile.setType(TileType.LOSE_MONEY);
@@ -173,6 +176,8 @@ public class GameboardController extends AbstractController {
             y = x + 0.4;
 
             Tile tile = new Tile(x, y, this);
+            tile.setPosX(x);
+            tile.setPosY(y);
 
             if ((path.size() % 2) == 0) {
                 tile.setType(TileType.LOSE_MONEY);
@@ -201,6 +206,8 @@ public class GameboardController extends AbstractController {
             y = -1 * x + 1.4;
 
             Tile tile = new Tile(x, y, this);
+            tile.setPosX(x);
+            tile.setPosY(y);
 
             if ((path.size() % 2) == 0) {
                 tile.setType(TileType.LOSE_MONEY);
@@ -229,6 +236,8 @@ public class GameboardController extends AbstractController {
             y = x - 0.4;
 
             Tile tile = new Tile(x, y, this);
+            tile.setPosX(x);
+            tile.setPosY(y);
 
             if ((path.size() % 2) == 0) {
                 tile.setType(TileType.LOSE_MONEY);
@@ -251,6 +260,14 @@ public class GameboardController extends AbstractController {
         path.get(34).setType(TileType.CHANCE);
         path.get(41).setType(TileType.CHANCE);
         path.get(49).setType(TileType.CHANCE);
+
+        path.get(2).setType(TileType.LAUNCH_MINIGAME);
+        path.get(3).setType(TileType.LAUNCH_MINIGAME);
+        path.get(4).setType(TileType.LAUNCH_MINIGAME);
+        path.get(5).setType(TileType.LAUNCH_MINIGAME);
+
+//        path.get(15).setType(TileType.LAUNCH_MINIGAME);
+//        path.get(45).setType(TileType.LAUNCH_MINIGAME);
 
         path.get(7).addWall(WallOrientationEnum.TOP);
         path.get(30).addWall(WallOrientationEnum.LEFT);
@@ -289,6 +306,8 @@ public class GameboardController extends AbstractController {
     private void createChanceCards() {
         if (viewHandler != null) {
             chanceCard = new ChanceCard(viewHandler);
+            chanceCard.setPosX(0.5);
+            chanceCard.setPosY(0.5);
             board.getChildren().add(chanceCard);
         }
 
@@ -337,30 +356,32 @@ public class GameboardController extends AbstractController {
 
         int newLoc = playerToken.getTokenLocation() + moveAmount;
 
-        // Check if the playerToken is at the end
-        if (path != null &&
-                (path.size() - 1 <= newLoc || playerToken.getFinished())) {
-            playerToken.setTokenLocation(0);
-            path.get(playerToken.getTokenLocation()).addToken(playerToken);
+        if (moveAmount >= 0) {
+            // Check if the playerToken is at the end
+            if (path != null &&
+                    (path.size() - 1 <= newLoc || playerToken.getFinished())) {
+                playerToken.setTokenLocation(0);
+                path.get(playerToken.getTokenLocation()).addToken(playerToken);
 
-            playerToken.setFinished(true);
-            newLoc = 0;
-            return 0;
-        }
-
-        // Check for a wall
-        // If the move amount is negative, we won't check for a wall
-        for (int i = 0; i <= moveAmount; i++) {
-            if (path != null) {
-                Tile tile = path.get(playerToken.getTokenLocation() + i);
-
-                if (tile.hasWall() && tile.getWall().isActive()) {
-                    playerToken.setTokenLocation(playerToken.getTokenLocation() + i - 1);
-                    path.get(playerToken.getTokenLocation()).addToken(playerToken);
-                    return moveAmount - i + 1;
-                }
+                playerToken.setFinished(true);
+                newLoc = 0;
+                return 0;
             }
 
+            // Check for a wall
+            // If the move amount is negative, we won't check for a wall
+            for (int i = 0; i <= moveAmount; i++) {
+                if (path != null) {
+                    Tile tile = path.get(playerToken.getTokenLocation() + i);
+
+                    if (tile.hasWall() && tile.getWall().isActive()) {
+                        playerToken.setTokenLocation(playerToken.getTokenLocation() + i - 1);
+                        path.get(playerToken.getTokenLocation()).addToken(playerToken);
+                        return moveAmount - i + 1;
+                    }
+                }
+
+            }
         }
 
         // If there is no wall, move to the location
@@ -414,4 +435,10 @@ public class GameboardController extends AbstractController {
     public Tile getTileTokenOccupies(Token playerToken) {
         return path.get(playerToken.getTokenLocation());
     }
+
+    public static void addNewNotification(Node node) {
+
+    }
+
+
 }

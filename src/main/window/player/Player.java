@@ -26,6 +26,7 @@ public class Player extends Circle {
     private String name;
     private Color color;
     private IntegerProperty money;
+    private double minigameScore;
 
     public Player() {
         this(0, 0);
@@ -77,6 +78,14 @@ public class Player extends Circle {
     public Token getToken() {
         return playerToken;
     }
+
+    public double getMinigameScore() {
+        return minigameScore;
+    }
+    public void setMinigameScore(double score) {
+        this.minigameScore = score;
+    }
+
     public int getCurrentLocation() {
         return this.getToken().getTokenLocation();
     }

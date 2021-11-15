@@ -1,6 +1,7 @@
 package tile;
 
 import core.AppViewHandler;
+import core.ResizableStackPane;
 import core.ViewHandler;
 import javafx.beans.value.ChangeListener;
 import javafx.scene.Node;
@@ -17,7 +18,7 @@ import java.util.Iterator;
 
 import static tile.TileType.*;
 
-public class Tile extends StackPane {
+public class Tile extends ResizableStackPane {
 
     private double width;
     private double height;
@@ -56,16 +57,16 @@ public class Tile extends StackPane {
         this.rectangleText = new Text();
         rectangleText.setFont(new Font(10));
 
-        if (gameboardController.getViewHandler() != null) {
-            ChangeListener<Number> stageWidthListener = (observable, oldVal, newVal) -> {
-                this.relocate(posX, posY, gameboardController);
-            };
-            ChangeListener<Number> stageHeightListener = (observable, oldVal, newVal) -> {
-                this.relocate(posX, posY, gameboardController);
-            };
-            gameboardController.getViewHandler().addEventOnScreenWidthChange(stageWidthListener);
-            gameboardController.getViewHandler().addEventOnScreenHeightChange(stageHeightListener);
-        }
+//        if (gameboardController.getViewHandler() != null) {
+//            ChangeListener<Number> stageWidthListener = (observable, oldVal, newVal) -> {
+//                this.relocate(posX, posY, gameboardController);
+//            };
+//            ChangeListener<Number> stageHeightListener = (observable, oldVal, newVal) -> {
+//                this.relocate(posX, posY, gameboardController);
+//            };
+//            gameboardController.getViewHandler().addEventOnScreenWidthChange(stageWidthListener);
+//            gameboardController.getViewHandler().addEventOnScreenHeightChange(stageHeightListener);
+//        }
 
         this.getChildren().addAll(rectangle, rectangleText);
 
@@ -189,17 +190,28 @@ public class Tile extends StackPane {
     public void setType(TileType tileType) {
         this.type = tileType;
 
-        if (type == CHANCE) {
-            rectangle.setFill(Color.AQUA);
-        } else if (type == GAIN_MONEY) {
-            rectangle.setFill(Color.LIGHTGREEN);
-        } else if (type == LOSE_MONEY) {
-            rectangle.setFill(Color.DARKRED);
-        } else if (type == START) {
-            rectangle.setFill(Color.YELLOW);
-        } else if (type == END) {
-            rectangle.setFill(Color.YELLOW);
+        switch (type) {
+            case CHANCE:
+                rectangle.setFill(Color.AQUA);
+                break;
+            case GAIN_MONEY:
+                rectangle.setFill(Color.LIGHTGREEN);
+                break;
+            case LOSE_MONEY:
+                rectangle.setFill(Color.DARKRED);
+                break;
+            case START:
+                rectangle.setFill(Color.YELLOW);
+                break;
+            case END:
+                rectangle.setFill(Color.YELLOW);
+                break;
+            case LAUNCH_MINIGAME:
+                rectangle.setFill(Color.DARKBLUE);
+                break;
         }
+
+
     }
     public String getText() {
         return rectangleText.getText();
