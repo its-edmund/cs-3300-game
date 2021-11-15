@@ -34,6 +34,8 @@ public abstract class AbstractMinigame extends ResizableStackPane {
 
     public abstract String getMinigameDescription();
 
+    public abstract void launchMinigame(MinigameEnum game);
+
     public abstract void onExit();
 
 }

@@ -37,6 +37,12 @@ public class TheCircleMinigame {
                             @Override
                             public void handle(ActionEvent event) {
                                 currentTime -= 0.1;
+
+                                if (currentTime <= 0) {
+                                    viewHandler.getState().getPlayerController().
+                                            getCurrentMinigamePlayer().setMinigameScore(0);
+                                    viewHandler.getState().updateState(GameStates.MINIGAME_INDIVIDUAL_SCORE);
+                                }
                             }
                         }));
         timer.setCycleCount(Animation.INDEFINITE);
@@ -97,7 +103,14 @@ public class TheCircleMinigame {
 
                     if (isLast) {
                         timer.stop();
-                        System.out.println(currentTime);
+
+                        viewHandler.getState().getPlayerController().
+                                getCurrentMinigamePlayer().setMinigameScore(currentTime * 100);
+
+                        this.setVisible(false);
+
+                        viewHandler.getState().updateState(GameStates.MINIGAME_INDIVIDUAL_SCORE);
+
                     } else {
                         // upon hovering over the first circle, start the timer
                         if (isFirst) {
@@ -112,4 +125,5 @@ public class TheCircleMinigame {
             });
         }
     }
+
 }

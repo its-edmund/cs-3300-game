@@ -3,6 +3,7 @@ package NotificationWindow;
 import core.GameStates;
 import core.ViewHandler;
 import javafx.scene.control.Label;
+import window.player.Player;
 
 public class PlayerMinigameScoreNotification extends AbstractTimedNotification {
 
@@ -12,10 +13,14 @@ public class PlayerMinigameScoreNotification extends AbstractTimedNotification {
         setNotificationWidth(250);
         setNotificationHeight(150);
 
-        Label desc = new Label(viewHandler.getState().getPlayerController().getCurrentMinigamePlayer().getName()
-                + " scored 1 point!\n");
+        Player currentMinigamePlayer =
+                viewHandler.getState().getPlayerController().getCurrentMinigamePlayer();
 
-        setNotificationText(desc);
+        Label title = new Label("Good job, " + currentMinigamePlayer.getName() + "!\n");
+        Label score = new Label("Score: "
+                + currentMinigamePlayer.getMinigameScore() + " points\n");
+
+        setNotificationText(title, score);
     }
 
     @Override

@@ -6,6 +6,8 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 
+import java.util.Random;
+
 
 public class ExampleMinigame2 extends AbstractMinigame {
 
@@ -18,6 +20,11 @@ public class ExampleMinigame2 extends AbstractMinigame {
 
         minigameScreen.setWidth(400);
         minigameScreen.setHeight(250);
+
+        // Randomly generate the next minigame
+        Random rand = new Random();
+        int val = rand.nextInt(MinigameEnum.values().length);
+        viewHandler.getState().setCurrentMinigameType(MinigameEnum.values()[val]);
 
         // Shitty button "minigame"
 
@@ -33,10 +40,22 @@ public class ExampleMinigame2 extends AbstractMinigame {
 //
 //        this.getChildren().add(button);
 
-        new TheCircleMinigame(viewHandler, this);
-
         viewHandler.getState().updateState(GameStates.MINIGAME_INSTRUCTIONS);
     }
+
+    @Override
+    public void launchMinigame(MinigameEnum game) {
+
+        switch (game) {
+            case SUGAR_HONEYCOMB:
+                new SugarHoneycombMinigame(viewHandler, this);
+                break;
+            case THE_CIRCLE_MINIGAME:
+                new TheCircleMinigame(viewHandler, this);
+                break;
+        }
+    }
+
 
     @Override
     public String getMinigameTitle() {

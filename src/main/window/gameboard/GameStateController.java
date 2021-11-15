@@ -1,6 +1,7 @@
 package window.gameboard;
 
 import Minigame.AbstractMinigame;
+import Minigame.MinigameEnum;
 import Minigame.MinigameFactory;
 import NotificationWindow.*;
 import core.GameStates;
@@ -18,6 +19,7 @@ import core.PostMoveActionType;
 import window.player.PlayerController;
 
 import java.io.IOException;
+import java.util.Random;
 
 public class GameStateController {
 
@@ -199,6 +201,14 @@ public class GameStateController {
                                         viewHandler.getState().addNotification(notification);
                                     };
                                     break;
+                                case MINIGAME_PLAY:
+                                    currStateTask = () -> {
+
+                                        viewHandler.getState().getCurrentMinigame().launchMinigame(
+                                                viewHandler.getState().getCurrentMinigameType()
+                                        );
+                                    };
+                                    break;
                                 case MINIGAME_PLAY_OVER:
 
                                     currStateTask = () -> {
@@ -207,6 +217,14 @@ public class GameStateController {
                                         );
                                     };
 
+                                    break;
+                                case MINIGAME_INDIVIDUAL_SCORE:
+
+                                    currStateTask = () -> {
+                                        viewHandler.getState().addNotification(
+                                                notificationWindowFactory.createNotification(GameStates.MINIGAME_PLAY_OVER)
+                                        );
+                                    };
                                     break;
                             }
 

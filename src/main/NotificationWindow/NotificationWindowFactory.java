@@ -47,6 +47,10 @@ public class NotificationWindowFactory {
             notification = new PlayerMinigameScoreNotification(viewHandler);
             notification.setPosX(0.5);
             notification.setPosY(0.5);
+        } else if (notificationType == GameStates.MINIGAME_INDIVIDUAL_SCORE) {
+            notification = new PlayerMinigameScoreNotification(viewHandler);
+            notification.setPosX(0.5);
+            notification.setPosY(0.5);
         }
 
         return notification;

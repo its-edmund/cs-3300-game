@@ -1,6 +1,7 @@
 package state;
 
 import Minigame.AbstractMinigame;
+import Minigame.MinigameEnum;
 import core.GameStates;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
@@ -11,10 +12,12 @@ public class State {
     private PlayerController playerController;
     private GameStates currentState = GameStates.GAMEBOARD_IDLE;
     private GameStates prevState = GameStates.GAMEBOARD_IDLE;
+
     private Pane board;
 
     private Node currentNotification;
     private AbstractMinigame currentMinigame;
+    private MinigameEnum currentMinigameType;
 
     public PlayerController getPlayerController() {
         return playerController;
@@ -84,6 +87,13 @@ public class State {
     public AbstractMinigame getCurrentMinigame() {
         return currentMinigame;
     }
+    public void setCurrentMinigameType(MinigameEnum type) {
+        currentMinigameType = type;
+    }
+    public MinigameEnum getCurrentMinigameType() {
+        return currentMinigameType;
+    }
+
 
     public void addMinigame(AbstractMinigame node) {
         currentMinigame = node;
