@@ -47,17 +47,20 @@ public class AppViewHandler implements ViewHandler {
 
         newNodes = new ArrayList<>();
 
-        Timeline resizeNewNodes = new Timeline(new KeyFrame(Duration.seconds(0.1),
-            new EventHandler<ActionEvent>() {
-                @Override
-                public void handle(ActionEvent actionEvent) {
-                    resizeNewNodes();
-                }
-            })
-        );
+        if (primaryStage != null) {
+            Timeline resizeNewNodes = new Timeline(new KeyFrame(Duration.seconds(0.1),
+                    new EventHandler<ActionEvent>() {
+                        @Override
+                        public void handle(ActionEvent actionEvent) {
+                            resizeNewNodes();
+                        }
+                    })
+            );
 
-        resizeNewNodes.setCycleCount(Timeline.INDEFINITE);
-        resizeNewNodes.play();
+            resizeNewNodes.setCycleCount(Timeline.INDEFINITE);
+            resizeNewNodes.play();
+        }
+
 
     }
 
