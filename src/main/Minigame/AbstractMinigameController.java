@@ -6,16 +6,16 @@ import core.ViewHandler;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
-public abstract class AbstractMinigame extends ResizableStackPane {
+public abstract class AbstractMinigameController extends ResizableStackPane {
 
     protected ViewHandler viewHandler;
 
     protected Rectangle minigameScreen;
 
-    private double WIDTH = 200;
-    private double HEIGHT = 100;
+    public final double WIDTH = 200;
+    public final double HEIGHT = 100;
 
-    public AbstractMinigame(ViewHandler viewHandler) {
+    public AbstractMinigameController(ViewHandler viewHandler) {
 
         super();
 

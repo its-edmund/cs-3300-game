@@ -1,7 +1,6 @@
 package window.gameboard;
 
-import Minigame.AbstractMinigame;
-import Minigame.MinigameEnum;
+import Minigame.AbstractMinigameController;
 import Minigame.MinigameFactory;
 import NotificationWindow.*;
 import core.GameStates;
@@ -19,7 +18,6 @@ import core.PostMoveActionType;
 import window.player.PlayerController;
 
 import java.io.IOException;
-import java.util.Random;
 
 public class GameStateController {
 
@@ -163,7 +161,7 @@ public class GameStateController {
                                 case MINIGAME_INSTRUCTIONS:
                                     currStateTask = () -> {
 
-                                        AbstractMinigame minigame = viewHandler.getState().getCurrentMinigame();
+                                        AbstractMinigameController minigame = viewHandler.getState().getCurrentMinigame();
 
                                         viewHandler.getState().addNotification(
                                             notificationWindowFactory.createGenericButtonNotification(

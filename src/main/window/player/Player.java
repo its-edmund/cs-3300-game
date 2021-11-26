@@ -17,16 +17,13 @@ public class Player extends Circle {
 
     // For now, player representation is a circle
     private static float radius = 20.0f;
-    private int x;
-    private int y;
-    private int locationLimit = 15;
     private Token playerToken;
     private PlayerMover playerMover;
 
     private String name;
     private Color color;
     private IntegerProperty money;
-    private double minigameScore;
+    private int minigameScore;
 
     public Player() {
         this(0, 0);
@@ -43,15 +40,10 @@ public class Player extends Circle {
 
     public Player(int x, int y) {
         super(x, y, radius);
-        this.x = x;
-        this.y = y;
         this.money = new SimpleIntegerProperty(1000);
     }
 
     // Getters and Setters
-    public void setLocationLimit(int limit) {
-        this.locationLimit = limit;
-    }
     public void setupPlayerMover(GameboardController gameboardController) {
         playerMover = new PlayerMover(this, gameboardController);
     }
@@ -82,7 +74,7 @@ public class Player extends Circle {
     public double getMinigameScore() {
         return minigameScore;
     }
-    public void setMinigameScore(double score) {
+    public void setMinigameScore(int score) {
         this.minigameScore = score;
     }
 

@@ -1,6 +1,6 @@
 package state;
 
-import Minigame.AbstractMinigame;
+import Minigame.AbstractMinigameController;
 import Minigame.MinigameEnum;
 import core.GameStates;
 import javafx.scene.Node;
@@ -16,7 +16,7 @@ public class State {
     private Pane board;
 
     private Node currentNotification;
-    private AbstractMinigame currentMinigame;
+    private AbstractMinigameController currentMinigame;
     private MinigameEnum currentMinigameType;
 
     public PlayerController getPlayerController() {
@@ -41,16 +41,6 @@ public class State {
     }
     public boolean stateChangeOccurred() {
         return (currentState != prevState);
-    }
-
-    public boolean didStateTransitionOccur(GameStates oldState, GameStates newState) {
-        return (newState == currentState) && (oldState == prevState);
-    }
-    public boolean transitionedFromState(GameStates oldState) {
-        return (prevState == oldState);
-    }
-    public boolean transitionedToState(GameStates newState) {
-        return (currentState == newState);
     }
 
     // Board Operations
@@ -84,7 +74,8 @@ public class State {
             removeNodeFromBoard(currentNotification);
     }
 
-    public AbstractMinigame getCurrentMinigame() {
+    // Minigame Operations
+    public AbstractMinigameController getCurrentMinigame() {
         return currentMinigame;
     }
     public void setCurrentMinigameType(MinigameEnum type) {
@@ -93,9 +84,7 @@ public class State {
     public MinigameEnum getCurrentMinigameType() {
         return currentMinigameType;
     }
-
-
-    public void addMinigame(AbstractMinigame node) {
+    public void addMinigame(AbstractMinigameController node) {
         currentMinigame = node;
         addNodeToBoard(currentMinigame);
     }
