@@ -1,6 +1,6 @@
 package Minigame;
 
-public interface PostTimerEvent {
+public interface TimerEvent {
 
     void handle();
 }

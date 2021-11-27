@@ -164,7 +164,11 @@ public class AppViewHandler implements ViewHandler {
 
         stage.setTitle(bundle.getString(window.titleBundleKey()));
         stage.setResizable(window.resizable());
-        stage.setScene(new Scene(window.root()));
+
+        Scene scene = new Scene(window.root());
+        scene.getStylesheets().add(AppPaths.CSS + "Token.css");
+
+        stage.setScene(scene);
         stage.show();
     }
 

@@ -9,12 +9,9 @@ import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
-
-import javax.swing.text.View;
 
 public class MinigameTimer {
 
@@ -23,11 +20,12 @@ public class MinigameTimer {
 
     DoubleProperty currentTime;
 
-    PostTimerEvent timerExpiredEvent;
+    TimerEvent timerExpiredEvent;
+    TimerEvent timerUpdatedEvent;
 
     ViewHandler viewHandler;
 
-    public MinigameTimer(ViewHandler viewHandler, PostTimerEvent timerExpiredEvent) {
+    public MinigameTimer(ViewHandler viewHandler, TimerEvent timerExpiredEvent) {
 
         this.timerExpiredEvent = timerExpiredEvent;
         this.viewHandler = viewHandler;
@@ -37,20 +35,7 @@ public class MinigameTimer {
         initializeTimeline(timerExpiredEvent);
     }
 
-    private void initializeTimeline(PostTimerEvent timerExpiredEvent) {
-
-        timer = new Timeline(
-                new KeyFrame(Duration.seconds(0.1),
-                        actionEvent -> {
-                            currentTime.set(currentTime.get() - 0.1);
-
-                            if (currentTime.get() <= 0) {
-
-                                timer.stop();
-
-                                timerExpiredEvent.handle();
-                            }
-        }));
+    private void initializeTimeline(TimerEvent timerExpiredEvent) {
 
         timer = new Timeline(
                 new KeyFrame(Duration.seconds(0.1),
@@ -59,6 +44,9 @@ public class MinigameTimer {
                             @Override
                             public void handle(ActionEvent event) {
                                 currentTime.set(currentTime.get() - 0.1);
+
+                                if (timerUpdatedEvent != null)
+                                    timerUpdatedEvent.handle();
 
                                 if (currentTime.get() <= 0) {
 
@@ -110,4 +98,9 @@ public class MinigameTimer {
     public void cleanup() {
         viewHandler.getState().getCurrentMinigame().getChildren().remove(timerText);
     }
+
+    public void setTimerUpdatedEvent(TimerEvent timerUpdatedEvent) {
+        this.timerUpdatedEvent = timerUpdatedEvent;
+    }
+
 }

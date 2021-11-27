@@ -1,23 +1,31 @@
 package token;
 
 import core.AppViewHandler;
+import core.SVGShapes;
 import javafx.beans.value.ChangeListener;
+import javafx.css.Styleable;
+import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.SVGPath;
 
-public class Token extends Circle {
+import javax.sound.sampled.Control;
+
+public class Token extends SVGPath {
 
     private int tokenLocation;
     private final int RADIUS = 3;
     private boolean isFinished;
 
     public Token(Color color, AppViewHandler viewHandler) {
-
         super();
 
-        this.setStroke(Color.BLACK);
-        this.setFill(color);
-        this.setRadius(RADIUS);
+        setContent(SVGShapes.CAR);
+        setFill(color);
+        setStroke(Color.BLACK);
+        setScaleX(0.4);
+        setScaleY(0.4);
+        setRotate(-45);
 
         this.tokenLocation = 0;
 

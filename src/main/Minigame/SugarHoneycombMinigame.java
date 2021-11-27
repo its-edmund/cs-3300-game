@@ -8,30 +8,40 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
-public class SugarHoneycombMinigame {
+import java.util.ArrayList;
+
+public class SugarHoneycombMinigame extends AbstractMinigame{
 
     private ViewHandler viewHandler;
-    private MinigameController minigame;
+    private MinigameController minigameController;
     private MinigameTimer timer;
+    MinigameScore score;
+    MinigameTokenController minigameTokenController;
 
     private double currentTime;
 
-    private double score = 0;
     private int tokenCount = 0;
     private int tokenTotal;
 
-    public SugarHoneycombMinigame(ViewHandler viewHandler, MinigameController minigame) {
-        this.viewHandler = viewHandler;
-        this.minigame = minigame;
-
-        currentTime = 3.0;
-
-        shape1();
-    }
+//    public SugarHoneycombMinigame(ViewHandler viewHandler, MinigameController minigame) {
+//        this.viewHandler = viewHandler;
+//        this.minigame = minigame;
+//
+//        currentTime = 3.0;
+//
+//        shape1();
+//    }
     public SugarHoneycombMinigame() {
         this.viewHandler = null;
-        this.minigame = null;
+        this.minigameController = null;
         currentTime = 0.0;
+    }
+
+    public SugarHoneycombMinigame(ViewHandler viewHandler, MinigameController minigameController) {
+        this.viewHandler = viewHandler;
+        this.minigameController = minigameController;
+
+        selectedMinigame = 1;
     }
 
     public void shape1() {
@@ -39,52 +49,47 @@ public class SugarHoneycombMinigame {
         timer = new MinigameTimer(viewHandler, this::endMinigameRound);
         timer.setTime(5.0);
 
-        tokenTotal = 18;
+        score = new MinigameScore(viewHandler);
 
-        for (int y = -30; y < 30; y+=10) {
-            int x = -30;
-            Token token = new Token(x, y);
-            token.setVisible(false);
-            minigame.getChildren().add(token);
+        ArrayList<int[]> pattern = new ArrayList<>();
+
+        for (int x = -30, y = -30; y < 30; y+=10) {
+            pattern.add(new int[]{x,y});
         }
-
-        for (int y = -30; y < 30; y+=10) {
-            int x = 30;
-            Token token = new Token(x, y);
-            token.setVisible(false);
-            minigame.getChildren().add(token);
+        for (int x = 30, y = -30; y < 30; y+=10) {
+            pattern.add(new int[]{x,y});
         }
-
         for (int x = -30, y = -30; x < 30 && y < 30; x += 10, y+= 10) {
-            Token token = new Token(x, y);
-            token.setVisible(false);
-            minigame.getChildren().add(token);
+            pattern.add(new int[] {x,y});
         }
 
-        StartingCircle startingCircle = new StartingCircle();
-        minigame.getChildren().add(startingCircle);
-        startingCircle.setTranslateX(-30);
-        startingCircle.setTranslateY(-30);
+        int[] startingCoords = new int[] {-30, -30};
+
+        minigameTokenController = new MinigameTokenController(pattern, startingCoords);
 
     }
 
     public void endMinigameRound() {
-        cleanup();
 
         viewHandler.getState().getPlayerController().
-                getCurrentMinigamePlayer().setMinigameScore((int)score);
+                getCurrentMinigamePlayer().setMinigameScore((int)score.getScore());
 
         viewHandler.getState().updateState(GameStates.MINIGAME_INDIVIDUAL_SCORE);
+
+        cleanup();
     }
 
     public void cleanup() {
-        for (Node node : minigame.getChildren()) {
-            if (node instanceof Token) {
-                node.setVisible(false);
-            }
-        }
+
+        minigameTokenController.removeTokensFromBoard();
 
         timer.cleanup();
+        score.cleanup();
+    }
+
+    private void updateScore() {
+        minigameTokenController.incrementNumTokensCollected();
+        score.setScore(minigameTokenController.getNumTokensCollected() * 10);
     }
 
     public TestViewHandler getViewHandler() {
@@ -95,52 +100,174 @@ public class SugarHoneycombMinigame {
         vh.setState(1);
     }
 
-    private class Token extends Circle {
+    @Override
+    public String getMinigameTitle() {
+        return "Sugar Honeycomb Minigame";
+    }
 
-        public Token(double x, double y) {
+    @Override
+    public String getMinigameDescription() {
+        return "In this minigame, your goal is to collect as many yellow tokens as possible in the given time period. However, you " +
+                "must avoid touching the black outline! If you do so, your score will be halved! " +
+                "The player that collects the most tokens wins!";
+    }
+
+    @Override
+    public void playMinigame() {
+        switch (selectedMinigame) {
+            case 1:
+                shape1();
+                break;
+        }
+    }
+
+
+    private class MinigameTokenController {
+        ArrayList<Token> tokens;
+        StartingCircle startingCircle;
+        int numTokensCollected;
+
+        public MinigameTokenController(ArrayList<int[]> coordList, int[] startingCoords) {
+
+            numTokensCollected = 0;
+
+            initializeTokens(coordList.size());
+            setCirclePositions(coordList, startingCoords);
+            addTokensToBoard();
+        }
+
+        private void initializeTokens(int numTokens) {
+            tokens = new ArrayList<>();
+
+            for (int i = 0; i < numTokens; i++) {
+                tokens.add(new Token());
+            }
+
+            startingCircle = new StartingCircle();
+        }
+
+        private void setCirclePositions(ArrayList<int[]> coordList, int[] startingCoords) {
+            for (int i = 0; i < coordList.size(); i++) {
+                int[] coords = coordList.get(i);
+                tokens.get(i).setTranslateX(coords[0]);
+                tokens.get(i).setTranslateY(coords[1]);
+            }
+
+            startingCircle.setTranslateX(startingCoords[0]);
+            startingCircle.setTranslateY(startingCoords[1]);
+        }
+
+        private void addTokensToBoard() {
+            minigameController.getChildren().addAll(tokens);
+            minigameController.getChildren().add(startingCircle);
+
+            setTokenActivity(false);
+        }
+
+        public void removeTokensFromBoard() {
+
+            numTokensCollected = 0;
+
+            minigameController.getChildren().removeAll(tokens);
+            minigameController.getChildren().remove(startingCircle);
+        }
+
+        private void setTokenActivity(boolean activity) {
+            for (Token token : tokens) {
+                token.setActive(activity);
+            }
+        }
+
+        public int getNumTokensCollected() {
+            return numTokensCollected;
+        }
+
+        public void incrementNumTokensCollected() {
+            if (numTokensCollected < tokens.size())
+                numTokensCollected++;
+        }
+
+        public boolean collectedAllTokens() {
+            return numTokensCollected == tokens.size();
+        }
+
+    }
+
+    private class Token extends CollectableCircle {
+
+        private boolean isCollected;
+
+        public Token() {
             super();
 
             this.setRadius(5);
             this.setFill(Color.YELLOW);
             this.setStroke(Color.BLACK);
 
-            this.setTranslateX(x);
-            this.setTranslateY(y);
+            setTranslateX(0);
+            setTranslateY(0);
+
+            setActive(false);
+            setCollected(false);
 
             this.addEventFilter(MouseEvent.MOUSE_ENTERED_TARGET, event -> {
-                if (this.isVisible() &&
+                if (!isCollected && isActive() &&
                         viewHandler.getState().getCurrentState() == GameStates.MINIGAME_PLAY) {
 
-                    this.setVisible(false);
-                    tokenCount++;
-                    score += 10;
+                    setCollected(true);
+                    setActive(false);
 
-                    if (tokenCount == tokenTotal) {
+                    updateScore();
+
+                    if (minigameTokenController.collectedAllTokens()) {
                         timer.stopTimer();
                     }
                 }
             });
         }
 
+
+        @Override
+        public boolean isActive() {
+            return isVisible();
+        }
+
+        @Override
+        public void setActive(boolean active) {
+            setVisible(active);
+        }
+
+        @Override
+        public boolean isCollected() {
+            return isCollected;
+        }
+
+        @Override
+        public void setCollected(boolean collected) {
+            isCollected = collected;
+        }
     }
 
-    private class StartingCircle extends Circle {
+    private class StartingCircle extends CollectableCircle {
+
+        private boolean isCollected;
+
         public StartingCircle() {
             super();
             this.setRadius(5);
             this.setFill(Color.RED);
             this.setStroke(Color.BLACK);
 
+            setCollected(false);
+            setActive(true);
+
             this.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
-                if (this.isVisible()) {
+                if (isActive() && !isCollected()) {
 
-                    this.setVisible(false);
+                    setCollected(true);
+                    setActive(false);
 
-                    for (Node node : minigame.getChildren()) {
-                        if (node instanceof Token) {
-                            node.setVisible(true);
-                        }
-                    }
+                    minigameTokenController.setTokenActivity(true);
 
                     timer.startTimer();
                 }

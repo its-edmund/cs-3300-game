@@ -1,12 +1,21 @@
 package NotificationWindow;
 
+import core.AppPaths;
 import core.GameStates;
 import core.ViewHandler;
+import javafx.scene.media.AudioClip;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import window.player.Player;
 
+import java.io.File;
+import java.net.URISyntaxException;
+
 public class PlayerTurnNotification extends AbstractTimedNotification {
+
+    Media newTurnSFX;
 
     public PlayerTurnNotification(ViewHandler viewHandler) {
         super(viewHandler, 1.5);
@@ -18,13 +27,13 @@ public class PlayerTurnNotification extends AbstractTimedNotification {
                 = viewHandler.getState().getPlayerController().getCurrentPlayer();
 
         setNotificationText(new Text(currentPlayer.getName() + ", your turn!"));
-//        notificationText.setText(currentPlayer.getName() + ", your turn!");
 
-        notificationBox.setFill(currentPlayer.getToken().getFill());
+//        notificationBox.setFill(currentPlayer.getToken().getFill());
+//
+//        if (currentPlayer.getToken().getFill() == Color.BLACK) {
+//            notificationText.setFill(Color.WHITE);
+//        }
 
-        if (currentPlayer.getToken().getFill() == Color.BLACK) {
-            notificationText.setFill(Color.WHITE);
-        }
 
     }
 

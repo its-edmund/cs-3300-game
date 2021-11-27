@@ -126,7 +126,6 @@ public class GameboardController extends AbstractController {
     }
 
     private void createBoard() {
-        int BOARD_SIZE = 15;
 
         path = new ArrayList<>();
 
@@ -266,12 +265,9 @@ public class GameboardController extends AbstractController {
         path.get(4).setType(TileType.LAUNCH_MINIGAME);
         path.get(5).setType(TileType.LAUNCH_MINIGAME);
 
-//        path.get(15).setType(TileType.LAUNCH_MINIGAME);
-//        path.get(45).setType(TileType.LAUNCH_MINIGAME);
-
-        path.get(7).addWall(WallOrientationEnum.TOP);
-        path.get(30).addWall(WallOrientationEnum.LEFT);
-        path.get(42).addWall(WallOrientationEnum.BOTTOM);
+        path.get(7).addWall(90);
+        path.get(29).addWall(0);
+        path.get(42).addWall(90);
 
         // Add all player tokens to the first square
         PlayerController playerController;

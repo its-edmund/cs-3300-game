@@ -10,6 +10,7 @@ import java.util.Random;
 public class MinigameController extends AbstractMinigameController {
 
     Button button;
+    AbstractMinigame minigame;
 
     // Keeps track of which player is playing the minigame
 
@@ -24,34 +25,38 @@ public class MinigameController extends AbstractMinigameController {
 //        int val = rand.nextInt(MinigameEnum.values().length);
 //        viewHandler.getState().setCurrentMinigameType(MinigameEnum.values()[val]);
 
-        viewHandler.getState().setCurrentMinigameType(MinigameEnum.values()[1]);
+        MinigameEnum chosenMinigame = MinigameEnum.values()[1];
+
+        viewHandler.getState().setCurrentMinigameType(chosenMinigame);
+        chooseMinigame(chosenMinigame);
 
         viewHandler.getState().updateState(GameStates.MINIGAME_INSTRUCTIONS);
     }
 
     @Override
-    public void launchMinigame(MinigameEnum game) {
+    public void launchMinigame() {
+        minigame.playMinigame();
+    }
 
+    public void chooseMinigame(MinigameEnum game) {
         switch (game) {
             case SUGAR_HONEYCOMB:
-                new SugarHoneycombMinigame(viewHandler, this);
+                minigame = new SugarHoneycombMinigame(viewHandler, this);
                 break;
             case THE_CIRCLE_MINIGAME:
-                new TheCircleMinigame(viewHandler, this);
+                minigame = new TheCircleMinigame(viewHandler, this);
                 break;
         }
     }
 
-
     @Override
     public String getMinigameTitle() {
-        return "Example Minigame";
+        return minigame.getMinigameTitle();
     }
 
     @Override
     public String getMinigameDescription() {
-        return "    The goal of this minigame" +
-                "\n" + "is to click the button.";
+        return minigame.getMinigameDescription();
     }
 
     @Override

@@ -10,23 +10,31 @@ import javafx.scene.shape.Circle;
 
 import java.util.ArrayList;
 
-public class TheCircleMinigame {
+public class TheCircleMinigame extends AbstractMinigame{
 
     private ViewHandler viewHandler;
     private MinigameController minigame;
     MinigameTimer timer;
+    MinigameScore score;
 
     double currentTime = 5.0;
+
+//    public TheCircleMinigame(ViewHandler viewHandler, MinigameController minigame) {
+//        this.viewHandler = viewHandler;
+//        this.minigame = minigame;
+//
+//        pattern1();
+//    }
+    public TheCircleMinigame() {
+        this.viewHandler = null;
+        this.minigame = null;
+    }
 
     public TheCircleMinigame(ViewHandler viewHandler, MinigameController minigame) {
         this.viewHandler = viewHandler;
         this.minigame = minigame;
 
-        pattern1();
-    }
-    public TheCircleMinigame() {
-        this.viewHandler = null;
-        this.minigame = null;
+        selectedMinigame = 1;
     }
 
     public void pattern1() {
@@ -35,6 +43,12 @@ public class TheCircleMinigame {
             endMinigameRound();
         });
         timer.setTime(5.0);
+
+        score = new MinigameScore(viewHandler);
+
+        timer.setTimerUpdatedEvent(() -> {
+            updateScore();
+        });
 
         ArrayList<int[]> pattern = new ArrayList<>();
         pattern.add(new int[]{50, 0});
@@ -56,6 +70,7 @@ public class TheCircleMinigame {
         }
 
         timer.cleanup();
+        score.cleanup();
     }
 
     public void endMinigameRound() {
@@ -74,6 +89,31 @@ public class TheCircleMinigame {
     }
     public void testEndGame(TestViewHandler vh) {
         vh.setState(1);
+    }
+
+    @Override
+    public String getMinigameTitle() {
+        return "The Circle Minigame";
+    }
+
+    @Override
+    public String getMinigameDescription() {
+        return "In this minigame, you must collect all the circles within the time period. To collect a circle,"
+                + "simply hover over it with your mouse. The player that collects ALL of the circles in the shortest amount of time wins!"
+                + " The timer begins upon touching the first circle.";
+    }
+
+    @Override
+    public void playMinigame() {
+        switch (selectedMinigame) {
+            case 1:
+                pattern1();
+                break;
+        }
+    }
+
+    private void updateScore() {
+        score.setScore(Math.floor(timer.getTime() * 100));
     }
 
     private class MinigameCircleController {

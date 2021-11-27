@@ -3,6 +3,7 @@ package window.gameboard;
 import Minigame.AbstractMinigameController;
 import Minigame.MinigameFactory;
 import NotificationWindow.*;
+import core.AppPaths;
 import core.GameStates;
 import core.ViewHandler;
 import javafx.animation.KeyFrame;
@@ -11,12 +12,15 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Label;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
 import window.player.Player;
 import core.PostMoveActionType;
 import window.player.PlayerController;
 
+import java.io.File;
 import java.io.IOException;
 
 public class GameStateController {
@@ -138,6 +142,11 @@ public class GameStateController {
 
                                     break;
                                 case NEW_TURN:
+
+                                    Media newTurnSFX = new Media(new File(AppPaths.SOUND_PATH + "foghorn.wav").toURI().toString());
+                                    MediaPlayer player = new MediaPlayer(newTurnSFX);
+                                    player.play();
+
                                     currStateTask = () -> {
                                         viewHandler.getState().addNotification(
                                                 notificationWindowFactory.createNotification(GameStates.NEW_TURN)
@@ -161,49 +170,57 @@ public class GameStateController {
                                 case MINIGAME_INSTRUCTIONS:
                                     currStateTask = () -> {
 
-                                        AbstractMinigameController minigame = viewHandler.getState().getCurrentMinigame();
-
                                         viewHandler.getState().addNotification(
-                                            notificationWindowFactory.createGenericButtonNotification(
-                                                new Label(minigame.getMinigameTitle()),
-                                                new Label(minigame.getMinigameDescription()),
-                                                "OK, got it!",
-                                                GameStates.MINIGAME_PLAYER_READY,
-                                                250,150
-                                            )
+                                                notificationWindowFactory.createNotification(GameStates.MINIGAME_INSTRUCTIONS)
                                         );
+
+//                                        AbstractMinigameController minigame = viewHandler.getState().getCurrentMinigame();
+//
+//                                        viewHandler.getState().addNotification(
+//                                            notificationWindowFactory.createGenericButtonNotification(
+//                                                new Label(minigame.getMinigameTitle()),
+//                                                new Label(minigame.getMinigameDescription()),
+//                                                "OK, got it!",
+//                                                GameStates.MINIGAME_PLAYER_READY,
+//                                                250,150
+//                                            )
+//                                        );
                                     };
                                     break;
                                 case MINIGAME_PLAYER_READY:
                                     currStateTask = () -> {
 
-                                        PlayerController playerController = viewHandler.getState().getPlayerController();
-
-                                        Label desc = new Label(playerController.getCurrentMinigamePlayer().getName()
-                                                + ", are you ready?");
-                                        desc.setTextFill(Color.BLACK);
-
-                                        GenericButtonNotification notification =
-                                                notificationWindowFactory.createGenericButtonNotification(
-                                                        null,
-                                                        desc,
-                                                        "Ready!",
-                                                        GameStates.MINIGAME_PLAY,
-                                                        150,120
-                                                );
-
-                                        notification.setNotificationColor(
-                                                playerController.getCurrentMinigamePlayer().getColor()
+                                        viewHandler.getState().addNotification(
+                                                notificationWindowFactory.createNotification(GameStates.MINIGAME_PLAYER_READY)
                                         );
 
-                                        viewHandler.getState().addNotification(notification);
+//                                        PlayerController playerController = viewHandler.getState().getPlayerController();
+//
+//                                        Label desc = new Label(playerController.getCurrentMinigamePlayer().getName()
+//                                                + ", are you ready?");
+//                                        desc.setTextFill(Color.BLACK);
+//
+//                                        GenericButtonNotification notification =
+//                                                notificationWindowFactory.createGenericButtonNotification(
+//                                                        null,
+//                                                        desc,
+//                                                        "Ready!",
+//                                                        GameStates.MINIGAME_PLAY,
+//                                                        150,120
+//                                                );
+//
+//                                        notification.setNotificationColor(
+//                                                playerController.getCurrentMinigamePlayer().getColor()
+//                                        );
+//
+//                                        viewHandler.getState().addNotification(notification);
                                     };
                                     break;
                                 case MINIGAME_PLAY:
                                     currStateTask = () -> {
 
                                         viewHandler.getState().getCurrentMinigame().launchMinigame(
-                                                viewHandler.getState().getCurrentMinigameType()
+//                                                viewHandler.getState().getCurrentMinigameType()
                                         );
                                     };
                                     break;
