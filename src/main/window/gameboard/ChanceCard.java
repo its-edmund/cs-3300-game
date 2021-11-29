@@ -1,13 +1,17 @@
 package window.gameboard;
 
 import core.ResizableStackPane;
+import core.SVGShapes;
 import core.ViewHandler;
+import core.ViewOrder;
 import javafx.beans.value.ChangeListener;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
+import token.TokenEnum;
+import token.TokenIcon;
 
 import java.util.ArrayList;
 
@@ -28,84 +32,74 @@ public class ChanceCard extends ResizableStackPane {
     public ChanceCard(ViewHandler viewHandler) {
         chanceCards = new ArrayList<>();
 
-        for (int i = 0; i <= NUM_CHANCE_CARDS; i++) {
-            Rectangle rectangle = new Rectangle();
+        for (int i = 0; i < NUM_CHANCE_CARDS; i++) {
 
-            rectangle.setWidth(WIDTH);
-            rectangle.setHeight(HEIGHT);
-            rectangle.setFill(Color.AQUA);
-            rectangle.setStrokeWidth(2);
-            rectangle.setStroke(Color.BLACK);
+            int translateX = 1 * i * 5;
+            int translateY = -1 * i * 5;
 
-            rectangle.setTranslateX(1 * i * 5);
-            rectangle.setTranslateY(-1 * i * 5);
+            Rectangle chanceCard = createChanceCard(translateX, translateY);
 
+            if (i == NUM_CHANCE_CARDS - 1) {
+                TokenIcon icon = createQuestionMark(translateX, translateY);
 
-            if (i < NUM_CHANCE_CARDS) {
-                chanceCards.add(rectangle);
-                this.getChildren().add(rectangle);
-            } else {
-                StackPane movingChanceCardStackPane
-                        = new StackPane();
-                movingChanceCardStackPane.setTranslateX(0);
-                movingChanceCardStackPane.setTranslateY(0);
+                this.getChildren().addAll(chanceCard, icon);
 
-                movingChanceCard = rectangle;
-//                movingChanceCard.setVisible(true);
-                movingChanceCard.setRotate(90);
-                movingChanceCard.setTranslateX(0);
-                movingChanceCard.setTranslateY(0);
-
-                movingChanceCardText = new Label();
-                movingChanceCardText.setText("Sample text\n");
-
-                movingChanceCardStackPane.getChildren().addAll(movingChanceCard, movingChanceCardText);
-                movingChanceCardStackPane.setVisible(false);
-
-                this.getChildren().add(movingChanceCardStackPane);
+            }  else {
+                chanceCards.add(chanceCard);
+                this.getChildren().add(chanceCard);
             }
-
         }
-
-//        ChangeListener<Number> stageWidthListener = (observable, oldVal, newVal) -> {
-//            relocate(viewHandler);
-//        };
-//        ChangeListener<Number> stageHeightListener = (observable, oldVal, newVal) -> {
-//            relocate(viewHandler);
-//        };
-//
-//        viewHandler.addEventOnScreenWidthChange(stageWidthListener);
-//        viewHandler.addEventOnScreenHeightChange(stageHeightListener);
 
     }
 
-//    public void relocate(ViewHandler viewHandler) {
-//        double screenWidth = (viewHandler.getScreenDimensions()[0] - 16);
-//        double screenHeight = (viewHandler.getScreenDimensions()[1] - 40 - 85);
-//
-//        double newX = posX * screenHeight + (screenWidth - screenHeight) / 2;
-//        double newY = posY * screenHeight;
-//
-//        super.relocate(newX, newY);
-//        this.setTranslateX((-1 * WIDTH) / 2.0);
-//        this.setTranslateY((-1 * HEIGHT) / 2.0);
-//
-//        this.setWidth(WIDTH * viewHandler.getScreenDimensions()[1] / 400);
-//        this.setHeight(HEIGHT * viewHandler.getScreenDimensions()[1] / 400);
-//
-//        for (Rectangle rectangle : chanceCards) {
-//            rectangle.setScaleX(viewHandler.getScreenDimensions()[1] / 400);
-//            rectangle.setScaleY(viewHandler.getScreenDimensions()[1] / 400);
-//        }
-//
-//        movingChanceCard.setScaleX(1.3 * viewHandler.getScreenDimensions()[1] / 400);
-//        movingChanceCard.setScaleY(1.3* viewHandler.getScreenDimensions()[1] / 400);
-//        movingChanceCardText.scaleXProperty().set(1 * viewHandler.getScreenDimensions()[1] / 400);
-//        movingChanceCardText.scaleYProperty().set(1 * viewHandler.getScreenDimensions()[1] / 400);
-//    }
+    private Rectangle createChanceCard(int translateX, int translateY) {
+        Rectangle rectangle = new Rectangle();
 
-    public void showChanceCard() {
+        rectangle.setViewOrder(ViewOrder.BACKGROUND);
 
+        rectangle.setWidth(WIDTH);
+        rectangle.setHeight(HEIGHT);
+        rectangle.setFill(Color.AQUA);
+        rectangle.setStrokeWidth(2);
+        rectangle.setStroke(Color.BLACK);
+
+        rectangle.setTranslateX(translateX);
+        rectangle.setTranslateY(translateY);
+
+        return rectangle;
+    }
+
+    private TokenIcon createQuestionMark(int translateX, int translateY) {
+        TokenIcon icon = new TokenIcon();
+        icon.setTokenContent(SVGShapes.QUESTION_MARK);
+        icon.setColor(Color.BLACK);
+        icon.setSize(40, 40);
+
+        icon.setTranslateX(translateX);
+        icon.setTranslateY(translateY);
+
+        return icon;
+    }
+
+    private void createRotatingChanceCard() {
+        //                StackPane movingChanceCardStackPane
+//                        = new StackPane();
+//                movingChanceCardStackPane.setTranslateX(0);
+//                movingChanceCardStackPane.setTranslateY(0);
+//
+//
+//                movingChanceCard = chanceCard;
+//                movingChanceCard.setRotate(90);
+//                movingChanceCard.setTranslateX(0);
+//                movingChanceCard.setTranslateY(0);
+//
+//                movingChanceCardText = new Label();
+//                movingChanceCardText.setText("Sample text\n");
+//
+//                movingChanceCardStackPane.getChildren().addAll(movingChanceCard, movingChanceCardText);
+//                movingChanceCardStackPane.setVisible(false);
+//
+//                this.getChildren().add(movingChanceCardStackPane);
     }
 
 }

@@ -4,6 +4,7 @@ import javafx.scene.paint.Color;
 import org.junit.Test;
 import token.Token;
 import token.TokenEnum;
+import token.TokenIcon;
 
 public class TestLoadToken {
 
@@ -12,8 +13,8 @@ public class TestLoadToken {
 
         for (TokenEnum tokenEnum : TokenEnum.values()) {
 
-            Token token = new Token(Color.BLUE, null);
-            token.setTokenType(tokenEnum);
+            TokenIcon tokenIcon = new TokenIcon();
+            tokenIcon.setTokenContent(tokenEnum.getSVGShape());
         }
 
     }

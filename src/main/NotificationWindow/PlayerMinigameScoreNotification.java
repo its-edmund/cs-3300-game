@@ -30,7 +30,8 @@ public class PlayerMinigameScoreNotification extends AbstractTimedNotification {
 
         if (allPlayersPlayed) {
             // If all players have played, end the minigame
-            viewHandler.getState().updateState(GameStates.END_TURN);
+//            viewHandler.getState().updateState(GameStates.END_TURN);
+            viewHandler.getState().updateState(GameStates.MINIGAME_RESULTS);
         } else {
             // Otherwise, prepare the next player for the minigame
             viewHandler.getState().updateState(GameStates.MINIGAME_PLAYER_READY);

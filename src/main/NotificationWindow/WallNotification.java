@@ -20,15 +20,12 @@ public class WallNotification extends AbstractButtonNotification {
         notificationBox.setWidth(250);
         notificationBox.setHeight(100);
 
-        setNotificationText(new Text("Pay $500 to remove the barrier?"));
-//        notificationText.setText("Pay $500 to remove the barrier?");
-
         errorMessage = new Text();
         errorMessage.setText("ERROR: Insufficient funds!");
         errorMessage.setFill(Color.RED);
         errorMessage.setVisible(false);
 
-        layoutBox.getChildren().add(errorMessage);
+        setNotificationText(new Text("Pay $500 to remove the barrier?"), errorMessage);
     }
 
     @Override
@@ -58,8 +55,7 @@ public class WallNotification extends AbstractButtonNotification {
     }
 
     private void displayErrorMessage() {
-        notificationText.setTranslateY(-25);
-        errorMessage.setTranslateY(-10);
+//        errorMessage.setTranslateY(10);
         errorMessage.setVisible(true);
     }
 }

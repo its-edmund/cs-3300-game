@@ -5,11 +5,13 @@ import core.GameStates;
 import core.ViewHandler;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import token.Token;
@@ -77,8 +79,8 @@ public class VictoryScreen extends AbstractNotification {
 
         HBox hBox = new HBox(playerList, resultList, awardsList);
         hBox.setSpacing(50);
-        setNotificationText(titleText, hBox);
-
+        setNotificationText(titleText, new Label(),hBox);
+        setNotificationColor(Color.GRAY);
     }
 
     public void loadStars() throws FileNotFoundException {

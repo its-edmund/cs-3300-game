@@ -1,31 +1,49 @@
 package token;
 
 import core.AppViewHandler;
-import core.SVGShapes;
+import core.ResizableStackPane;
+import core.ViewHandler;
+import core.ViewOrder;
+import javafx.geometry.Insets;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
+import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.SVGPath;
+import tile.Tile;
 
-public class Token extends SVGPath {
+public class Token extends ResizableStackPane {
 
     private int tokenLocation;
     private boolean isFinished;
 
-    private TokenEnum tokenType;
+    private Tile currentTile;
 
-    public Token(Color color, AppViewHandler viewHandler) {
+    private TokenEnum tokenType;
+    private SVGPath svg;
+    private Region svgShape;
+
+    private Color color;
+
+
+
+    public Token(Color color, ViewHandler viewHandler) {
         super();
 
-        setContent(SVGShapes.CAR);
-        setFill(color);
-        setStroke(Color.BLACK);
-        setScaleX(0.4);
-        setScaleY(0.4);
-        setRotate(-45);
+        this.color = color;
+
+        this.setViewOrder(ViewOrder.FOREGROUND);
+
+//        setScaleX(0.4);
+//        setScaleY(0.4);
+//        setRotate(-45);
 
         this.tokenLocation = 0;
 
         isFinished = false;
     }
+
 
     // Getters and Setters
     public int getTokenLocation() {
@@ -51,7 +69,41 @@ public class Token extends SVGPath {
     }
 
     private void setupTokenShape() {
-        setContent(tokenType.getSVGShape());
+
+//        svg.setScaleX(tokenType.getScaleX());
+//        svg.setScaleY(tokenType.getScaleY());
+
+//        svg = new SVGPath();
+//        svg.setContent(tokenType.getSVGShape());
+//        svg.setFill(Color.BLACK);
+//
+//        final Region svgShape = new Region();
+//        svgShape.setShape(svg);
+//        svgShape.setMinSize(100, 100);
+//        svgShape.setPrefSize(100,100);
+//        svgShape.setMaxSize(100, 100);
+////        svgShape.setStyle("-fx-background-color: black;");
+//        svgShape.setStyle(translateColorToCSS());
+//
+//        this.getChildren().add(svgShape);
+
+        svgShape = new TokenIcon(tokenType, color, 10, 10);
+        this.getChildren().add(svgShape);
     }
 
+    private String translateColorToCSS() {
+        String colorString = "#" + color.toString().substring(2);
+        String returnString = "-fx-background-color: " + colorString + ";";
+        return returnString;
+    }
+
+    public Tile getCurrentTile() {
+        return currentTile;
+    }
+    public void setCurrentTile(Tile currentTile) {
+        this.currentTile = currentTile;
+
+        this.setPosX(currentTile.getPosX());
+        this.setPosY(currentTile.getPosY());
+    }
 }

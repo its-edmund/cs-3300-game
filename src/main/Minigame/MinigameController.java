@@ -21,11 +21,11 @@ public class MinigameController extends AbstractMinigameController {
         minigameScreen.setHeight(250);
 
         // Randomly generate the next minigame
-//        Random rand = new Random();
-//        int val = rand.nextInt(MinigameEnum.values().length);
-//        viewHandler.getState().setCurrentMinigameType(MinigameEnum.values()[val]);
+        Random rand = new Random(System.currentTimeMillis());
+        int val = rand.nextInt(MinigameEnum.values().length);
+        MinigameEnum chosenMinigame = MinigameEnum.values()[val];
 
-        MinigameEnum chosenMinigame = MinigameEnum.values()[1];
+//        MinigameEnum chosenMinigame = MinigameEnum.values()[1];
 
         viewHandler.getState().setCurrentMinigameType(chosenMinigame);
         chooseMinigame(chosenMinigame);
@@ -61,7 +61,7 @@ public class MinigameController extends AbstractMinigameController {
 
     @Override
     public void onExit() {
-        viewHandler.getState().updateState(GameStates.END_TURN);
+//        viewHandler.getState().updateState(GameStates.END_TURN);
     }
 
 }

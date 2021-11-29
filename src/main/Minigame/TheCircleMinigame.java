@@ -9,6 +9,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class TheCircleMinigame extends AbstractMinigame{
 
@@ -34,21 +35,14 @@ public class TheCircleMinigame extends AbstractMinigame{
         this.viewHandler = viewHandler;
         this.minigame = minigame;
 
-        selectedMinigame = 1;
+        selectedMinigame = (new Random(System.currentTimeMillis())).nextInt(3) + 1;
     }
 
     public void pattern1() {
 
-        timer = new MinigameTimer(viewHandler, () -> {
-            endMinigameRound();
-        });
-        timer.setTime(5.0);
+        setupTimerAndScore();
 
-        score = new MinigameScore(viewHandler);
-
-        timer.setTimerUpdatedEvent(() -> {
-            updateScore();
-        });
+        timer.setTime(5);
 
         ArrayList<int[]> pattern = new ArrayList<>();
         pattern.add(new int[]{50, 0});
@@ -59,8 +53,51 @@ public class TheCircleMinigame extends AbstractMinigame{
         pattern.add(new int[]{0,-50});
 
         new MinigameCircleController(pattern);
+    }
 
- }
+    public void pattern2() {
+
+        setupTimerAndScore();
+
+        timer.setTime(10);
+
+        ArrayList<int[]> pattern = new ArrayList<>();
+        pattern.add(new int[]{20, 20});
+        pattern.add(new int[]{20,-20});
+        pattern.add(new int[]{-20, -20});
+        pattern.add(new int[]{-20,20});
+        pattern.add(new int[]{30, 0});
+        pattern.add(new int[]{0,-30});
+        pattern.add(new int[]{-30, 0});
+        pattern.add(new int[]{0,30});
+        pattern.add(new int[]{40, 40});
+        pattern.add(new int[]{40,-40});
+        pattern.add(new int[]{-40, -40});
+        pattern.add(new int[]{-40,40});
+
+        new MinigameCircleController(pattern);
+    }
+
+    public void pattern3() {
+
+        setupTimerAndScore();
+
+        timer.setTime(5);
+
+        ArrayList<int[]> pattern = new ArrayList<>();
+        pattern.add(new int[]{-20, -20});
+        pattern.add(new int[]{40,0});
+        pattern.add(new int[]{-20, -20});
+        pattern.add(new int[]{40, 20});
+        pattern.add(new int[]{-20, -20});
+        pattern.add(new int[]{35,35});
+        pattern.add(new int[]{-20, -20});
+        pattern.add(new int[]{20, 40});
+        pattern.add(new int[]{-20, -20});
+
+        new MinigameCircleController(pattern);
+    }
+
 
     public void cleanup() {
         for (Node node : minigame.getChildren()) {
@@ -109,11 +146,33 @@ public class TheCircleMinigame extends AbstractMinigame{
             case 1:
                 pattern1();
                 break;
+            case 2:
+                pattern2();
+                break;
+            case 3:
+                pattern3();
+                break;
+            default:
+                System.out.println("Not a real minigame!");
+                break;
         }
     }
 
     private void updateScore() {
         score.setScore(Math.floor(timer.getTime() * 100));
+    }
+
+    private void setupTimerAndScore() {
+        timer = new MinigameTimer(viewHandler, () -> {
+            endMinigameRound();
+        });
+        timer.setTime(5.0);
+
+        score = new MinigameScore(viewHandler);
+
+        timer.setTimerUpdatedEvent(() -> {
+            updateScore();
+        });
     }
 
     private class MinigameCircleController {

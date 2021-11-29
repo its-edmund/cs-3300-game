@@ -15,8 +15,6 @@ import java.net.URISyntaxException;
 
 public class PlayerTurnNotification extends AbstractTimedNotification {
 
-    Media newTurnSFX;
-
     public PlayerTurnNotification(ViewHandler viewHandler) {
         super(viewHandler, 1.5);
 
@@ -25,14 +23,15 @@ public class PlayerTurnNotification extends AbstractTimedNotification {
 
         Player currentPlayer
                 = viewHandler.getState().getPlayerController().getCurrentPlayer();
+        currentPlayer.playNewTurnSound();
 
         setNotificationText(new Text(currentPlayer.getName() + ", your turn!"));
 
-//        notificationBox.setFill(currentPlayer.getToken().getFill());
-//
-//        if (currentPlayer.getToken().getFill() == Color.BLACK) {
-//            notificationText.setFill(Color.WHITE);
-//        }
+        notificationBox.setFill(currentPlayer.getColor());
+
+        if (currentPlayer.getColor() == Color.BLACK) {
+            notificationText.setFill(Color.WHITE);
+        }
 
 
     }

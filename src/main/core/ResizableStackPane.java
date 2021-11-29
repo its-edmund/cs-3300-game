@@ -1,8 +1,6 @@
 package core;
 
-import javafx.scene.Node;
 import javafx.scene.layout.StackPane;
-import javafx.scene.shape.Shape;
 
 public class ResizableStackPane extends StackPane implements Resizable {
 
@@ -26,7 +24,7 @@ public class ResizableStackPane extends StackPane implements Resizable {
         this.setScaleX(AppViewHandler.getScreenHeight() / AppViewHandler.INITIAL_SCREEN_HEIGHT);
         this.setScaleY(AppViewHandler.getScreenHeight() / AppViewHandler.INITIAL_SCREEN_HEIGHT);
 
-        this.relocate(getPosX(), getPosY());
+        this.relocate(getRawPosX(), getRawPosY());
     }
 
     @Override
@@ -36,12 +34,21 @@ public class ResizableStackPane extends StackPane implements Resizable {
 
     public void setPosX(double posX) {
         this.posX = posX;
+        this.relocate(getRawPosX(), getRawPosY());
     }
     public void setPosY(double posY) {
         this.posY = posY;
+        this.relocate(getRawPosX(), getRawPosY());
     }
 
     public double getPosX() {
+        return posX;
+    }
+    public double getPosY() {
+        return posY;
+    }
+
+    public double getRawPosX() {
         double screenWidth = (AppViewHandler.getScreenWidth() - this.getWidth());
         double screenHeight = (AppViewHandler.getScreenHeight() - this.getHeight()
                 - 40 - 85);
@@ -49,7 +56,7 @@ public class ResizableStackPane extends StackPane implements Resizable {
 
         return newX;
     }
-    public double getPosY() {
+    public double getRawPosY() {
         double screenHeight = (AppViewHandler.getScreenHeight() - this.getHeight()
                 - 40 - 85);
         double newY = posY * screenHeight;

@@ -58,15 +58,18 @@ public class NotificationWindowFactory {
             notification.setPosX(0.5);
             notification.setPosY(0.5);
         } else if (notificationType == GameStates.MINIGAME_INSTRUCTIONS) {
-            notification = createGenericButtonNotification(
-                    new Label(minigameController.getMinigameTitle()),
-                    new Label(minigameController.getMinigameDescription()),
-                    "OK, Got it!",
-                    GameStates.MINIGAME_PLAYER_READY,
-                    250, 150
-            );
-            notification.setPosX(0.5);
-            notification.setPosY(0.5);
+
+            notification = new MinigameInstructionsNotification(viewHandler);
+
+//            notification = createGenericButtonNotification(
+//                    new Label(minigameController.getMinigameTitle()),
+//                    new Label(minigameController.getMinigameDescription()),
+//                    "OK, Got it!",
+//                    GameStates.MINIGAME_PLAYER_READY,
+//                    250, 150
+//            );
+//            notification.setPosX(0.5);
+//            notification.setPosY(0.5);
         } else if (notificationType == GameStates.MINIGAME_PLAYER_READY) {
 
             PlayerController playerController = viewHandler.getState().getPlayerController();
@@ -85,6 +88,12 @@ public class NotificationWindowFactory {
             notification.setPosX(0.5);
             notification.setPosY(0.5);
             notification.setNotificationColor(viewHandler.getState().getPlayerController().getCurrentMinigamePlayer().getColor());
+        } else if (notificationType == GameStates.MINIGAME_RESULTS) {
+
+            notification = new MinigameSummaryNotification(viewHandler);
+            notification.setPosX(0.5);
+            notification.setPosY(0.5);
+
         } else if (notificationType == GameStates.VICTORY_SCREEN) {
             notification = new VictoryScreen(viewHandler);
             notification.setPosX(0.5);

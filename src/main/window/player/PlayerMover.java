@@ -28,14 +28,15 @@ public class PlayerMover extends AbstractMoveMediator {
         if (i == 0) {
 
             // Movement not blocked: see if we landed on a special tile
-            TileType tileType = gameboardController.getTileTokenOccupies(player.getToken()).getType();
+//            TileType tileType = gameboardController.getTileTokenOccupies(player.getToken()).getType();
+            TileType tileType = player.getToken().getCurrentTile().getType();
 
             switch (tileType) {
                 case CHANCE:
                     postMoveActionType = PostMoveActionType.CHANCE;
                     break;
                 case GAIN_MONEY:
-                    player.setMoney(player.getMoney() + 100);
+                    player.setMoney(player.getMoney() + 200);
                     postMoveActionType = PostMoveActionType.NORMAL;
                     break;
                 case LOSE_MONEY:

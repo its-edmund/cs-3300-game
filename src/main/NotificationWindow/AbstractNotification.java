@@ -2,6 +2,7 @@ package NotificationWindow;
 
 import core.ResizableStackPane;
 import core.ViewHandler;
+import core.ViewOrder;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.Initializable;
@@ -36,6 +37,8 @@ public abstract class AbstractNotification extends ResizableStackPane {
         super();
 
         this.viewHandler = viewHandler;
+
+        this.setViewOrder(ViewOrder.NOTIFICATION);
 
         layoutBox = new VBox();
         layoutBox.setAlignment(Pos.CENTER);

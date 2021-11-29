@@ -10,11 +10,13 @@ public class PlayerController {
 
     private ArrayList<Player> players;
     private IntegerProperty currentPlayerIndex;
+
+
     private int currentMinigamePlayerIndex;
 
     public PlayerController() {
         players = new ArrayList<>();
-        this.currentPlayerIndex = new SimpleIntegerProperty(0);
+        this.currentPlayerIndex = new SimpleIntegerProperty(10);
         this.currentMinigamePlayerIndex = 0;
     }
 
@@ -72,7 +74,7 @@ public class PlayerController {
     }
 
     public void endCurrentPlayerTurn() {
-        if (currentPlayerIndex.get() == numPlayers() - 1) {
+        if (currentPlayerIndex.get() >= numPlayers() - 1) {
             currentPlayerIndex.set(0);
         } else {
             currentPlayerIndex.set(currentPlayerIndex.get() + 1);
@@ -94,7 +96,13 @@ public class PlayerController {
         return currentPlayerIndex;
     }
     public Player getCurrentPlayer() {
-        return players.get(currentPlayerIndex.get());
+
+        if (currentPlayerIndex.get() >= players.size() || currentPlayerIndex.get() < 0) {
+            return null;
+        } else {
+            return players.get(currentPlayerIndex.get());
+        }
+
     }
     public Player getCurrentMinigamePlayer() {
         return players.get(currentMinigamePlayerIndex);
@@ -118,6 +126,17 @@ public class PlayerController {
         }
     }
     public ArrayList<Player> getPlayers() {
-        return players;
+
+        ArrayList<Player> copy = new ArrayList<>();
+
+        for (Player player : players) {
+            copy.add(player);
+        }
+
+        return copy;
+    }
+
+    public void setCurrentMinigamePlayerIndex(int currentMinigamePlayerIndex) {
+        this.currentMinigamePlayerIndex = currentMinigamePlayerIndex;
     }
 }

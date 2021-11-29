@@ -16,11 +16,13 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 
+import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
 import state.State;
+import token.TokenIcon;
 import window.player.Player;
 import window.player.PlayerController;
 import token.TokenEnum;
@@ -71,16 +73,21 @@ public class ConfigurationController extends AbstractController {
             if (playerCountBtns.getSelectedToggle() != null) {
                 playerNames.getChildren().clear();
                 colorPickers.getChildren().clear();
+                tokenPickers.getChildren().clear();
+
                 ToggleButton btn = (ToggleButton) playerCountBtns.getSelectedToggle();
                 int p = btn.getText().charAt(0) - '0';
                 for (int i = 1; i <= p; i++) {
                     ColorPicker cp = new ColorPicker();
                     cp.setValue(defaultColors[i - 1]);
 
+                    ComboBox<TokenEnum> tokenEnumComboBox = initializeComboBox();
+
                     TextField t = new TextField();
                     t.setPromptText(("Player " + Integer.toString(i) + " name"));
                     playerNames.getChildren().add(t);
                     colorPickers.getChildren().add(cp);
+                    tokenPickers.getChildren().add(tokenEnumComboBox);
                 }
             }
         });
@@ -113,7 +120,7 @@ public class ConfigurationController extends AbstractController {
 
                     Player player = new Player(text,
                             color,
-                            10000,
+                            1000,
                             (AppViewHandler) viewHandler);
 
                     player.getToken().setTokenType(tokenEnum);
@@ -172,13 +179,14 @@ public class ConfigurationController extends AbstractController {
             public ListCell<TokenEnum> call(ListView<TokenEnum> tokenEnumListView) {
                 return new ListCell<TokenEnum>() {
 
-                    private final Rectangle rectangle;
+//                    private final Rectangle rectangle;
+                    private final TokenIcon region;
 
                     {
                         setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
-                        rectangle = new Rectangle(10, 10);
+//                        rectangle = new Rectangle(10, 10);
+                        region = new TokenIcon();
                     }
-
 
                     @Override
                     protected void updateItem(TokenEnum tokenEnum, boolean empty) {
@@ -187,8 +195,13 @@ public class ConfigurationController extends AbstractController {
                         if (tokenEnum == null || empty) {
                             setGraphic(null);
                         } else {
-                            rectangle.setFill(tokenEnum.getColor());
-                            setGraphic(rectangle);
+//                            rectangle.setFill(tokenEnum.getColor());
+//                            setGraphic(rectangle);
+
+                            region.setTokenContent(tokenEnum);
+                            region.setSize(20,20);
+                            region.setColor(Color.BLACK);
+                            setGraphic(region);
                         }
                     }
                 };

@@ -3,6 +3,7 @@ package Minigame;
 import NotificationWindow.AbstractNotification;
 import core.ResizableStackPane;
 import core.ViewHandler;
+import core.ViewOrder;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
@@ -18,6 +19,8 @@ public abstract class AbstractMinigameController extends ResizableStackPane {
     public AbstractMinigameController(ViewHandler viewHandler) {
 
         super();
+
+        this.setViewOrder(ViewOrder.MINIGAME);
 
         this.viewHandler = viewHandler;
 

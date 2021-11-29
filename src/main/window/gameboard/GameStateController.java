@@ -69,7 +69,6 @@ public class GameStateController {
                                     };
                                     break;
 
-                                case MINIGAME_RESULTS:
                                 case END_TURN:
                                     prevStateTask = () -> {
                                         viewHandler.getState().removeMinigame();
@@ -162,8 +161,8 @@ public class GameStateController {
                                         viewHandler.getState().addNotification(
                                                 notificationWindowFactory.createNotification(GameStates.NEW_TURN)
                                         );
-                                        viewHandler.getState().getPlayerController().getCurrentPlayer().
-                                                playNewTurnSound();
+//                                        viewHandler.getState().getPlayerController().getCurrentPlayer().
+//                                                playNewTurnSound();
                                     };
                                     break;
                                 case MASTERPIECE_RULES:
@@ -200,15 +199,6 @@ public class GameStateController {
                                         viewHandler.getState().getCurrentMinigame().launchMinigame();
                                     };
                                     break;
-                                case MINIGAME_PLAY_OVER:
-
-                                    currStateTask = () -> {
-                                        viewHandler.getState().addNotification(
-                                                notificationWindowFactory.createNotification(GameStates.MINIGAME_PLAY_OVER)
-                                        );
-                                    };
-
-                                    break;
                                 case MINIGAME_INDIVIDUAL_SCORE:
 
                                     currStateTask = () -> {
@@ -217,6 +207,12 @@ public class GameStateController {
                                         );
                                     };
                                     break;
+                                case MINIGAME_RESULTS:
+                                    currStateTask = () -> {
+                                        viewHandler.getState().addNotification(
+                                                notificationWindowFactory.createNotification(GameStates.MINIGAME_RESULTS)
+                                        );
+                                    };
                             }
 
                             // If we are not immediately leaving the current state,
@@ -267,7 +263,11 @@ public class GameStateController {
 //    }
 
     public void endPlayerMove() {
-        viewHandler.getState().getPlayerController().getCurrentPlayer().getPlayerMover().setRemainingMoves(0);
+
+        if (viewHandler.getState().getPlayerController().getCurrentPlayer() != null) {
+            viewHandler.getState().getPlayerController().getCurrentPlayer().getPlayerMover().setRemainingMoves(0);
+        }
+
         viewHandler.getState().getPlayerController().endCurrentPlayerTurn();
         viewHandler.getState().updateState(GameStates.NEW_TURN);
     }

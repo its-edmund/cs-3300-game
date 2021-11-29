@@ -27,6 +27,7 @@ public class GameMusic {
         currentMedia = new Media(new File(songEnum.getFilepath()).toURI().toString());
     }
 
+    // DEBUG
     public void playCurrentSong() {
         currenMediaPlayer = new MediaPlayer(currentMedia);
         currenMediaPlayer.setVolume(currentSongEnum.getVolume());

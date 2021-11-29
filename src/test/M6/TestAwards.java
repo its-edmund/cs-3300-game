@@ -22,10 +22,15 @@ public class TestAwards {
     public void setupPlayers() {
         playerController = new PlayerController();
 
-        p1 = new Player("A", null, 1000, null);
-        p2 = new Player("B", null, 1000, null);
-        p3 = new Player("C", null, 1000, null);
-        p4 = new Player("D", null, 1000, null);
+//        p1 = new Player("A", null, 1000, null);
+//        p2 = new Player("B", null, 1000, null);
+//        p3 = new Player("C", null, 1000, null);
+//        p4 = new Player("D", null, 1000, null);
+
+        p1 = new Player();
+        p2 = new Player();
+        p3 = new Player();
+        p4 = new Player();
 
         playerController.addPlayer(p1);
         playerController.addPlayer(p2);

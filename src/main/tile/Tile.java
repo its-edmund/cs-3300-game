@@ -3,6 +3,7 @@ package tile;
 import core.AppViewHandler;
 import core.ResizableStackPane;
 import core.ViewHandler;
+import core.ViewOrder;
 import javafx.beans.value.ChangeListener;
 import javafx.scene.Node;
 import javafx.scene.layout.StackPane;
@@ -39,6 +40,8 @@ public class Tile extends ResizableStackPane {
                  double posX, double posY, GameboardController gameboardController) {
 
         super();
+
+        this.setViewOrder(ViewOrder.BACKGROUND);
 
         this.type = type;
 

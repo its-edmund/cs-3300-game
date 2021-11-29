@@ -32,7 +32,7 @@ public class Player extends Circle {
     private int numMinigamesWon;
     private int numChanceTilesLandedOn;
 
-    private ArrayList<Award> awards;
+    private ArrayList<Award> awards = new ArrayList<>();
 
     public Player() {
         this(0, 0);
@@ -48,7 +48,6 @@ public class Player extends Circle {
         numChanceTilesLandedOn = 0;
 
         playerToken = new Token(color, viewHandler);
-        awards = new ArrayList<>();
     }
 
     public Player(int x, int y) {

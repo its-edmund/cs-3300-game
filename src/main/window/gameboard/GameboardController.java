@@ -13,15 +13,15 @@ import javafx.scene.paint.Color;
 import javafx.scene.control.Label;
 import tile.Tile;
 import tile.TileType;
-import tile.WallOrientationEnum;
 import token.Token;
+import token.TokenEnum;
+import token.TokenIcon;
 import window.dice.Dice;
 import window.player.Player;
 import window.player.PlayerController;
 
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.ResourceBundle;
 
 public class GameboardController extends AbstractController {
@@ -91,8 +91,8 @@ public class GameboardController extends AbstractController {
                         resizableNode.onResize();
 
                         resizableNode.relocate(
-                                resizableNode.getPosX(),
-                                resizableNode.getPosY()
+                                resizableNode.getRawPosX(),
+                                resizableNode.getRawPosY()
                         );
                     }
                 }
@@ -105,8 +105,8 @@ public class GameboardController extends AbstractController {
                         resizableNode.onResize();
 
                         resizableNode.relocate(
-                                resizableNode.getPosX(),
-                                resizableNode.getPosY()
+                                resizableNode.getRawPosX(),
+                                resizableNode.getRawPosY()
                         );
                     }
                 }
@@ -251,23 +251,31 @@ public class GameboardController extends AbstractController {
         }
 
         // Add the special tiles to the board
-//        path.get(0).setType(START);
+
         path.get(0).setType(TileType.END);
-        path.get(11).setType(TileType.CHANCE);
-        path.get(19).setType(TileType.CHANCE);
-        path.get(26).setType(TileType.CHANCE);
-        path.get(34).setType(TileType.CHANCE);
-        path.get(41).setType(TileType.CHANCE);
-        path.get(49).setType(TileType.CHANCE);
+
+        setupChanceTile(path.get(11));
+        setupChanceTile(path.get(19));
+        setupChanceTile(path.get(26));
+        setupChanceTile(path.get(34));
+        setupChanceTile(path.get(41));
+        setupChanceTile(path.get(49));
 
         path.get(2).setType(TileType.LAUNCH_MINIGAME);
         path.get(3).setType(TileType.LAUNCH_MINIGAME);
-        path.get(4).setType(TileType.LAUNCH_MINIGAME);
-        path.get(5).setType(TileType.LAUNCH_MINIGAME);
+        path.get(15).setType(TileType.LAUNCH_MINIGAME);
+        path.get(25).setType(TileType.LAUNCH_MINIGAME);
+        path.get(30).setType(TileType.LAUNCH_MINIGAME);
+        path.get(42).setType(TileType.LAUNCH_MINIGAME);
+        path.get(51).setType(TileType.LAUNCH_MINIGAME);
+        path.get(53).setType(TileType.LAUNCH_MINIGAME);
 
         path.get(7).addWall(90);
-        path.get(29).addWall(0);
-        path.get(42).addWall(90);
+        path.get(21).addWall(0);
+        path.get(28).addWall(0);
+        path.get(33).addWall(90);
+        path.get(43).addWall(90);
+        path.get(56).addWall(0);
 
         // Add all player tokens to the first square
         PlayerController playerController;
@@ -277,13 +285,33 @@ public class GameboardController extends AbstractController {
             playerController = new PlayerController();
         }
 
-        for (Player player : playerController.getPlayers()) {
-            path.get(0).addToken(player.getToken());
-        }
+        setupPlayerTokens();
+
+        // DEBUG
+//        testTokenSizes();
 
         // Win screen debug
-//        playerController.getCurrentPlayer().getPlayerMover().setRemainingMoves(60);
+//        playerController.getCurrentPlayer().getPlayerMover().setRemainingMoves(59);
     }
+
+    private void setupChanceTile(Tile tile) {
+        tile.setType(TileType.CHANCE);
+
+        ResizableStackPane pane = new ResizableStackPane();
+        pane.setViewOrder(ViewOrder.BACKGROUND);
+
+        TokenIcon questionMark = new TokenIcon();
+        questionMark.setTokenContent(SVGShapes.QUESTION_MARK);
+        questionMark.setColor(Color.BLACK);
+        questionMark.setSize(8, 8);
+
+        pane.getChildren().add(questionMark);
+        board.getChildren().add(pane);
+
+        pane.setPosX(tile.getPosX());
+        pane.setPosY(tile.getPosY());
+    }
+
     private void createPlayerProfiles() {
         // Get the gamestate
         PlayerController playerController;
@@ -304,11 +332,40 @@ public class GameboardController extends AbstractController {
     private void createChanceCards() {
         if (viewHandler != null) {
             chanceCard = new ChanceCard(viewHandler);
+
+            chanceCard.setViewOrder(ViewOrder.BACKGROUND);
+
             chanceCard.setPosX(0.5);
             chanceCard.setPosY(0.5);
             board.getChildren().add(chanceCard);
         }
 
+    }
+
+    private void testTokenSizes() {
+        Tile tile = new Tile(0.2, 0.5, this);
+        tile.setPosX(0.3);
+        tile.setPosY(0.5);
+        tile.setViewOrder(ViewOrder.BACKGROUND);
+        board.getChildren().add(tile);
+
+        Token token = new Token(Color.BLUE, viewHandler);
+        token.setTokenType(TokenEnum.BOAT);
+        board.getChildren().add(token);
+        token.setCurrentTile(tile);
+    }
+
+    private void setupPlayerTokens() {
+
+        PlayerController playerController = viewHandler.getState().getPlayerController();
+
+        // Trying to change
+        for (Player player : playerController.getPlayers()) {
+
+            Token currToken = player.getToken();
+            board.getChildren().add(currToken);
+            currToken.setCurrentTile(path.get(0));
+        }
     }
 
     // Board functions
@@ -348,9 +405,9 @@ public class GameboardController extends AbstractController {
     // Return 0 if movement succeeded
     // Return positive number if movement blocked by wall
     public int moveToken(Token playerToken, int moveAmount) {
-        if (path != null && path.get(playerToken.getTokenLocation()).hasToken()) {
-            path.get(playerToken.getTokenLocation()).removeToken(playerToken);
-        }
+//        if (path != null && path.get(playerToken.getTokenLocation()).hasToken()) {
+//            path.get(playerToken.getTokenLocation()).removeToken(playerToken);
+//        }
 
         int newLoc = playerToken.getTokenLocation() + moveAmount;
 
@@ -359,7 +416,8 @@ public class GameboardController extends AbstractController {
             if (path != null &&
                     (path.size() - 1 < newLoc || playerToken.getFinished())) {
                 playerToken.setTokenLocation(0);
-                path.get(playerToken.getTokenLocation()).addToken(playerToken);
+//                path.get(playerToken.getTokenLocation()).addToken(playerToken);
+                playerToken.setCurrentTile(path.get(0));
 
                 playerToken.setFinished(true);
                 newLoc = 0;
@@ -368,13 +426,16 @@ public class GameboardController extends AbstractController {
 
             // Check for a wall
             // If the move amount is negative, we won't check for a wall
-            for (int i = 0; i <= moveAmount; i++) {
+            for (int i = 1; i <= moveAmount; i++) {
                 if (path != null) {
                     Tile tile = path.get(playerToken.getTokenLocation() + i);
+                    Tile prevTile = path.get(playerToken.getTokenLocation() + i - 1);
 
                     if (tile.hasWall() && tile.getWall().isActive()) {
                         playerToken.setTokenLocation(playerToken.getTokenLocation() + i - 1);
-                        path.get(playerToken.getTokenLocation()).addToken(playerToken);
+//                        path.get(playerToken.getTokenLocation()).addToken(playerToken);
+                        playerToken.setCurrentTile(prevTile);
+
                         return moveAmount - i + 1;
                     }
                 }
@@ -384,12 +445,16 @@ public class GameboardController extends AbstractController {
         // If there is no wall, move to the location
         playerToken.setTokenLocation(newLoc);
 
-        if (path != null) {
-            path.get(playerToken.getTokenLocation()).addToken(playerToken);
-        }
+        Tile tile = path.get(newLoc);
+        playerToken.setCurrentTile(tile);
+
+//        if (path != null) {
+//            path.get(playerToken.getTokenLocation()).addToken(playerToken);
+//        }
 
         return 0;
     }
+
 
     public void changePlayerStatus(int newPlayerTurnIndex) {
         PlayerProfile prevPlayerStackPane;
@@ -419,10 +484,6 @@ public class GameboardController extends AbstractController {
 
 
     }
-
-    public Pane getBoard() {
-        return board;
-    }
     public Tile getTile(int tileLocation) {
         return path.get(tileLocation);
     }
@@ -431,10 +492,6 @@ public class GameboardController extends AbstractController {
     }
     public Tile getTileTokenOccupies(Token playerToken) {
         return path.get(playerToken.getTokenLocation());
-    }
-
-    public static void addNewNotification(Node node) {
-
     }
 
 

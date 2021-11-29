@@ -47,26 +47,32 @@ public class SugarHoneycombMinigame extends AbstractMinigame{
     public void shape1() {
 
         timer = new MinigameTimer(viewHandler, this::endMinigameRound);
-        timer.setTime(5.0);
+        timer.setTime(3.0);
 
         score = new MinigameScore(viewHandler);
 
         ArrayList<int[]> pattern = new ArrayList<>();
 
-        for (int x = -30, y = -30; y < 30; y+=10) {
-            pattern.add(new int[]{x,y});
-        }
-        for (int x = 30, y = -30; y < 30; y+=10) {
-            pattern.add(new int[]{x,y});
-        }
-        for (int x = -30, y = -30; x < 30 && y < 30; x += 10, y+= 10) {
-            pattern.add(new int[] {x,y});
-        }
+        nShape(pattern, 75, 0);
+        nShape(pattern, 0, 0);
+        nShape(pattern, -75, 0);
 
         int[] startingCoords = new int[] {-30, -30};
 
         minigameTokenController = new MinigameTokenController(pattern, startingCoords);
 
+    }
+
+    private void nShape(ArrayList<int[]> pattern, int centerX, int centerY) {
+        for (int x = -30, y = -30; y < 30; y+=10) {
+            pattern.add(new int[]{centerX + x, centerY + y});
+        }
+        for (int x = 30, y = -30; y < 30; y+=10) {
+            pattern.add(new int[]{centerX + x, centerY + y});
+        }
+        for (int x = -30, y = -30; x < 30 && y < 30; x += 10, y+= 10) {
+            pattern.add(new int[] {centerX + x, centerY + y});
+        }
     }
 
     public void endMinigameRound() {
