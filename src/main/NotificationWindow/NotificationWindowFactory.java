@@ -1,25 +1,31 @@
 package NotificationWindow;
 
+import Minigame.AbstractMinigameController;
 import core.GameStates;
 import core.ViewHandler;
 import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import window.gameboard.GameStateController;
+import window.player.Award;
+import window.player.Player;
+import window.player.PlayerController;
 
 public class NotificationWindowFactory {
 
-    GameStateController gameStateController;
     ViewHandler viewHandler;
 
-    public NotificationWindowFactory(GameStateController gameStateController, ViewHandler viewHandler) {
-        this.gameStateController = gameStateController;
+    public NotificationWindowFactory(ViewHandler viewHandler) {
         this.viewHandler = viewHandler;
     }
 
     public AbstractNotification createNotification(GameStates notificationType) {
 
         AbstractNotification notification = null;
+
+        AbstractMinigameController minigameController =
+                viewHandler.getState().getCurrentMinigame();
 
         if (notificationType == GameStates.CHANCE_NOTIFICATION) {
             notification = new ChanceCardNotification(viewHandler);
@@ -51,9 +57,46 @@ public class NotificationWindowFactory {
             notification = new PlayerMinigameScoreNotification(viewHandler);
             notification.setPosX(0.5);
             notification.setPosY(0.5);
+        } else if (notificationType == GameStates.MINIGAME_INSTRUCTIONS) {
+            notification = createGenericButtonNotification(
+                    new Label(minigameController.getMinigameTitle()),
+                    new Label(minigameController.getMinigameDescription()),
+                    "OK, Got it!",
+                    GameStates.MINIGAME_PLAYER_READY,
+                    250, 150
+            );
+            notification.setPosX(0.5);
+            notification.setPosY(0.5);
+        } else if (notificationType == GameStates.MINIGAME_PLAYER_READY) {
+
+            PlayerController playerController = viewHandler.getState().getPlayerController();
+
+            Label desc = new Label(playerController.getCurrentMinigamePlayer().getName()
+                    + ", are you ready?");
+            desc.setTextFill(Color.BLACK);
+
+            notification = createGenericButtonNotification(
+                    null,
+                    desc,
+                    "Ready!",
+                    GameStates.MINIGAME_PLAY,
+                    150, 120
+            );
+            notification.setPosX(0.5);
+            notification.setPosY(0.5);
+            notification.setNotificationColor(viewHandler.getState().getPlayerController().getCurrentMinigamePlayer().getColor());
+        } else if (notificationType == GameStates.VICTORY_SCREEN) {
+            notification = new VictoryScreen(viewHandler);
+            notification.setPosX(0.5);
+            notification.setPosY(0.5);
         }
 
         return notification;
+    }
+
+    public AbstractNotification createAwardNotification(Award award) {
+
+        return new AwardNotification(viewHandler, award);
     }
 
     public GenericButtonNotification createGenericButtonNotification(Label title, Label desc, String buttonDesc,

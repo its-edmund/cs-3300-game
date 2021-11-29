@@ -1,7 +1,5 @@
 package window.gameboard;
 
-import Minigame.AbstractMinigame;
-import Minigame.MinigameEnum;
 import Minigame.MinigameFactory;
 import NotificationWindow.*;
 import core.GameStates;
@@ -11,15 +9,11 @@ import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.control.Label;
-import javafx.scene.paint.Color;
 import javafx.util.Duration;
 import window.player.Player;
 import core.PostMoveActionType;
-import window.player.PlayerController;
 
 import java.io.IOException;
-import java.util.Random;
 
 public class GameStateController {
 
@@ -43,7 +37,7 @@ public class GameStateController {
         this.gameboardController = gameboardController;
         playerTurnIndex = 0;
 
-        notificationWindowFactory = new NotificationWindowFactory(this, viewHandler);
+        notificationWindowFactory = new NotificationWindowFactory(viewHandler);
         minigameFactory = new MinigameFactory(viewHandler);
 
         viewHandler.getState().updateState(GameStates.MASTERPIECE_RULES);
@@ -69,6 +63,7 @@ public class GameStateController {
                                 case MASTERPIECE_RULES:
                                 case MINIGAME_INSTRUCTIONS:
                                 case MINIGAME_PLAYER_READY:
+                                case VICTORY_SCREEN_AWARD_NOTIFICATION:
                                     prevStateTask = () -> {
                                         viewHandler.getState().removeNotification();
                                     };
@@ -97,6 +92,9 @@ public class GameStateController {
                                     break;
                                 case CHANCE_NOTIFICATION:
 
+                                    Player currentPlayer = viewHandler.getState().getPlayerController().getCurrentPlayer();
+                                    currentPlayer.setNumChanceTilesLandedOn(currentPlayer.getNumChanceTilesLandedOn() + 1);
+
                                     currStateTask = () -> {
                                         viewHandler.getState().addNotification(
                                                 notificationWindowFactory.createNotification(GameStates.CHANCE_NOTIFICATION)
@@ -119,6 +117,7 @@ public class GameStateController {
                                         );
                                     };
                                     break;
+
                                 case EXAMPLE_NOTIFICATION:
                                     currStateTask = () -> {
                                         viewHandler.getState().addNotification(
@@ -126,24 +125,45 @@ public class GameStateController {
                                         );
                                     };
                                     break;
-                                case GAME_OVER:
+                                case VICTORY_SCREEN:
+//                                    currStateTask = () -> {
+//                                        try {
+//                                            viewHandler.launchVictoryScreen();
+//                                        } catch (IOException e) {
+//                                            e.printStackTrace();
+//                                        }
+//                                    };
 
                                     currStateTask = () -> {
-                                        try {
-                                            viewHandler.launchVictoryScreen();
-                                        } catch (IOException e) {
-                                            e.printStackTrace();
+                                        if (!viewHandler.getState().hasVictoryScreen()) {
+                                            viewHandler.getState().addVictoryScreen(
+                                                    new VictoryScreen(viewHandler)
+                                            );
                                         }
                                     };
+
                                     break;
+
+                                case VICTORY_SCREEN_AWARD_NOTIFICATION:
+
+                                    currStateTask = () -> {
+                                        viewHandler.getState().addNotification(
+                                                new AwardNotification(viewHandler,
+                                                        viewHandler.getState().getCurrentAward())
+                                        );
+                                    };
+
                                 case GAMEBOARD_IDLE:
 
                                     break;
                                 case NEW_TURN:
+
                                     currStateTask = () -> {
                                         viewHandler.getState().addNotification(
                                                 notificationWindowFactory.createNotification(GameStates.NEW_TURN)
                                         );
+                                        viewHandler.getState().getPlayerController().getCurrentPlayer().
+                                                playNewTurnSound();
                                     };
                                     break;
                                 case MASTERPIECE_RULES:
@@ -163,50 +183,21 @@ public class GameStateController {
                                 case MINIGAME_INSTRUCTIONS:
                                     currStateTask = () -> {
 
-                                        AbstractMinigame minigame = viewHandler.getState().getCurrentMinigame();
-
                                         viewHandler.getState().addNotification(
-                                            notificationWindowFactory.createGenericButtonNotification(
-                                                new Label(minigame.getMinigameTitle()),
-                                                new Label(minigame.getMinigameDescription()),
-                                                "OK, got it!",
-                                                GameStates.MINIGAME_PLAYER_READY,
-                                                250,150
-                                            )
+                                                notificationWindowFactory.createNotification(GameStates.MINIGAME_INSTRUCTIONS)
                                         );
                                     };
                                     break;
                                 case MINIGAME_PLAYER_READY:
                                     currStateTask = () -> {
-
-                                        PlayerController playerController = viewHandler.getState().getPlayerController();
-
-                                        Label desc = new Label(playerController.getCurrentMinigamePlayer().getName()
-                                                + ", are you ready?");
-                                        desc.setTextFill(Color.BLACK);
-
-                                        GenericButtonNotification notification =
-                                                notificationWindowFactory.createGenericButtonNotification(
-                                                        null,
-                                                        desc,
-                                                        "Ready!",
-                                                        GameStates.MINIGAME_PLAY,
-                                                        150,120
-                                                );
-
-                                        notification.setNotificationColor(
-                                                playerController.getCurrentMinigamePlayer().getColor()
+                                        viewHandler.getState().addNotification(
+                                                notificationWindowFactory.createNotification(GameStates.MINIGAME_PLAYER_READY)
                                         );
-
-                                        viewHandler.getState().addNotification(notification);
                                     };
                                     break;
                                 case MINIGAME_PLAY:
                                     currStateTask = () -> {
-
-                                        viewHandler.getState().getCurrentMinigame().launchMinigame(
-                                                viewHandler.getState().getCurrentMinigameType()
-                                        );
+                                        viewHandler.getState().getCurrentMinigame().launchMinigame();
                                     };
                                     break;
                                 case MINIGAME_PLAY_OVER:

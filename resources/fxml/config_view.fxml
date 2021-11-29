@@ -44,6 +44,10 @@
             <HBox spacing = "30"
                   fx:id = "colorPickers"
             />
+            <HBox spacing="30"
+                  fx:id="tokenPickers"
+            />
+
             <Button
                 fx:id = "startGame"
                 text = "START GAME"

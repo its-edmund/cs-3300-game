@@ -115,6 +115,21 @@ public class Tile extends ResizableStackPane {
         }
 
     }
+
+    public void addWall(double rot) {
+        Wall wall = new Wall(this, WallOrientationEnum.TOP);
+
+        wall.setRotate(rot);
+
+        if (tileWall == null) {
+            this.getChildren().addAll(wall);
+            tileWall = wall;
+        } else {
+            throw new RuntimeException("Trying to assign a wall to a tile that already " +
+                    "has a wall!\n");
+        }
+    }
+
     public void removeWall() {
 
         if (tileWall != null) {

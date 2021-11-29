@@ -11,12 +11,12 @@ public class MinigameFactory {
         this.viewHandler = viewHandler;
     }
 
-    public AbstractMinigame createMinigame(GameStates minigameStates) {
+    public AbstractMinigameController createMinigame(GameStates minigameStates) {
 
-        AbstractMinigame minigame = null;
+        AbstractMinigameController minigame = null;
 
         if (minigameStates == GameStates.MINIGAME_LAUNCH) {
-            minigame = new ExampleMinigame2(viewHandler);
+            minigame = new MinigameController(viewHandler);
             minigame.setPosX(0.5);
             minigame.setPosY(0.5);
         }

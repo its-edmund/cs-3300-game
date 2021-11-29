@@ -1,10 +1,8 @@
 package M5;
 
-import Minigame.ExampleMinigame2;
 import Minigame.SugarHoneycombMinigame;
 import Minigame.TheCircleMinigame;
 import core.TestViewHandler;
-import core.ViewHandler;
 import org.junit.Test;
 
 import static junit.framework.TestCase.assertEquals;

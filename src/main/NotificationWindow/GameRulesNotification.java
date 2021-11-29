@@ -48,5 +48,8 @@ public class GameRulesNotification extends AbstractButtonNotification{
     @Override
     public void onExit() {
         viewHandler.getState().updateState(GameStates.END_TURN);
+
+        // DEBUG for victory screen
+//        viewHandler.getState().updateState(GameStates.MOVING);
     }
 }

@@ -109,11 +109,9 @@ public class AppViewHandler implements ViewHandler {
     }
 
     // Resizing Methods
-
     public static void addNewNodeToResize(Resizable node) {
         newNodes.add(node);
     }
-
     public static void resizeNewNodes() {
         if (!newNodes.isEmpty()) {
 
@@ -164,7 +162,11 @@ public class AppViewHandler implements ViewHandler {
 
         stage.setTitle(bundle.getString(window.titleBundleKey()));
         stage.setResizable(window.resizable());
-        stage.setScene(new Scene(window.root()));
+
+        Scene scene = new Scene(window.root());
+        scene.getStylesheets().add(AppPaths.CSS + "Token.css");
+
+        stage.setScene(scene);
         stage.show();
     }
 

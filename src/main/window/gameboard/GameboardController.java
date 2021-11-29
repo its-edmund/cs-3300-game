@@ -41,6 +41,12 @@ public class GameboardController extends AbstractController {
 
     public GameboardController(ViewHandler viewHandler) {
         super(viewHandler);
+
+        if (viewHandler != null) {
+            for (Player player : viewHandler.getState().getPlayerController().getPlayers()) {
+                player.setupPlayerMover(this);
+            }
+        }
     }
 
     @Override
@@ -58,12 +64,6 @@ public class GameboardController extends AbstractController {
         createChanceCards();
 
         gameStateController = new GameStateController(viewHandler, this);
-
-        if (viewHandler != null) {
-            for (Player player : viewHandler.getState().getPlayerController().getPlayers()) {
-                player.setupPlayerMover(this);
-            }
-        }
 
         if (rollDice != null) {
             rollDice.setOnAction(new EventHandler<ActionEvent>() {
@@ -126,7 +126,6 @@ public class GameboardController extends AbstractController {
     }
 
     private void createBoard() {
-        int BOARD_SIZE = 15;
 
         path = new ArrayList<>();
 
@@ -266,12 +265,9 @@ public class GameboardController extends AbstractController {
         path.get(4).setType(TileType.LAUNCH_MINIGAME);
         path.get(5).setType(TileType.LAUNCH_MINIGAME);
 
-//        path.get(15).setType(TileType.LAUNCH_MINIGAME);
-//        path.get(45).setType(TileType.LAUNCH_MINIGAME);
-
-        path.get(7).addWall(WallOrientationEnum.TOP);
-        path.get(30).addWall(WallOrientationEnum.LEFT);
-        path.get(42).addWall(WallOrientationEnum.BOTTOM);
+        path.get(7).addWall(90);
+        path.get(29).addWall(0);
+        path.get(42).addWall(90);
 
         // Add all player tokens to the first square
         PlayerController playerController;
@@ -285,6 +281,8 @@ public class GameboardController extends AbstractController {
             path.get(0).addToken(player.getToken());
         }
 
+        // Win screen debug
+//        playerController.getCurrentPlayer().getPlayerMover().setRemainingMoves(60);
     }
     private void createPlayerProfiles() {
         // Get the gamestate
@@ -359,7 +357,7 @@ public class GameboardController extends AbstractController {
         if (moveAmount >= 0) {
             // Check if the playerToken is at the end
             if (path != null &&
-                    (path.size() - 1 <= newLoc || playerToken.getFinished())) {
+                    (path.size() - 1 < newLoc || playerToken.getFinished())) {
                 playerToken.setTokenLocation(0);
                 path.get(playerToken.getTokenLocation()).addToken(playerToken);
 
@@ -380,7 +378,6 @@ public class GameboardController extends AbstractController {
                         return moveAmount - i + 1;
                     }
                 }
-
             }
         }
 

@@ -62,4 +62,5 @@ public class Wall extends StackPane {
             throw new RuntimeException("Wall's orientation not set!");
         }
     }
+
 }
