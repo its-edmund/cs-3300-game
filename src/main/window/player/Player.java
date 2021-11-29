@@ -97,6 +97,8 @@ public class Player extends Circle {
     public PlayerMover getPlayerMover() {
         return playerMover;
     }
+
+    // Award based methods
     public int getNumMinigamesWon() {
         return numMinigamesWon;
     }

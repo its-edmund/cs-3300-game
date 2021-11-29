@@ -34,21 +34,24 @@ public class TestAwards {
     }
 
     @Test
-    public void testRichestAward() {
-        p1.setMoney(1050);
-
+    public void testRichestPlayerAward() {
+        // Sets player money
+        p1.setMoney(1100);
+        // Gives the player an award
         playerController.giveAward(AwardEnum.RICHEST);
-
+        //Assertions
         assertEquals(p1.getAwards().size(), 1);
         assertEquals(p1.getAwards().get(0).isSoleWinner(), true);
+
     }
 
     @Test
-    public void testMinigameMasterAward() {
-        p2.setNumMinigamesWon(5);
-
+    public void testMinigameMasterPlayerAward() {
+        /// Gives player mini game victories
+        p2.setNumMinigamesWon(10);
+        // Gives player award
         playerController.giveAward(AwardEnum.MINIGAME_MASTER);
-
+        // Assertions
         assertEquals(p2.getAwards().size(), 1);
         assertEquals(p2.getAwards().get(0).isSoleWinner(), true);
     }
