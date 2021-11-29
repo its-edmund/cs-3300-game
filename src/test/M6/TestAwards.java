@@ -58,12 +58,14 @@ public class TestAwards {
 
     @Test
     public void testLuckiestAward() {
+        int count = 1;
+        boolean winner = true;
         p2.setNumChanceTilesLandedOn(3);
 
         playerController.giveAward(AwardEnum.LUCKIEST);
 
-        assertEquals(p2.getAwards().size(), 1);
-        assertEquals(p2.getAwards().get(0).isSoleWinner(), true);
+        assertEquals(p2.getAwards().size(), count);
+        assertEquals(p2.getAwards().get(0).isSoleWinner(), winner);
     }
 
     @Test
@@ -72,11 +74,12 @@ public class TestAwards {
         // All players should share the award
 
         int count = 1;
+        boolean winner = false;
         for (AwardEnum award : AwardEnum.values()) {
             playerController.giveAward(award);
 
             assertEquals(p1.getAwards().size(), count);
-            assertEquals(p1.getAwards().get(0).isSoleWinner(), false);
+            assertEquals(p1.getAwards().get(0).isSoleWinner(), winner);
 
             count++;
         }
