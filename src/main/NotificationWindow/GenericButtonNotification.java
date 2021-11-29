@@ -15,11 +15,20 @@ public class GenericButtonNotification extends AbstractButtonNotification {
         this.exitState = exitState;
 
         getButton(0).setOnAction(event -> {
+            super.playButtonClicked();
             onExit();
         });
 
     }
 
+    public GenericButtonNotification(ViewHandler viewHandler) {
+        super(viewHandler, 1);
+
+        getButton(0).setOnAction(event -> {
+            super.playButtonClicked();
+
+        });
+    }
 
     @Override
     public void onExit() {

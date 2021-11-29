@@ -4,6 +4,7 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 
 public class PlayerController {
 
@@ -21,17 +22,55 @@ public class PlayerController {
         players.add(player);
     }
 
-    // Getters and Setters
+    // Determine Awards
+    public void giveAward(AwardEnum awardType) {
+        ArrayList<Player> winners = new ArrayList<>();
 
-    public IntegerProperty getCurrentPlayerIndexProperty() {
-        return currentPlayerIndex;
+        switch (awardType){
+            case MINIGAME_MASTER:
+            case LUCKIEST:
+            case RICHEST:
+                giveMostOfAward(awardType);
+        }
+
     }
-    public Player getCurrentPlayer() {
-        return players.get(currentPlayerIndex.get());
+    private void giveMostOfAward(AwardEnum awardType) {
+
+        int max = -1;
+        boolean multipleMax = false;
+
+        // find the max
+        for (Player player : players) {
+            if (getMostOfCriterion(player, awardType) > max) {
+                max = getMostOfCriterion(player, awardType);
+                multipleMax = false;
+            } else if (getMostOfCriterion(player, awardType) == max) {
+                max = getMostOfCriterion(player, awardType);
+                multipleMax = true;
+            }
+
+        }
+
+        // add all players that have max number
+        for (Player player : players) {
+            if (getMostOfCriterion(player, awardType) == max) {
+                player.addAward(new Award(awardType, !multipleMax));
+            }
+        }
     }
-    public Player getCurrentMinigamePlayer() {
-        return players.get(currentMinigamePlayerIndex);
+    private int getMostOfCriterion(Player player, AwardEnum awardType) {
+        switch (awardType) {
+            case RICHEST:
+                return player.getMoney();
+            case LUCKIEST:
+                return player.getNumChanceTilesLandedOn();
+            case MINIGAME_MASTER:
+                return player.getNumMinigamesWon();
+            default:
+                return -1;
+        }
     }
+
     public void endCurrentPlayerTurn() {
         if (currentPlayerIndex.get() == numPlayers() - 1) {
             currentPlayerIndex.set(0);
@@ -47,6 +86,18 @@ public class PlayerController {
             currentMinigamePlayerIndex++;
             return false;
         }
+    }
+
+
+    // Getters and Setters
+    public IntegerProperty getCurrentPlayerIndexProperty() {
+        return currentPlayerIndex;
+    }
+    public Player getCurrentPlayer() {
+        return players.get(currentPlayerIndex.get());
+    }
+    public Player getCurrentMinigamePlayer() {
+        return players.get(currentMinigamePlayerIndex);
     }
     public int numPlayers() {
         return players.size();

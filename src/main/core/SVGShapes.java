@@ -1,5 +1,8 @@
 package core;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class SVGShapes {
 
     //  Website for SVG (scalable vector graphics)
@@ -46,5 +49,17 @@ public class SVGShapes {
                     "\t\t\tC225.438,237.92,216.508,247.017,205.52,247.017z M306.33,247.169c-11.08,0-20.069-9.165-20.069-20.47\n" +
                     "\t\t\tc0-11.305,8.989-20.47,20.069-20.47c11.067,0,20.056,9.164,20.056,20.47C326.386,238.004,317.398,247.169,306.33,247.169z";
 
+
+
+    public static List<String> getValues() {
+        ArrayList<String> list = new ArrayList<>();
+
+        list.add(CAR);
+        list.add(BOAT);
+        list.add(PLANE);
+        list.add(DOG);
+
+        return list;
+    }
 
 }

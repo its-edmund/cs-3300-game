@@ -17,10 +17,13 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
+import javafx.util.Callback;
 import state.State;
 import window.player.Player;
 import window.player.PlayerController;
+import token.TokenEnum;
 
 public class ConfigurationController extends AbstractController {
 
@@ -28,6 +31,7 @@ public class ConfigurationController extends AbstractController {
     @FXML private Button submitPlayersBtn;
     @FXML private HBox playerNames;
     @FXML private HBox colorPickers;
+    @FXML private HBox tokenPickers;
     @FXML private RadioButton two;
     @FXML private RadioButton three;
     @FXML private RadioButton four;
@@ -56,9 +60,13 @@ public class ConfigurationController extends AbstractController {
             ColorPicker cp = new ColorPicker();
             cp.setValue(defaultColors[i - 1]);
 
+            ComboBox<TokenEnum> tokenEnumComboBox = initializeComboBox();
+
             playerNames.getChildren().add(t);
             colorPickers.getChildren().add(cp);
+            tokenPickers.getChildren().add(tokenEnumComboBox);
         }
+
         playerCountBtns.selectedToggleProperty().addListener(e-> {
             if (playerCountBtns.getSelectedToggle() != null) {
                 playerNames.getChildren().clear();
@@ -82,31 +90,48 @@ public class ConfigurationController extends AbstractController {
             players = new ArrayList<>();
             HashSet<String> seenNames = new HashSet<>();
             HashSet<Color> seenColors = new HashSet<>();
+            HashSet<TokenEnum> seenTokens = new HashSet<>();
+
             int i = 0;
             for (Node node : playerNames.getChildren()) {
                 TextField t = (TextField) node;
                 ColorPicker cp = (ColorPicker) colorPickers.getChildren().get(i);
+                ComboBox<TokenEnum> tokenEnumComboBox
+                        = (ComboBox<TokenEnum>) tokenPickers.getChildren().get(i);
+
                 String text = t.getText();
                 Color color = cp.getValue();
+                TokenEnum tokenEnum = tokenEnumComboBox.getValue();
+
                 if ((!(text == null ||
                         text.trim().isEmpty() ||
                         seenNames.contains(text) ||
                         color == null ||
-                        seenColors.contains(color)))) {
-                    players.add(new Player(text,
+                        seenColors.contains(color) ||
+                        tokenEnum == null ||
+                        seenTokens.contains(tokenEnum)))) {
+
+                    Player player = new Player(text,
                             color,
                             10000,
-                            (AppViewHandler) viewHandler));
+                            (AppViewHandler) viewHandler);
+
+                    player.getToken().setTokenType(tokenEnum);
+                    player.setupPlayerTurnSound();
+
+                    players.add(player);
+
                     seenNames.add(text);
                     seenColors.add(color);
+                    seenTokens.add(tokenEnum);
+
                 } else {
-//                    playerOrder.setText("");
-//                    startingMoney.setText("");
                     Alert a = new Alert(Alert.AlertType.ERROR);
-                    a.setContentText("Please enter valid distinct names and colors");
+                    a.setContentText("Please enter valid distinct names, colors, and tokens!");
                     a.show();
                     return;
                 }
+
                 i++;
             }
 
@@ -132,5 +157,44 @@ public class ConfigurationController extends AbstractController {
             }
         });
 
+    }
+
+
+    private ComboBox<TokenEnum> initializeComboBox() {
+
+        ComboBox<TokenEnum> tokenEnumComboBox = new ComboBox<>();
+
+        for (TokenEnum tokenEnum : TokenEnum.values())
+            tokenEnumComboBox.getItems().add(tokenEnum);
+
+        tokenEnumComboBox.setCellFactory(new Callback<ListView<TokenEnum>, ListCell<TokenEnum>>() {
+            @Override
+            public ListCell<TokenEnum> call(ListView<TokenEnum> tokenEnumListView) {
+                return new ListCell<TokenEnum>() {
+
+                    private final Rectangle rectangle;
+
+                    {
+                        setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
+                        rectangle = new Rectangle(10, 10);
+                    }
+
+
+                    @Override
+                    protected void updateItem(TokenEnum tokenEnum, boolean empty) {
+                        super.updateItem(tokenEnum, empty);
+
+                        if (tokenEnum == null || empty) {
+                            setGraphic(null);
+                        } else {
+                            rectangle.setFill(tokenEnum.getColor());
+                            setGraphic(rectangle);
+                        }
+                    }
+                };
+            }
+        });
+
+        return tokenEnumComboBox;
     }
 }

@@ -1,16 +1,18 @@
 package window.player;
 
-import core.AbstractMoveMediator;
 import core.AppViewHandler;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
-import javafx.scene.Scene;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import tile.Tile;
 import token.Token;
+import token.TokenEnum;
 import window.gameboard.GameboardController;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class Player extends Circle {
@@ -20,10 +22,17 @@ public class Player extends Circle {
     private Token playerToken;
     private PlayerMover playerMover;
 
+    private Media newTurnSFX;
+
     private String name;
     private Color color;
     private IntegerProperty money;
+
     private int minigameScore;
+    private int numMinigamesWon;
+    private int numChanceTilesLandedOn;
+
+    private ArrayList<Award> awards;
 
     public Player() {
         this(0, 0);
@@ -35,7 +44,11 @@ public class Player extends Circle {
         this.color = color;
         this.money = new SimpleIntegerProperty(money);
 
+        numMinigamesWon = 0;
+        numChanceTilesLandedOn = 0;
+
         playerToken = new Token(color, viewHandler);
+        awards = new ArrayList<>();
     }
 
     public Player(int x, int y) {
@@ -83,5 +96,51 @@ public class Player extends Circle {
     }
     public PlayerMover getPlayerMover() {
         return playerMover;
+    }
+    public int getNumMinigamesWon() {
+        return numMinigamesWon;
+    }
+
+    public void addAward(Award award) {
+        awards.add(award);
+    }
+
+    public ArrayList<Award> getAwards() {
+        return awards;
+    }
+
+    public boolean hasAward(AwardEnum awardType) {
+        boolean result = false;
+
+        for (Award award : awards) {
+            if (award.isAwardOfType(awardType)) {
+                result = true;
+                break;
+            }
+        }
+
+        return result;
+    }
+
+    public void setNumMinigamesWon(int numMinigamesWon) {
+        this.numMinigamesWon = numMinigamesWon;
+    }
+
+    public int getNumChanceTilesLandedOn() {
+        return numChanceTilesLandedOn;
+    }
+
+    public void setNumChanceTilesLandedOn(int numChanceTilesLandedOn) {
+        this.numChanceTilesLandedOn = numChanceTilesLandedOn;
+    }
+
+    public void setupPlayerTurnSound() {
+        TokenEnum tokenEnum = playerToken.getTokenType();
+        newTurnSFX = new Media(new File(tokenEnum.getSoundFilepath()).toURI().toString());
+    }
+
+    public void playNewTurnSound() {
+        MediaPlayer mediaPlayer = new MediaPlayer(newTurnSFX);
+        mediaPlayer.play();
     }
 }

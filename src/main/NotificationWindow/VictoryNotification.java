@@ -1,5 +1,6 @@
 package NotificationWindow;
 
+import core.GameStates;
 import core.ViewHandler;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
@@ -11,7 +12,6 @@ public class VictoryNotification extends AbstractButtonNotification {
     public VictoryNotification(ViewHandler viewHandler) {
         super(viewHandler, 1);
 
-//        notificationText.setText("Victory!");
         setNotificationText(new Text("Victory!"));
 
         notificationBox.setWidth(150);
@@ -23,11 +23,6 @@ public class VictoryNotification extends AbstractButtonNotification {
 
     @Override
     public void onExit() {
-        try {
-            viewHandler.launchVictoryScreen();
-        } catch (IOException e) {
-            System.out.println("Error launching victory screen.");
-            e.printStackTrace();
-        }
+        viewHandler.getState().updateState(GameStates.VICTORY_SCREEN);
     }
 }

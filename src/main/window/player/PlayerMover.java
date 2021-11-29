@@ -11,54 +11,17 @@ import window.gameboard.GameboardController;
 public class PlayerMover extends AbstractMoveMediator {
 
     private int remainingMoves;
+    private int squaresTranversed;
 
     public PlayerMover(Player player, GameboardController gameboardController) {
         super(player, gameboardController);
-    }
 
-//    @Override
-//    public PostMoveActionType movePlayer(int moveAmount) {
-//        int i = gameboardController.moveToken(player.getToken(), moveAmount);
-//
-//        PostMoveActionType postMoveActionType = PostMoveActionType.NORMAL;
-//
-//        if (i == 0) {
-////            System.out.println("Movement succeeded.");
-//
-//            TileType tileType = gameboardController.getTileTokenOccupies(player.getToken()).getType();
-//
-//            switch (tileType) {
-//                case CHANCE:
-//                    postMoveActionType = PostMoveActionType.CHANCE;
-//                    break;
-//                case GAIN_MONEY:
-//                    player.setMoney(player.getMoney() + 100);
-//                    postMoveActionType = PostMoveActionType.NORMAL;
-//                    break;
-//                case LOSE_MONEY:
-//                    player.setMoney(player.getMoney() - 100);
-//                    postMoveActionType = PostMoveActionType.NORMAL;
-//                    break;
-//                case END:
-//                    postMoveActionType = PostMoveActionType.VICTORY;
-//                    break;
-//                case LAUNCH_EXAMPLE_NOTIFICATION:
-//                    postMoveActionType = PostMoveActionType.EXAMPLE_NOTIFICATION;
-//                    break;
-//            }
-//
-//        } else {
-//            // Movement blocked by wall
-//
-//            remainingMoves = i;
-//            postMoveActionType = PostMoveActionType.WALL;
-//        }
-//
-//        return postMoveActionType;
-//    }
+        squaresTranversed = 0;
+    }
 
     public PostMoveActionType movePlayer() {
         int i = gameboardController.moveToken(player.getToken(), remainingMoves);
+        squaresTranversed += remainingMoves - i;
 
         PostMoveActionType postMoveActionType = PostMoveActionType.NORMAL;
 
@@ -80,7 +43,13 @@ public class PlayerMover extends AbstractMoveMediator {
                     postMoveActionType = PostMoveActionType.NORMAL;
                     break;
                 case END:
-                    postMoveActionType = PostMoveActionType.VICTORY;
+
+                    if (squaresTranversed >= 60) {
+                        postMoveActionType = PostMoveActionType.VICTORY;
+                    } else {
+                        postMoveActionType = PostMoveActionType.NORMAL;
+                    }
+
                     break;
                 case LAUNCH_EXAMPLE_NOTIFICATION:
                     postMoveActionType = PostMoveActionType.EXAMPLE_NOTIFICATION;
@@ -97,12 +66,6 @@ public class PlayerMover extends AbstractMoveMediator {
 
         return postMoveActionType;
     }
-
-//    public PostMoveActionType resumeMove() {
-//        PostMoveActionType postMoveActionType = movePlayer(remainingMoves);
-//        remainingMoves = 0;
-//        return postMoveActionType;
-//    }
 
     // Get / Set remaining moves
     public int getRemainingMoves() {

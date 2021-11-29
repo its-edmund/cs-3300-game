@@ -2,20 +2,15 @@ package token;
 
 import core.AppViewHandler;
 import core.SVGShapes;
-import javafx.beans.value.ChangeListener;
-import javafx.css.Styleable;
-import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 import javafx.scene.shape.SVGPath;
-
-import javax.sound.sampled.Control;
 
 public class Token extends SVGPath {
 
     private int tokenLocation;
-    private final int RADIUS = 3;
     private boolean isFinished;
+
+    private TokenEnum tokenType;
 
     public Token(Color color, AppViewHandler viewHandler) {
         super();
@@ -36,11 +31,11 @@ public class Token extends SVGPath {
     public int getTokenLocation() {
         return tokenLocation;
     }
-    public int getTokenRadius() {
-        return RADIUS;
-    }
     public boolean getFinished() {
         return isFinished;
+    }
+    public TokenEnum getTokenType() {
+        return tokenType;
     }
 
     public void setTokenLocation(int tokenLocation) {
@@ -49,4 +44,14 @@ public class Token extends SVGPath {
     public void setFinished(boolean isFinished) {
         this.isFinished = isFinished;
     }
+    public void setTokenType(TokenEnum tokenType) {
+        this.tokenType = tokenType;
+
+        setupTokenShape();
+    }
+
+    private void setupTokenShape() {
+        setContent(tokenType.getSVGShape());
+    }
+
 }

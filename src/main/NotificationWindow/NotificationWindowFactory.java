@@ -6,16 +6,17 @@ import core.ViewHandler;
 import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import window.gameboard.GameStateController;
+import window.player.Award;
+import window.player.Player;
 import window.player.PlayerController;
 
 public class NotificationWindowFactory {
 
-    GameStateController gameStateController;
     ViewHandler viewHandler;
 
-    public NotificationWindowFactory(GameStateController gameStateController, ViewHandler viewHandler) {
-        this.gameStateController = gameStateController;
+    public NotificationWindowFactory(ViewHandler viewHandler) {
         this.viewHandler = viewHandler;
     }
 
@@ -83,9 +84,19 @@ public class NotificationWindowFactory {
             );
             notification.setPosX(0.5);
             notification.setPosY(0.5);
+            notification.setNotificationColor(viewHandler.getState().getPlayerController().getCurrentMinigamePlayer().getColor());
+        } else if (notificationType == GameStates.VICTORY_SCREEN) {
+            notification = new VictoryScreen(viewHandler);
+            notification.setPosX(0.5);
+            notification.setPosY(0.5);
         }
 
         return notification;
+    }
+
+    public AbstractNotification createAwardNotification(Award award) {
+
+        return new AwardNotification(viewHandler, award);
     }
 
     public GenericButtonNotification createGenericButtonNotification(Label title, Label desc, String buttonDesc,

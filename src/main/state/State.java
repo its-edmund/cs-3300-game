@@ -2,9 +2,15 @@ package state;
 
 import Minigame.AbstractMinigameController;
 import Minigame.MinigameEnum;
+import NotificationWindow.NotificationEnum;
+import NotificationWindow.NotificationWindowFactory;
+import NotificationWindow.VictoryScreen;
+import core.GameMusic;
 import core.GameStates;
+import core.ViewHandler;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
+import window.player.Award;
 import window.player.PlayerController;
 
 public class State {
@@ -15,9 +21,22 @@ public class State {
 
     private Pane board;
 
+    private GameMusic musicPlayer;
+
     private Node currentNotification;
     private AbstractMinigameController currentMinigame;
+
+
+
+    private Award currentAward;
+    private VictoryScreen victoryScreen;
+
     private MinigameEnum currentMinigameType;
+    private NotificationEnum notificationEnum;
+
+    public State() {
+        musicPlayer = new GameMusic();
+    }
 
     public PlayerController getPlayerController() {
         return playerController;
@@ -61,6 +80,8 @@ public class State {
             board.getChildren().remove(node);
         }
     }
+
+    // Notification Operations
     public void addNotification(Node node) {
 
         // First, remove the current notification
@@ -69,6 +90,7 @@ public class State {
         currentNotification = node;
         addNodeToBoard(currentNotification);
     }
+
     public void removeNotification() {
         if (currentNotification != null)
             removeNodeFromBoard(currentNotification);
@@ -91,4 +113,28 @@ public class State {
     public void removeMinigame() {
         removeNodeFromBoard(currentMinigame);
     }
+
+    // Music Player
+    public GameMusic getMusicPlayer() {
+        return musicPlayer;
+    }
+
+    // Award
+    public Award getCurrentAward() {
+        return currentAward;
+    }
+    public void setCurrentAward(Award currentAward) {
+        this.currentAward = currentAward;
+    }
+
+    // Victory Screen
+    public void addVictoryScreen(VictoryScreen victoryScreen) {
+        this.victoryScreen = victoryScreen;
+        addNodeToBoard(victoryScreen);
+    }
+    public boolean hasVictoryScreen() {
+        return victoryScreen != null;
+    }
+
+
 }

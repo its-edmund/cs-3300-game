@@ -109,11 +109,9 @@ public class AppViewHandler implements ViewHandler {
     }
 
     // Resizing Methods
-
     public static void addNewNodeToResize(Resizable node) {
         newNodes.add(node);
     }
-
     public static void resizeNewNodes() {
         if (!newNodes.isEmpty()) {
 

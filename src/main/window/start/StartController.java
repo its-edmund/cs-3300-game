@@ -1,6 +1,7 @@
 package window.start;
 
 import core.AbstractController;
+import core.GameMusic;
 import core.ViewHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -15,6 +16,9 @@ public class StartController extends AbstractController {
 
     public StartController(ViewHandler viewHandler) {
         super(viewHandler);
+
+        GameMusic gameMusic = viewHandler.getState().getMusicPlayer();
+        gameMusic.playBackgroundMusic();
     }
 
     @Override

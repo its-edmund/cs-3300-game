@@ -27,18 +27,6 @@ public class ResizableStackPane extends StackPane implements Resizable {
         this.setScaleY(AppViewHandler.getScreenHeight() / AppViewHandler.INITIAL_SCREEN_HEIGHT);
 
         this.relocate(getPosX(), getPosY());
-
-//        double screenWidth = AppViewHandler.getScreenWidth()  - 16;
-//        double screenHeight =
-//                (AppViewHandler.getScreenHeight() - 40 - 85);
-//
-//        // 16: width offscreen
-//        double newX = posX * screenHeight + (screenWidth - screenHeight) / 2;
-//        // 40: height offscreen
-//        // 85: height of HUD
-//        double newY = posY * screenHeight;
-//
-//        this.relocate(newX, newY);
     }
 
     @Override
@@ -49,7 +37,6 @@ public class ResizableStackPane extends StackPane implements Resizable {
     public void setPosX(double posX) {
         this.posX = posX;
     }
-
     public void setPosY(double posY) {
         this.posY = posY;
     }
